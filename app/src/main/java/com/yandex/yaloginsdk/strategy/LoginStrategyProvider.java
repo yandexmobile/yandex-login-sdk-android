@@ -3,11 +3,13 @@ package com.yandex.yaloginsdk.strategy;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.yandex.yaloginsdk.FingerprintExtractor;
+
 public class LoginStrategyProvider {
 
     @NonNull
     public LoginStrategy getLoginStrategy(@NonNull Context context) {
-        LoginStrategy strategy = NativeLoginStrategy.getIfPossible(context);
+        LoginStrategy strategy = NativeLoginStrategy.getIfPossible(context.getPackageManager(), new FingerprintExtractor());
         if (strategy != null) {
             return strategy;
         }

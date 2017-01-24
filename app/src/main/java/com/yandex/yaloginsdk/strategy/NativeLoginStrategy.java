@@ -1,6 +1,5 @@
 package com.yandex.yaloginsdk.strategy;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -8,17 +7,17 @@ import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 
 import com.yandex.yaloginsdk.Config;
+import com.yandex.yaloginsdk.FingerprintExtractor;
 import com.yandex.yaloginsdk.Token;
 import com.yandex.yaloginsdk.YaLoginSdkConstants;
 import com.yandex.yaloginsdk.YaLoginSdkError;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static com.yandex.yaloginsdk.Util.getCertificateFingerprint;
 import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.ACTION_YA_SDK_LOGIN;
 import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.FINGERPRINT;
 import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.META_SDK_VERSION;
@@ -31,7 +30,6 @@ class NativeLoginStrategy extends LoginStrategy {
         final Intent amSdkIntent = new Intent(ACTION_YA_SDK_LOGIN);
         final List<ResolveInfo> infos = packageManager.queryIntentActivities(amSdkIntent, PackageManager.MATCH_DEFAULT_ONLY);
 
-        // filter by am sdk version
         for (ResolveInfo info : infos) {
             try {
                 if (checkIsMatching(info, packageManager, fingerprintExtractor)) {
@@ -70,7 +68,7 @@ class NativeLoginStrategy extends LoginStrategy {
             }
         }
 
-        return null;
+        return false;
     }
 
     @NonNull
