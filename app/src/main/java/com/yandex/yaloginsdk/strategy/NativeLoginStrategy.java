@@ -68,7 +68,7 @@ class NativeLoginStrategy extends LoginStrategy {
         ResolveInfo best = null;
 
         for (ResolveInfo info : infos) {
-            Bundle metadata;
+            final Bundle metadata;
             try {
                 metadata = packageManager
                         .getApplicationInfo(info.activityInfo.packageName, PackageManager.GET_META_DATA)
@@ -91,7 +91,7 @@ class NativeLoginStrategy extends LoginStrategy {
             for (String fingerprint : fingerPrints) {
                 if (FINGERPRINT.equals(fingerprint)) {
                     // correct fingerprint, check for max AM version
-                    float amVersion = metadata.getFloat(META_AM_VERSION);
+                    final float amVersion = metadata.getFloat(META_AM_VERSION);
                     if (amVersion > maxVersion) {
                         maxVersion = amVersion;
                         best = info;
@@ -138,12 +138,12 @@ class NativeLoginStrategy extends LoginStrategy {
         @Override
         @Nullable
         public YaLoginSdkError tryExtractError(@NonNull Intent data) {
-            boolean isError = data.getBooleanExtra(OAUTH_TOKEN_ERROR, false);
+            final boolean isError = data.getBooleanExtra(OAUTH_TOKEN_ERROR, false);
             if (!isError) {
                 return null;
             }
 
-            String[] errorMessages = data.getStringArrayExtra(OAUTH_TOKEN_ERROR_MESSAGES);
+            final String[] errorMessages = data.getStringArrayExtra(OAUTH_TOKEN_ERROR_MESSAGES);
             return errorMessages == null ? new YaLoginSdkError(CONNECTION_ERROR) : new YaLoginSdkError(errorMessages);
         }
     }
