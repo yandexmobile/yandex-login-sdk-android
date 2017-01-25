@@ -22,6 +22,10 @@ public class YaLoginSdkConstants {
 
         public static final String EXTRA_OAUTH_TOKEN_EXPIRES = "com.yandex.auth.OAUTH_TOKEN_EXPIRES";
 
+        public static final String OAUTH_TOKEN_ERROR = "com.yandex.auth.OAUTH_TOKEN_ERROR";
+
+        public static final String OAUTH_TOKEN_ERROR_MESSAGES = "com.yandex.auth.OAUTH_TOKEN_ERROR_MESSAGES";
+
         public static final String EXTRA_CLIENT_ID = "com.yandex.auth.CLIENT_ID";
 
         public static final String EXTRA_SCOPES = "com.yandex.auth.SCOPES";
