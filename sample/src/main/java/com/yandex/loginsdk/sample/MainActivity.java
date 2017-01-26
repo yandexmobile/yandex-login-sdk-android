@@ -11,7 +11,7 @@ import com.yandex.yaloginsdk.YaLoginSdk;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String CLIENT_ID = "57a8133c69d947388a67164dfdbc46d3";
+    public static final String CLIENT_ID = "fcdddf83a97843ae80815c1c9247015b";
 
     @SuppressWarnings("NullableProblems") // onCreate
     @NonNull

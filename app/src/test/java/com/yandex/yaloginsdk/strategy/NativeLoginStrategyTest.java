@@ -27,17 +27,17 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.ACTION_YA_SDK_LOGIN;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.EXTRA_CLIENT_ID;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.EXTRA_OAUTH_TOKEN;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.EXTRA_OAUTH_TOKEN_EXPIRES;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.EXTRA_OAUTH_TOKEN_TYPE;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.EXTRA_SCOPES;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.FINGERPRINT;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.META_AM_VERSION;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.META_SDK_VERSION;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.OAUTH_TOKEN_ERROR;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.OAUTH_TOKEN_ERROR_MESSAGES;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.ACTION_YA_SDK_LOGIN;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.EXTRA_CLIENT_ID;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.EXTRA_OAUTH_TOKEN;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.EXTRA_OAUTH_TOKEN_EXPIRES;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.EXTRA_OAUTH_TOKEN_TYPE;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.EXTRA_SCOPES;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.FINGERPRINT;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.META_AM_VERSION;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.META_SDK_VERSION;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.OAUTH_TOKEN_ERROR;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.OAUTH_TOKEN_ERROR_MESSAGES;
 import static com.yandex.yaloginsdk.YaLoginSdkError.CONNECTION_ERROR;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
@@ -142,9 +142,9 @@ public class NativeLoginStrategyTest {
         Intent tokenData = new Intent();
         tokenData.putExtra(EXTRA_OAUTH_TOKEN, "token");
         tokenData.putExtra(EXTRA_OAUTH_TOKEN_TYPE, "type");
-        tokenData.putExtra(EXTRA_OAUTH_TOKEN_EXPIRES, 1d);
+        tokenData.putExtra(EXTRA_OAUTH_TOKEN_EXPIRES, 1L);
 
-        assertThat(extractor.tryExtractToken(tokenData)).isEqualTo(Token.create("token", "type", 1d));
+        assertThat(extractor.tryExtractToken(tokenData)).isEqualTo(Token.create("token", "type", 1L));
     }
 
     @Test
@@ -154,7 +154,7 @@ public class NativeLoginStrategyTest {
         tokenData.putExtra(EXTRA_OAUTH_TOKEN, "token");
         tokenData.putExtra(EXTRA_OAUTH_TOKEN_TYPE, "type");
 
-        assertThat(extractor.tryExtractToken(tokenData)).isEqualTo(Token.create("token", "type", 0d));
+        assertThat(extractor.tryExtractToken(tokenData)).isEqualTo(Token.create("token", "type", 0L));
     }
 
     @Test

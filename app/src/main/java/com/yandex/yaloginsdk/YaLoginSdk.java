@@ -15,7 +15,7 @@ import com.yandex.yaloginsdk.strategy.LoginType;
 import java.util.Collections;
 import java.util.Set;
 
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.State.STATE_LOGIN_TYPE;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.STATE_LOGIN_TYPE;
 import static com.yandex.yaloginsdk.YaLoginSdkConstants.LOGIN_REQUEST_CODE;
 
 public class YaLoginSdk {
