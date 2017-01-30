@@ -14,6 +14,8 @@ public class YaLoginSdkConstants {
 
         public static final String META_SDK_VERSION = "com.yandex.auth.LOGIN_SDK_VERSION";
 
+        public static final String META_AM_VERSION = "com.yandex.auth.VERSION";
+
         public static final String EXTRA_OAUTH_TOKEN = "com.yandex.auth.EXTRA_OAUTH_TOKEN";
 
         public static final String EXTRA_OAUTH_TOKEN_TYPE = "com.yandex.auth.EXTRA_OAUTH_TOKEN_TYPE";

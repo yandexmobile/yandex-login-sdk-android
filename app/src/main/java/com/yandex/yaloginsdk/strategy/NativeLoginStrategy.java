@@ -1,7 +1,6 @@
 package com.yandex.yaloginsdk.strategy;
 
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
@@ -9,8 +8,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 
-import com.yandex.yaloginsdk.LoginSdkConfig;
 import com.yandex.yaloginsdk.FingerprintExtractor;
+import com.yandex.yaloginsdk.LoginSdkConfig;
 import com.yandex.yaloginsdk.Token;
 import com.yandex.yaloginsdk.YaLoginSdkConstants;
 import com.yandex.yaloginsdk.YaLoginSdkError;
@@ -20,6 +19,7 @@ import java.util.Set;
 
 import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.ACTION_YA_SDK_LOGIN;
 import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.FINGERPRINT;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.META_AM_VERSION;
 import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.META_SDK_VERSION;
 import static com.yandex.yaloginsdk.YaLoginSdkConstants.VERSION;
 
@@ -32,6 +32,7 @@ class NativeLoginStrategy extends LoginStrategy {
      *  * meta "com.yandex.auth.LOGIN_SDK_VERSION" in app manifest more or equal than current SDK version
      *  * app fingerprint matches known AM fingerprint
      * 3. Return first app, that suits.
+     *
      * @param packageManager
      * @param fingerprintExtractor
      * @return LoginStrategy for native authorization or null
@@ -41,45 +42,59 @@ class NativeLoginStrategy extends LoginStrategy {
         final Intent amSdkIntent = new Intent(ACTION_YA_SDK_LOGIN);
         final List<ResolveInfo> infos = packageManager.queryIntentActivities(amSdkIntent, PackageManager.MATCH_DEFAULT_ONLY);
 
-        for (ResolveInfo info : infos) {
-            try {
-                if (checkIsMatching(info, packageManager, fingerprintExtractor)) {
-                    final Intent intent = new Intent(ACTION_YA_SDK_LOGIN);
-                    intent.setPackage(info.activityInfo.packageName);
-                    return new NativeLoginStrategy(intent);
-                }
-            } catch (PackageManager.NameNotFoundException ignored) {
-            }
+        final ResolveInfo bestInfo = findBest(infos, packageManager, fingerprintExtractor);
+        if (bestInfo != null) {
+            final Intent intent = new Intent(ACTION_YA_SDK_LOGIN);
+            intent.setPackage(bestInfo.activityInfo.packageName);
+            return new NativeLoginStrategy(intent);
         }
 
         return null;
     }
 
     @VisibleForTesting
-    static boolean checkIsMatching(
-            @NonNull ResolveInfo info,
+    @Nullable
+    static ResolveInfo findBest(
+            @NonNull List<ResolveInfo> infos,
             @NonNull PackageManager packageManager,
             @NonNull FingerprintExtractor fingerprintExtractor
-    ) throws PackageManager.NameNotFoundException {
-        // filter by am sdk version
-        final ApplicationInfo appInfo = packageManager.getApplicationInfo(info.activityInfo.packageName, PackageManager.GET_META_DATA);
-        final Bundle metadata = appInfo.metaData;
-        if (metadata == null || VERSION > metadata.getInt(META_SDK_VERSION)) {
-            return false;
-        }
+    ) {
+        float maxVersion = 0;
+        ResolveInfo best = null;
 
-        // filter by am fingerprint
-        final String[] fingerPrints = fingerprintExtractor.get(info.activityInfo.packageName, packageManager);
-        if (fingerPrints == null) {
-            return false;
-        }
-        for (String fingerprint : fingerPrints) {
-            if (FINGERPRINT.equals(fingerprint)) {
-                return true;
+        for (ResolveInfo info : infos) {
+            Bundle metadata;
+            try {
+                metadata = packageManager
+                        .getApplicationInfo(info.activityInfo.packageName, PackageManager.GET_META_DATA)
+                        .metaData;
+            } catch (PackageManager.NameNotFoundException ignored) {
+                continue;
+            }
+
+            if (metadata == null || VERSION > metadata.getInt(META_SDK_VERSION)) {
+                // not suitable SDK version
+                continue;
+            }
+
+            // filter by am fingerprint
+            final String[] fingerPrints = fingerprintExtractor.get(info.activityInfo.packageName, packageManager);
+            if (fingerPrints == null) {
+                // no fingerprints found
+                continue;
+            }
+            for (String fingerprint : fingerPrints) {
+                if (FINGERPRINT.equals(fingerprint)) {
+                    // correct fingerprint, check for max AM version
+                    float amVersion = metadata.getFloat(META_AM_VERSION);
+                    if (amVersion > maxVersion) {
+                        maxVersion = amVersion;
+                        best = info;
+                    }
+                }
             }
         }
-
-        return false;
+        return best;
     }
 
     @NonNull
