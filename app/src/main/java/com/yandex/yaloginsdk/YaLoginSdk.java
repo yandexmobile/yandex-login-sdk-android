@@ -20,18 +20,20 @@ import static com.yandex.yaloginsdk.YaLoginSdkConstants.LOGIN_REQUEST_CODE;
 
 public class YaLoginSdk {
 
+    public static final String TAG = YaLoginSdk.class.getSimpleName();
+
     @Nullable
     private LoginType loginType;
 
     @NonNull
-    public static YaLoginSdk get(@NonNull Config config) {
+    public static YaLoginSdk get(@NonNull LoginSdkConfig config) {
         return new YaLoginSdk(config);
     }
 
     @NonNull
-    private final Config config;
+    private final LoginSdkConfig config;
 
-    private YaLoginSdk(@NonNull Config config) {
+    private YaLoginSdk(@NonNull LoginSdkConfig config) {
         this.config = config;
     }
 
@@ -65,6 +67,11 @@ public class YaLoginSdk {
             return false;
         }
         if (loginType == null) {
+            Logger.d(
+                    TAG,
+                    "requestCode is equals to LOGIN_REQUEST_CODE, but login is unknown. " +
+                    "Please, check that you call \"onSaveInstanceState\" and \"onRestoreInstanceState\" on YaLoginSdk"
+            );
             return false;
         }
 
@@ -72,16 +79,19 @@ public class YaLoginSdk {
 
         final Token token = extractor.tryExtractToken(data);
         if (token != null) {
+            Logger.d(TAG, "Token received");
             successListener.onLoggedIn(token);
             return true;
         }
 
         final YaLoginSdkError error = extractor.tryExtractError(data);
         if (error != null) {
+            Logger.d(TAG, "Error received");
             errorListener.onError(error);
             return true;
         }
 
+        Logger.d(TAG, "Nothing received");
         return false;
     }
 

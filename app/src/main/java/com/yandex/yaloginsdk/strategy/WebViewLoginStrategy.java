@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.yandex.yaloginsdk.Config;
+import com.yandex.yaloginsdk.LoginSdkConfig;
 import com.yandex.yaloginsdk.Token;
 import com.yandex.yaloginsdk.WebViewActivity;
 import com.yandex.yaloginsdk.YaLoginSdkError;
@@ -20,7 +20,7 @@ class WebViewLoginStrategy extends LoginStrategy {
 
     @Override
     @NonNull
-    public Intent getLoginIntent(@NonNull Config config, @NonNull Set<String> scopes) {
+    public Intent getLoginIntent(@NonNull LoginSdkConfig config, @NonNull Set<String> scopes) {
         final Intent loginIntent = new Intent(config.applicationContext(), WebViewActivity.class);
         putExtras(loginIntent, scopes, config.clientId());
         return loginIntent;

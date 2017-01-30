@@ -9,7 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 
-import com.yandex.yaloginsdk.Config;
+import com.yandex.yaloginsdk.LoginSdkConfig;
 import com.yandex.yaloginsdk.FingerprintExtractor;
 import com.yandex.yaloginsdk.Token;
 import com.yandex.yaloginsdk.YaLoginSdkConstants;
@@ -25,6 +25,17 @@ import static com.yandex.yaloginsdk.YaLoginSdkConstants.VERSION;
 
 class NativeLoginStrategy extends LoginStrategy {
 
+
+    /**
+     * 1. Get all activities, that can handle "com.yandex.auth.action.YA_SDK_LOGIN" action
+     * 2. Check every activity if it suits requirements:
+     *  * meta "com.yandex.auth.LOGIN_SDK_VERSION" in app manifest more or equal than current SDK version
+     *  * app fingerprint matches known AM fingerprint
+     * 3. Return first app, that suits.
+     * @param packageManager
+     * @param fingerprintExtractor
+     * @return LoginStrategy for native authorization or null
+     */
     @Nullable
     static LoginStrategy getIfPossible(@NonNull PackageManager packageManager, @NonNull FingerprintExtractor fingerprintExtractor) {
         final Intent amSdkIntent = new Intent(ACTION_YA_SDK_LOGIN);
@@ -53,7 +64,7 @@ class NativeLoginStrategy extends LoginStrategy {
         // filter by am sdk version
         final ApplicationInfo appInfo = packageManager.getApplicationInfo(info.activityInfo.packageName, PackageManager.GET_META_DATA);
         final Bundle metadata = appInfo.metaData;
-        if (metadata == null || VERSION != metadata.getInt(META_SDK_VERSION)) {
+        if (metadata == null || VERSION > metadata.getInt(META_SDK_VERSION)) {
             return false;
         }
 
@@ -80,7 +91,7 @@ class NativeLoginStrategy extends LoginStrategy {
 
     @Override
     @NonNull
-    public Intent getLoginIntent(@NonNull Config config, @NonNull Set<String> scopes) {
+    public Intent getLoginIntent(@NonNull LoginSdkConfig config, @NonNull Set<String> scopes) {
         return putExtras(packagedIntent, scopes, config.clientId());
     }
 

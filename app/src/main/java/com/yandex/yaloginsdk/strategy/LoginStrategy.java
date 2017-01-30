@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.yandex.yaloginsdk.Config;
+import com.yandex.yaloginsdk.LoginSdkConfig;
 import com.yandex.yaloginsdk.Token;
 import com.yandex.yaloginsdk.YaLoginSdkError;
 
@@ -17,7 +17,7 @@ import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.EXTRA_SCOPES
 public abstract class LoginStrategy {
 
     @NonNull
-    public abstract Intent getLoginIntent(@NonNull Config config, @NonNull Set<String> scopes);
+    public abstract Intent getLoginIntent(@NonNull LoginSdkConfig config, @NonNull Set<String> scopes);
 
     @NonNull
     static Intent putExtras(

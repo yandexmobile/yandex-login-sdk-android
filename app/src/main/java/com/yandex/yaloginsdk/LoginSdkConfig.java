@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class Config {
+public abstract class LoginSdkConfig {
 
     @NonNull
     public abstract String clientId();
@@ -15,8 +15,8 @@ public abstract class Config {
     public abstract Application applicationContext();
 
     @NonNull
-    public static Config.Builder builder() {
-        return new AutoValue_Config.Builder();
+    public static LoginSdkConfig.Builder builder() {
+        return new AutoValue_LoginSdkConfig.Builder();
     }
 
     @AutoValue.Builder
@@ -29,6 +29,6 @@ public abstract class Config {
         public abstract Builder applicationContext(@NonNull Application applicationContext);
 
         @NonNull
-        public abstract Config build();
+        public abstract LoginSdkConfig build();
     }
 }

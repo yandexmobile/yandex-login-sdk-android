@@ -13,6 +13,8 @@ import java.security.NoSuchAlgorithmException;
 
 public class FingerprintExtractor {
 
+    public static final String TAG = FingerprintExtractor.class.getSimpleName();
+
     @Nullable
     public String[] get(@NonNull String packageName, @NonNull PackageManager packageManager) {
         try {
@@ -27,13 +29,13 @@ public class FingerprintExtractor {
             }
             return result;
         } catch (PackageManager.NameNotFoundException | NoSuchAlgorithmException e) {
-            Logger.e(FingerprintExtractor.class.getCanonicalName(), "Error getting fingerprint", e);
+            Logger.e(TAG, "Error getting fingerprint", e);
             return null;
         }
     }
 
     @NonNull
-    private static String toHex(@NonNull byte[] bytes) {
+    private String toHex(@NonNull byte[] bytes) {
         BigInteger bi = new BigInteger(1, bytes);
         return String.format("%0" + (bytes.length << 1) + "X", bi);
     }

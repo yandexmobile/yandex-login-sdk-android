@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.yandex.yaloginsdk.Config;
+import com.yandex.yaloginsdk.LoginSdkConfig;
 import com.yandex.yaloginsdk.YaLoginSdk;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         label = (TextView) findViewById(R.id.status_label);
         findViewById(R.id.login).setOnClickListener(view -> sdk.login(this, null));
 
-        Config config = Config.builder()
+        LoginSdkConfig config = LoginSdkConfig.builder()
                 .clientId(CLIENT_ID)
                 .applicationContext(getApplication())
                 .build();
