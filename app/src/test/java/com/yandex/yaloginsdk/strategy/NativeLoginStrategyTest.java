@@ -10,6 +10,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.yandex.yaloginsdk.FingerprintExtractor;
+import com.yandex.yaloginsdk.Token;
+import com.yandex.yaloginsdk.YaLoginSdkError;
+import com.yandex.yaloginsdk.strategy.NativeLoginStrategy.ResultExtractor;
 import com.yandex.yaloginsdk.LoginSdkConfig;
 
 import org.junit.Before;
@@ -26,10 +29,16 @@ import java.util.List;
 
 import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.ACTION_YA_SDK_LOGIN;
 import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.EXTRA_CLIENT_ID;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.EXTRA_OAUTH_TOKEN;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.EXTRA_OAUTH_TOKEN_EXPIRES;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.EXTRA_OAUTH_TOKEN_TYPE;
 import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.EXTRA_SCOPES;
 import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.FINGERPRINT;
 import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.META_AM_VERSION;
 import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.META_SDK_VERSION;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.OAUTH_TOKEN_ERROR;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.OAUTH_TOKEN_ERROR_MESSAGES;
+import static com.yandex.yaloginsdk.YaLoginSdkError.CONNECTION_ERROR;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -125,6 +134,74 @@ public class NativeLoginStrategyTest {
         assertThat(actualLoginIntent.getPackage()).isEqualTo(expectedLoginIntent.getPackage());
         assertThat(actualLoginIntent.getStringExtra(EXTRA_CLIENT_ID)).isEqualTo(expectedLoginIntent.getStringExtra(EXTRA_CLIENT_ID));
         assertThat(actualLoginIntent.getStringArrayListExtra(EXTRA_SCOPES)).isEqualTo(expectedLoginIntent.getStringArrayListExtra(EXTRA_SCOPES));
+    }
+
+    @Test
+    public void tryExtractToken_shouldReturnToken() {
+        ResultExtractor extractor = new ResultExtractor();
+        Intent tokenData = new Intent();
+        tokenData.putExtra(EXTRA_OAUTH_TOKEN, "token");
+        tokenData.putExtra(EXTRA_OAUTH_TOKEN_TYPE, "type");
+        tokenData.putExtra(EXTRA_OAUTH_TOKEN_EXPIRES, 1d);
+
+        assertThat(extractor.tryExtractToken(tokenData)).isEqualTo(Token.create("token", "type", 1d));
+    }
+
+    @Test
+    public void tryExtractToken_shouldReturnTokenIfNoExpire() {
+        ResultExtractor extractor = new ResultExtractor();
+        Intent tokenData = new Intent();
+        tokenData.putExtra(EXTRA_OAUTH_TOKEN, "token");
+        tokenData.putExtra(EXTRA_OAUTH_TOKEN_TYPE, "type");
+
+        assertThat(extractor.tryExtractToken(tokenData)).isEqualTo(Token.create("token", "type", 0d));
+    }
+
+    @Test
+    public void tryExtractToken_shouldReturnNullIfNoToken() {
+        ResultExtractor extractor = new ResultExtractor();
+        Intent tokenData = new Intent();
+        tokenData.putExtra(EXTRA_OAUTH_TOKEN_TYPE, "type");
+        tokenData.putExtra(EXTRA_OAUTH_TOKEN_EXPIRES, 1d);
+
+        assertThat(extractor.tryExtractToken(tokenData)).isNull();
+    }
+
+    @Test
+    public void tryExtractToken_shouldReturnNullIfNoType() {
+        ResultExtractor extractor = new ResultExtractor();
+        Intent tokenData = new Intent();
+        tokenData.putExtra(EXTRA_OAUTH_TOKEN, "token");
+        tokenData.putExtra(EXTRA_OAUTH_TOKEN_EXPIRES, 1d);
+
+        assertThat(extractor.tryExtractToken(tokenData)).isNull();
+    }
+
+    @Test
+    public void tryExtractError_shouldReturnNullIfNoError() {
+        ResultExtractor extractor = new ResultExtractor();
+        Intent errorData = new Intent();
+
+        assertThat(extractor.tryExtractError(errorData)).isNull();
+    }
+
+    @Test
+    public void tryExtractError_shouldReturnConnectionErrorIfNoMessages() {
+        ResultExtractor extractor = new ResultExtractor();
+        Intent errorData = new Intent();
+        errorData.putExtra(OAUTH_TOKEN_ERROR, true);
+
+        assertThat(extractor.tryExtractError(errorData)).isEqualTo(new YaLoginSdkError(CONNECTION_ERROR));
+    }
+
+    @Test
+    public void tryExtractError_shouldReturnConnectionErroWithMessages() {
+        ResultExtractor extractor = new ResultExtractor();
+        Intent errorData = new Intent();
+        errorData.putExtra(OAUTH_TOKEN_ERROR, true);
+        errorData.putExtra(OAUTH_TOKEN_ERROR_MESSAGES, new String[]{"error.message", "one.more.error"});
+
+        assertThat(extractor.tryExtractError(errorData)).isEqualTo(new YaLoginSdkError(new String[]{"error.message", "one.more.error"}));
     }
 
     @NonNull

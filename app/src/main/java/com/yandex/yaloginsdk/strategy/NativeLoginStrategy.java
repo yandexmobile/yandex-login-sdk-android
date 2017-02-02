@@ -11,17 +11,22 @@ import android.support.annotation.VisibleForTesting;
 import com.yandex.yaloginsdk.FingerprintExtractor;
 import com.yandex.yaloginsdk.LoginSdkConfig;
 import com.yandex.yaloginsdk.Token;
-import com.yandex.yaloginsdk.YaLoginSdkConstants;
 import com.yandex.yaloginsdk.YaLoginSdkError;
 
 import java.util.List;
 import java.util.Set;
 
 import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.ACTION_YA_SDK_LOGIN;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.EXTRA_OAUTH_TOKEN;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.EXTRA_OAUTH_TOKEN_EXPIRES;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.EXTRA_OAUTH_TOKEN_TYPE;
 import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.FINGERPRINT;
 import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.META_AM_VERSION;
 import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.META_SDK_VERSION;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.OAUTH_TOKEN_ERROR;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.OAUTH_TOKEN_ERROR_MESSAGES;
 import static com.yandex.yaloginsdk.YaLoginSdkConstants.VERSION;
+import static com.yandex.yaloginsdk.YaLoginSdkError.CONNECTION_ERROR;
 
 class NativeLoginStrategy extends LoginStrategy {
 
@@ -63,7 +68,7 @@ class NativeLoginStrategy extends LoginStrategy {
         ResolveInfo best = null;
 
         for (ResolveInfo info : infos) {
-            Bundle metadata;
+            final Bundle metadata;
             try {
                 metadata = packageManager
                         .getApplicationInfo(info.activityInfo.packageName, PackageManager.GET_META_DATA)
@@ -86,7 +91,7 @@ class NativeLoginStrategy extends LoginStrategy {
             for (String fingerprint : fingerPrints) {
                 if (FINGERPRINT.equals(fingerprint)) {
                     // correct fingerprint, check for max AM version
-                    float amVersion = metadata.getFloat(META_AM_VERSION);
+                    final float amVersion = metadata.getFloat(META_AM_VERSION);
                     if (amVersion > maxVersion) {
                         maxVersion = amVersion;
                         best = info;
@@ -121,16 +126,25 @@ class NativeLoginStrategy extends LoginStrategy {
         @Override
         @Nullable
         public Token tryExtractToken(@NonNull Intent data) {
-            final String token = data.getStringExtra(YaLoginSdkConstants.AmConstants.EXTRA_OAUTH_TOKEN);
-            final String type = data.getStringExtra(YaLoginSdkConstants.AmConstants.EXTRA_OAUTH_TOKEN_TYPE);
-            final double expiresIn = data.getDoubleExtra(YaLoginSdkConstants.AmConstants.EXTRA_OAUTH_TOKEN_EXPIRES, 0);
-            return Token.create(token, type, expiresIn);
+            final String token = data.getStringExtra(EXTRA_OAUTH_TOKEN);
+            final String type = data.getStringExtra(EXTRA_OAUTH_TOKEN_TYPE);
+            final double expiresIn = data.getDoubleExtra(EXTRA_OAUTH_TOKEN_EXPIRES, 0);
+
+            return token != null && type != null
+                    ? Token.create(token, type, expiresIn)
+                    : null;
         }
 
         @Override
         @Nullable
         public YaLoginSdkError tryExtractError(@NonNull Intent data) {
-            return null;
+            final boolean isError = data.getBooleanExtra(OAUTH_TOKEN_ERROR, false);
+            if (!isError) {
+                return null;
+            }
+
+            final String[] errorMessages = data.getStringArrayExtra(OAUTH_TOKEN_ERROR_MESSAGES);
+            return errorMessages == null ? new YaLoginSdkError(CONNECTION_ERROR) : new YaLoginSdkError(errorMessages);
         }
     }
 }

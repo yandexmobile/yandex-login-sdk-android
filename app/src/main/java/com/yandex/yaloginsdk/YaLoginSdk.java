@@ -20,15 +20,15 @@ import static com.yandex.yaloginsdk.YaLoginSdkConstants.LOGIN_REQUEST_CODE;
 
 public class YaLoginSdk {
 
-    public static final String TAG = YaLoginSdk.class.getSimpleName();
-
-    @Nullable
-    private LoginType loginType;
+    private static final String TAG = YaLoginSdk.class.getSimpleName();
 
     @NonNull
     public static YaLoginSdk get(@NonNull LoginSdkConfig config) {
         return new YaLoginSdk(config);
     }
+
+    @Nullable
+    private LoginType loginType;
 
     @NonNull
     private final LoginSdkConfig config;

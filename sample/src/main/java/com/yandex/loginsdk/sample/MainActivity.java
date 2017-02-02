@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.yandex.yaloginsdk.LoginSdkConfig;
 import com.yandex.yaloginsdk.YaLoginSdk;
@@ -54,10 +53,7 @@ public class MainActivity extends AppCompatActivity {
                 resultCode,
                 data,
                 token -> label.setText(token.toString()),
-                error -> {
-                    label.setText(error.getMessage());
-                    Toast.makeText(this, error.getMessage(), Toast.LENGTH_SHORT).show();
-                }
+                error -> label.setText(error.getMessage())
         );
 
         if (!handled) {
