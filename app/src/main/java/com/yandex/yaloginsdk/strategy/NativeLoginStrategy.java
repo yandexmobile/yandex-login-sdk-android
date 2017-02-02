@@ -16,15 +16,15 @@ import com.yandex.yaloginsdk.YaLoginSdkError;
 import java.util.List;
 import java.util.Set;
 
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.ACTION_YA_SDK_LOGIN;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.EXTRA_OAUTH_TOKEN;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.EXTRA_OAUTH_TOKEN_EXPIRES;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.EXTRA_OAUTH_TOKEN_TYPE;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.FINGERPRINT;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.META_AM_VERSION;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.META_SDK_VERSION;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.OAUTH_TOKEN_ERROR;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.OAUTH_TOKEN_ERROR_MESSAGES;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.ACTION_YA_SDK_LOGIN;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.EXTRA_OAUTH_TOKEN;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.EXTRA_OAUTH_TOKEN_EXPIRES;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.EXTRA_OAUTH_TOKEN_TYPE;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.FINGERPRINT;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.META_AM_VERSION;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.META_SDK_VERSION;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.OAUTH_TOKEN_ERROR;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.OAUTH_TOKEN_ERROR_MESSAGES;
 import static com.yandex.yaloginsdk.YaLoginSdkConstants.VERSION;
 import static com.yandex.yaloginsdk.YaLoginSdkError.CONNECTION_ERROR;
 
@@ -128,7 +128,7 @@ class NativeLoginStrategy extends LoginStrategy {
         public Token tryExtractToken(@NonNull Intent data) {
             final String token = data.getStringExtra(EXTRA_OAUTH_TOKEN);
             final String type = data.getStringExtra(EXTRA_OAUTH_TOKEN_TYPE);
-            final double expiresIn = data.getDoubleExtra(EXTRA_OAUTH_TOKEN_EXPIRES, 0);
+            final long expiresIn = data.getLongExtra(EXTRA_OAUTH_TOKEN_EXPIRES, 0);
 
             return token != null && type != null
                     ? Token.create(token, type, expiresIn)

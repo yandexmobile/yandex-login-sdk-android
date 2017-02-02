@@ -8,6 +8,8 @@ public class YaLoginSdkError extends RuntimeException {
 
     public static final String CONNECTION_ERROR = "connection.error";
 
+    public static final String SECURITY_ERROR = "security.error";
+
     @NonNull
     private final String[] errors;
 

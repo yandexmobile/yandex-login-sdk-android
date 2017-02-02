@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.yandex.yaloginsdk">
 
     <application
@@ -8,6 +9,33 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".WebViewActivity" />
+        <activity
+            android:name=".BrowserActivity"
+            android:launchMode="singleTop">
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:path="/auth/finish"
+                    android:host="yxfcdddf83a97843ae80815c1c9247015b.oauth.yandex.ru"
+                    android:scheme="https" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:path="/auth/finish"
+                    android:scheme="yxfcdddf83a97843ae80815c1c9247015b"
+                    tools:ignore="GoogleAppIndexingUrlError" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

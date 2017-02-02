@@ -11,8 +11,8 @@ import com.yandex.yaloginsdk.YaLoginSdkError;
 import java.util.ArrayList;
 import java.util.Set;
 
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.EXTRA_CLIENT_ID;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.AmConstants.EXTRA_SCOPES;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.EXTRA_CLIENT_ID;
+import static com.yandex.yaloginsdk.YaLoginSdkConstants.EXTRA_SCOPES;
 
 public abstract class LoginStrategy {
 
