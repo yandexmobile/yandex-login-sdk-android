@@ -1,4 +1,4 @@
-package com.yandex.yaloginsdk;
+package com.yandex.yaloginsdk.internal;
 
 import android.annotation.SuppressLint;
 import android.content.pm.PackageInfo;

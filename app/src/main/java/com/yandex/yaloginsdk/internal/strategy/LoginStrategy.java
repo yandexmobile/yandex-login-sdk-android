@@ -1,4 +1,4 @@
-package com.yandex.yaloginsdk.strategy;
+package com.yandex.yaloginsdk.internal.strategy;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -11,10 +11,11 @@ import com.yandex.yaloginsdk.YaLoginSdkError;
 import java.util.ArrayList;
 import java.util.Set;
 
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.EXTRA_CLIENT_ID;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.EXTRA_SCOPES;
+import static com.yandex.yaloginsdk.internal.YaLoginSdkConstants.EXTRA_CLIENT_ID;
 
 public abstract class LoginStrategy {
+
+    static final String EXTRA_SCOPES = "com.yandex.auth.SCOPES";
 
     @NonNull
     public abstract Intent getLoginIntent(@NonNull LoginSdkConfig config, @NonNull Set<String> scopes);

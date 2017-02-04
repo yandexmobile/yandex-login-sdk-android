@@ -1,4 +1,4 @@
-package com.yandex.yaloginsdk;
+package com.yandex.yaloginsdk.internal;
 
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -11,12 +11,12 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-class JwtRequest {
+public class JwtRequest {
 
     @NonNull
     private final String token;
 
-    JwtRequest(@NonNull String token) {
+    public JwtRequest(@NonNull String token) {
         this.token = token;
     }
 

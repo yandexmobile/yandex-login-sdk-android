@@ -1,4 +1,4 @@
-package com.yandex.yaloginsdk;
+package com.yandex.yaloginsdk.internal;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -9,9 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 
 import java.util.UUID;
 
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.EXTRA_CLIENT_ID;
+import static com.yandex.yaloginsdk.internal.YaLoginSdkConstants.EXTRA_CLIENT_ID;
 
-public class BrowserActivity extends AppCompatActivity {
+public class BrowserLoginActivity extends AppCompatActivity {
 
     @SuppressWarnings("NullableProblems") // onCreate
     @NonNull

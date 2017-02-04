@@ -1,9 +1,9 @@
-package com.yandex.yaloginsdk.strategy;
+package com.yandex.yaloginsdk.internal.strategy;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.yandex.yaloginsdk.FingerprintExtractor;
+import com.yandex.yaloginsdk.internal.FingerprintExtractor;
 
 public class LoginStrategyProvider {
 

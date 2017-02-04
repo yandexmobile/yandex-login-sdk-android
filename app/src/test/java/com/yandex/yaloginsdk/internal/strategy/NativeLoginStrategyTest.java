@@ -1,4 +1,4 @@
-package com.yandex.yaloginsdk.strategy;
+package com.yandex.yaloginsdk.internal.strategy;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -9,10 +9,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.yandex.yaloginsdk.FingerprintExtractor;
+import com.yandex.yaloginsdk.internal.FingerprintExtractor;
 import com.yandex.yaloginsdk.Token;
 import com.yandex.yaloginsdk.YaLoginSdkError;
-import com.yandex.yaloginsdk.strategy.NativeLoginStrategy.ResultExtractor;
+import com.yandex.yaloginsdk.internal.strategy.NativeLoginStrategy.ResultExtractor;
 import com.yandex.yaloginsdk.LoginSdkConfig;
 
 import org.junit.Before;
@@ -27,17 +27,17 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.ACTION_YA_SDK_LOGIN;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.EXTRA_CLIENT_ID;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.EXTRA_OAUTH_TOKEN;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.EXTRA_OAUTH_TOKEN_EXPIRES;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.EXTRA_OAUTH_TOKEN_TYPE;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.EXTRA_SCOPES;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.FINGERPRINT;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.META_AM_VERSION;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.META_SDK_VERSION;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.OAUTH_TOKEN_ERROR;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.OAUTH_TOKEN_ERROR_MESSAGES;
+import static com.yandex.yaloginsdk.internal.strategy.NativeLoginStrategy.ACTION_YA_SDK_LOGIN;
+import static com.yandex.yaloginsdk.internal.YaLoginSdkConstants.EXTRA_CLIENT_ID;
+import static com.yandex.yaloginsdk.internal.strategy.NativeLoginStrategy.EXTRA_OAUTH_TOKEN;
+import static com.yandex.yaloginsdk.internal.strategy.NativeLoginStrategy.EXTRA_OAUTH_TOKEN_EXPIRES;
+import static com.yandex.yaloginsdk.internal.strategy.NativeLoginStrategy.EXTRA_OAUTH_TOKEN_TYPE;
+import static com.yandex.yaloginsdk.internal.strategy.LoginStrategy.EXTRA_SCOPES;
+import static com.yandex.yaloginsdk.internal.strategy.NativeLoginStrategy.FINGERPRINT;
+import static com.yandex.yaloginsdk.internal.strategy.NativeLoginStrategy.META_AM_VERSION;
+import static com.yandex.yaloginsdk.internal.strategy.NativeLoginStrategy.META_SDK_VERSION;
+import static com.yandex.yaloginsdk.internal.strategy.NativeLoginStrategy.OAUTH_TOKEN_ERROR;
+import static com.yandex.yaloginsdk.internal.strategy.NativeLoginStrategy.OAUTH_TOKEN_ERROR_MESSAGES;
 import static com.yandex.yaloginsdk.YaLoginSdkError.CONNECTION_ERROR;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;

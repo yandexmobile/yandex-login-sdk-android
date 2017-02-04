@@ -7,20 +7,21 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
-import com.yandex.yaloginsdk.strategy.LoginStrategy;
-import com.yandex.yaloginsdk.strategy.LoginStrategy.ResultExtractor;
-import com.yandex.yaloginsdk.strategy.LoginStrategyProvider;
-import com.yandex.yaloginsdk.strategy.LoginType;
+import com.yandex.yaloginsdk.internal.JwtRequest;
+import com.yandex.yaloginsdk.internal.Logger;
+import com.yandex.yaloginsdk.internal.strategy.LoginStrategy;
+import com.yandex.yaloginsdk.internal.strategy.LoginStrategy.ResultExtractor;
+import com.yandex.yaloginsdk.internal.strategy.LoginStrategyProvider;
+import com.yandex.yaloginsdk.internal.strategy.LoginType;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Set;
 
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.STATE_LOGIN_TYPE;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.LOGIN_REQUEST_CODE;
-
 public class YaLoginSdk {
 
+    private static int LOGIN_REQUEST_CODE = 312; // TODO choose number?
+    private static final String STATE_LOGIN_TYPE = "com.yandex.yaloginsdk.STATE_LOGIN_TYPE";
     private static final String TAG = YaLoginSdk.class.getSimpleName();
 
     @NonNull
@@ -71,7 +72,7 @@ public class YaLoginSdk {
             Logger.d(
                     TAG,
                     "requestCode is equals to LOGIN_REQUEST_CODE, but login is unknown. " +
-                    "Please, check that you call \"onSaveInstanceState\" and \"onRestoreInstanceState\" on YaLoginSdk"
+                            "Please, check that you call \"onSaveInstanceState\" and \"onRestoreInstanceState\" on YaLoginSdk"
             );
             return false;
         }

@@ -1,4 +1,4 @@
-package com.yandex.yaloginsdk;
+package com.yandex.yaloginsdk.internal;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -8,19 +8,22 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 
+import com.yandex.yaloginsdk.Token;
+import com.yandex.yaloginsdk.YaLoginSdkError;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import static android.text.TextUtils.isEmpty;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.EXTRA_ERROR;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.EXTRA_TOKEN;
+import static com.yandex.yaloginsdk.internal.YaLoginSdkConstants.EXTRA_ERROR;
+import static com.yandex.yaloginsdk.internal.YaLoginSdkConstants.EXTRA_TOKEN;
 import static com.yandex.yaloginsdk.YaLoginSdkError.SECURITY_ERROR;
 
 class ExternalLoginHandler {
 
-    private static final String STATE_KEY = "com.yandex.yaloginsdk.ExternalLoginHandler.STATE";
+    private static final String STATE_KEY = "com.yandex.yaloginsdk.internal.ExternalLoginHandler.STATE";
 
-    private static final String TAG = BrowserActivity.class.getSimpleName();
+    private static final String TAG = BrowserLoginActivity.class.getSimpleName();
 
     private static final String LOGIN_URL_FORMAT = "https://oauth.yandex.ru/authorize?response_type=token&client_id=%s&redirect_uri=%s&state=%s";
 

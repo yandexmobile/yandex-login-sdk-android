@@ -1,4 +1,4 @@
-package com.yandex.yaloginsdk.strategy;
+package com.yandex.yaloginsdk.internal.strategy;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 
-import com.yandex.yaloginsdk.FingerprintExtractor;
+import com.yandex.yaloginsdk.internal.FingerprintExtractor;
 import com.yandex.yaloginsdk.LoginSdkConfig;
 import com.yandex.yaloginsdk.Token;
 import com.yandex.yaloginsdk.YaLoginSdkError;
@@ -16,27 +16,28 @@ import com.yandex.yaloginsdk.YaLoginSdkError;
 import java.util.List;
 import java.util.Set;
 
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.ACTION_YA_SDK_LOGIN;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.EXTRA_OAUTH_TOKEN;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.EXTRA_OAUTH_TOKEN_EXPIRES;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.EXTRA_OAUTH_TOKEN_TYPE;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.FINGERPRINT;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.META_AM_VERSION;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.META_SDK_VERSION;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.OAUTH_TOKEN_ERROR;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.OAUTH_TOKEN_ERROR_MESSAGES;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.VERSION;
 import static com.yandex.yaloginsdk.YaLoginSdkError.CONNECTION_ERROR;
 
 class NativeLoginStrategy extends LoginStrategy {
 
+    // fingerprint of released app with AM
+    static final String FINGERPRINT = "5D224274D9377C35DA777AD934C65C8CCA6E7A20";
+    static final String ACTION_YA_SDK_LOGIN = "com.yandex.auth.action.YA_SDK_LOGIN";
+    static final String META_SDK_VERSION = "com.yandex.auth.LOGIN_SDK_VERSION";
+    static final String META_AM_VERSION = "com.yandex.auth.VERSION";
+    static final String EXTRA_OAUTH_TOKEN = "com.yandex.auth.EXTRA_OAUTH_TOKEN";
+    static final String EXTRA_OAUTH_TOKEN_TYPE = "com.yandex.auth.EXTRA_OAUTH_TOKEN_TYPE";
+    static final String EXTRA_OAUTH_TOKEN_EXPIRES = "com.yandex.auth.OAUTH_TOKEN_EXPIRES";
+    static final String OAUTH_TOKEN_ERROR = "com.yandex.auth.OAUTH_TOKEN_ERROR";
+    static final String OAUTH_TOKEN_ERROR_MESSAGES = "com.yandex.auth.OAUTH_TOKEN_ERROR_MESSAGES";
+    private static int VERSION = 1; // TODO move to gradle?
 
     /**
-     * 1. Get all activities, that can handle "com.yandex.auth.action.YA_SDK_LOGIN" action
-     * 2. Check every activity if it suits requirements:
-     *  * meta "com.yandex.auth.LOGIN_SDK_VERSION" in app manifest more or equal than current SDK version
-     *  * app fingerprint matches known AM fingerprint
-     * 3. Return first app, that suits.
+     * 1. Get all activities, that can handle "com.yandex.auth.action.YA_SDK_LOGIN" action<br>
+     * 2. Check every activity if it suits requirements:<br>
+     * 2.1 meta "com.yandex.auth.LOGIN_SDK_VERSION" in app manifest more or equal than current SDK version<br>
+     * 2.2 app fingerprint matches known AM fingerprint<br>
+     * 3. Return app, with max "com.yandex.auth.VERSION" meta.
      *
      * @param packageManager
      * @param fingerprintExtractor

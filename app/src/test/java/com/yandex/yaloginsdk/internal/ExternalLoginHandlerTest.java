@@ -1,18 +1,21 @@
-package com.yandex.yaloginsdk;
+package com.yandex.yaloginsdk.internal;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.yandex.yaloginsdk.Token;
+import com.yandex.yaloginsdk.YaLoginSdkError;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.EXTRA_ERROR;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.EXTRA_TOKEN;
 import static com.yandex.yaloginsdk.YaLoginSdkError.SECURITY_ERROR;
+import static com.yandex.yaloginsdk.internal.YaLoginSdkConstants.EXTRA_ERROR;
+import static com.yandex.yaloginsdk.internal.YaLoginSdkConstants.EXTRA_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(RobolectricTestRunner.class)

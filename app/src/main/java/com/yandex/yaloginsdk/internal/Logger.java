@@ -1,4 +1,4 @@
-package com.yandex.yaloginsdk;
+package com.yandex.yaloginsdk.internal;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
