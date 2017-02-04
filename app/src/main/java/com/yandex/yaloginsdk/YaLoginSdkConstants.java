@@ -1,5 +1,6 @@
 package com.yandex.yaloginsdk;
 
+// TODO hide internal constants
 public class YaLoginSdkConstants {
 
     public static final String EXTRA_TOKEN = "com.yandex.yaloginsdk.EXTRA_TOKEN";

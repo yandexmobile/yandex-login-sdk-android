@@ -12,6 +12,7 @@ import com.yandex.yaloginsdk.strategy.LoginStrategy.ResultExtractor;
 import com.yandex.yaloginsdk.strategy.LoginStrategyProvider;
 import com.yandex.yaloginsdk.strategy.LoginType;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Set;
 
@@ -93,6 +94,11 @@ public class YaLoginSdk {
 
         Logger.d(TAG, "Nothing received");
         return false;
+    }
+
+    @NonNull
+    public String getJwtBlocking(@NonNull String token) throws IOException {
+        return new JwtRequest(token).get();
     }
 
     public void logout() {
