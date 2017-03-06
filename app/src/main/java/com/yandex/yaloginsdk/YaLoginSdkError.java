@@ -2,6 +2,7 @@ package com.yandex.yaloginsdk;
 
 import android.support.annotation.NonNull;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 public class YaLoginSdkError extends RuntimeException {
@@ -9,6 +10,10 @@ public class YaLoginSdkError extends RuntimeException {
     public static final String CONNECTION_ERROR = "connection.error";
 
     public static final String SECURITY_ERROR = "security.error";
+
+    public static final String JWT_AUTHORIZATION_ERROR = "jwt.authorization.error";
+
+    public static final String IO_ERROR = "io.error";
 
     @NonNull
     private final String[] errors;
@@ -20,6 +25,11 @@ public class YaLoginSdkError extends RuntimeException {
     public YaLoginSdkError(@NonNull String[] errors) {
         super(Arrays.toString(errors));
         this.errors = errors;
+    }
+
+    public YaLoginSdkError(@NonNull IOException e) {
+        super(IO_ERROR, e);
+        errors = new String[]{IO_ERROR};
     }
 
     @NonNull

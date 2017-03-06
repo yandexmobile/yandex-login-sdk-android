@@ -2,7 +2,6 @@ package com.yandex.loginsdk.sample;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,7 +13,7 @@ import com.yandex.yaloginsdk.LoginSdkConfig;
 import com.yandex.yaloginsdk.Token;
 import com.yandex.yaloginsdk.YaLoginSdk;
 
-import java.io.IOException;
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -94,28 +93,17 @@ public class MainActivity extends AppCompatActivity {
         dialog.setMessage("Waiting");
         dialog.show();
 
-        new AsyncTask<Void, Void, Object>() {
-
-            @Override
-            protected Object doInBackground(Void... voids) {
-                try {
-                    assert token != null;
-                    return sdk.getJwtBlocking(token.token());
-                } catch (IOException e) {
-                    return e;
+        assert token != null;
+        sdk.getJwt(
+                token.token(),
+                token -> {
+                    dialog.cancel();
+                    jwtLabel.setText(token);
+                },
+                error -> {
+                    dialog.cancel();
+                    jwtLabel.setText(Arrays.toString(error.getErrors()));
                 }
-            }
-
-            @Override
-            protected void onPostExecute(Object o) {
-                dialog.cancel();
-
-                if (o instanceof IOException) {
-                    jwtLabel.setText(((IOException) o).getMessage());
-                } else {
-                    jwtLabel.setText(o.toString());
-                }
-            }
-        }.execute();
+        );
     }
 }

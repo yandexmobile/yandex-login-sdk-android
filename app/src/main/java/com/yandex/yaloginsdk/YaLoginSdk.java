@@ -3,10 +3,14 @@ package com.yandex.yaloginsdk;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
+import com.yandex.yaloginsdk.internal.ActivityStarter;
 import com.yandex.yaloginsdk.internal.JwtRequest;
 import com.yandex.yaloginsdk.internal.Logger;
 import com.yandex.yaloginsdk.internal.strategy.LoginStrategy;
@@ -40,17 +44,16 @@ public class YaLoginSdk {
     }
 
     public void login(@NonNull Activity activity, @Nullable Set<String> scopes) {
-        final LoginStrategy strategy = new LoginStrategyProvider().getLoginStrategy(config.applicationContext());
-        activity.startActivityForResult(
-                strategy.getLoginIntent(config, scopes == null ? Collections.emptySet() : scopes),
-                LOGIN_REQUEST_CODE
-        );
-        loginType = strategy.getType();
+        startAuthorization(new ActivityStarter(activity), scopes);
     }
 
     public void login(@NonNull Fragment fragment, @Nullable Set<String> scopes) {
+        startAuthorization(new ActivityStarter(fragment), scopes);
+    }
+
+    private void startAuthorization(@NonNull ActivityStarter starter, @Nullable Set<String> scopes) {
         final LoginStrategy strategy = new LoginStrategyProvider().getLoginStrategy(config.applicationContext());
-        fragment.startActivityForResult(
+        starter.startActivityForResult(
                 strategy.getLoginIntent(config, scopes == null ? Collections.emptySet() : scopes),
                 LOGIN_REQUEST_CODE
         );
@@ -61,8 +64,8 @@ public class YaLoginSdk {
             int requestCode,
             int resultCode,
             @Nullable Intent data,
-            @NonNull LoginSuccessListener successListener,
-            @NonNull LoginErrorListener errorListener
+            @NonNull SuccessListener<Token> successListener,
+            @NonNull ErrorListener errorListener
     ) {
         // TODO add cancel listener?
         if (data == null || resultCode != Activity.RESULT_OK || requestCode != LOGIN_REQUEST_CODE) {
@@ -82,7 +85,7 @@ public class YaLoginSdk {
         final Token token = extractor.tryExtractToken(data);
         if (token != null) {
             Logger.d(TAG, "Token received");
-            successListener.onLoggedIn(token);
+            successListener.onSuccess(token);
             return true;
         }
 
@@ -97,9 +100,23 @@ public class YaLoginSdk {
         return false;
     }
 
-    @NonNull
-    public String getJwtBlocking(@NonNull String token) throws IOException {
-        return new JwtRequest(token).get();
+    public void getJwt(@NonNull String token, @NonNull SuccessListener<String> successListener, @NonNull ErrorListener errorListener) {
+        final HandlerThread handlerThread = new HandlerThread("YaLoginSdkIOThread");
+        handlerThread.start();
+        final Handler ioHandler = new Handler(handlerThread.getLooper());
+        final Handler uiHandler = new Handler(Looper.getMainLooper());
+
+        ioHandler.post(() -> {
+            try {
+                String jwt = new JwtRequest(token).get();
+                uiHandler.post(() -> successListener.onSuccess(jwt));
+            } catch (YaLoginSdkError e) {
+                uiHandler.post(() -> errorListener.onError(e));
+            } catch (IOException e) {
+                uiHandler.post(() -> errorListener.onError(new YaLoginSdkError(e)));
+            }
+            handlerThread.quit();
+        });
     }
 
     public void logout() {

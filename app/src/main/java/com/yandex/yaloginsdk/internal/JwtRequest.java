@@ -3,7 +3,8 @@ package com.yandex.yaloginsdk.internal;
 import android.os.Build;
 import android.support.annotation.NonNull;
 
-import java.io.BufferedInputStream;
+import com.yandex.yaloginsdk.YaLoginSdkError;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,16 +27,11 @@ public class JwtRequest {
 
         final URL url = new URL("https://login.yandex.ru/info?format=jwt&oauth_token=" + token);
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        if (connection.getResponseCode() == 401) {
+            throw new YaLoginSdkError(YaLoginSdkError.JWT_AUTHORIZATION_ERROR);
+        }
         try {
-            final InputStream is = new BufferedInputStream(connection.getInputStream());
-            final BufferedReader r = new BufferedReader(new InputStreamReader(is));
-
-            final StringBuilder total = new StringBuilder();
-            String line;
-            while ((line = r.readLine()) != null) {
-                total.append(line).append('\n');
-            }
-            return total.toString();
+            return readToString(connection.getInputStream());
         } finally {
             connection.disconnect();
         }
@@ -47,5 +43,16 @@ public class JwtRequest {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.FROYO) {
             System.setProperty("http.keepAlive", "false");
         }
+    }
+
+    @NonNull
+    private static String readToString(@NonNull InputStream is) throws IOException {
+        final BufferedReader r = new BufferedReader(new InputStreamReader(is));
+        final StringBuilder total = new StringBuilder();
+        String line;
+        while ((line = r.readLine()) != null) {
+            total.append(line).append('\n');
+        }
+        return total.toString();
     }
 }
