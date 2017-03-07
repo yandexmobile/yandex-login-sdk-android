@@ -33,6 +33,8 @@ class ExternalLoginHandler {
 
     private static final boolean SUPPORT_APPLINKS = Build.VERSION.SDK_INT >= 23;
 
+    private static final String REDIRECT_URL = SUPPORT_APPLINKS ? REDIRECT_URI_APPLINKS : REDIRECT_URI_SCHEME;
+
     @VisibleForTesting
     @Nullable
     String state;
@@ -48,7 +50,7 @@ class ExternalLoginHandler {
     String getUrl(@NonNull final String clientId) {
         state = stateGenerator.generate();
         try {
-            final String redirectUri = URLEncoder.encode(SUPPORT_APPLINKS ? REDIRECT_URI_APPLINKS : REDIRECT_URI_SCHEME, "UTF-8");
+            final String redirectUri = URLEncoder.encode(REDIRECT_URL, "UTF-8");
             return String.format(LOGIN_URL_FORMAT, clientId, redirectUri, state);
         } catch (UnsupportedEncodingException e) {
             Logger.e(TAG, "No UTF-8 found", e);
@@ -80,6 +82,10 @@ class ExternalLoginHandler {
             result.putExtra(EXTRA_TOKEN, Token.create(token, type, expiresIn));
         }
         return result;
+    }
+
+    public boolean isFinalUrl(@NonNull final String url) {
+        return url.startsWith(REDIRECT_URL);
     }
 
     void saveState(@NonNull final Bundle outState) {

@@ -20,8 +20,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:path="/auth/finish"
                     android:host="yxfcdddf83a97843ae80815c1c9247015b.oauth.yandex.ru"
+                    android:path="/auth/finish"
                     android:scheme="https" />
             </intent-filter>
 
@@ -37,5 +37,7 @@
                     tools:ignore="GoogleAppIndexingUrlError" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".internal.WebViewLoginActivity" />
     </application>
 </manifest>
