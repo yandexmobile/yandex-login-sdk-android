@@ -11,7 +11,7 @@
 
         <activity
             android:name=".internal.BrowserLoginActivity"
-            android:launchMode="singleTop">
+            android:launchMode="singleInstance">
 
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
