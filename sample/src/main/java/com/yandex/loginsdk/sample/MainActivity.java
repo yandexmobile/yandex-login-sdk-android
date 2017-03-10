@@ -1,13 +1,19 @@
 package com.yandex.loginsdk.sample;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.TextView;
 
 import com.yandex.yaloginsdk.LoginSdkConfig;
+import com.yandex.yaloginsdk.Token;
 import com.yandex.yaloginsdk.YaLoginSdk;
+
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -15,19 +21,36 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressWarnings("NullableProblems") // onCreate
     @NonNull
-    private TextView label;
+    private TextView tokenLabel;
+
+    @SuppressWarnings("NullableProblems") // onCreate
+    @NonNull
+    private TextView jwtLabel;
 
     @SuppressWarnings("NullableProblems") // onCreate
     @NonNull
     private YaLoginSdk sdk;
 
+    @SuppressWarnings("NullableProblems") // onCreate
+    @NonNull
+    private View jwtContainer;
+
+    @Nullable
+    private Token token;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        label = (TextView) findViewById(R.id.status_label);
-        findViewById(R.id.login).setOnClickListener(view -> sdk.login(this, null));
+        final View loginButton = findViewById(R.id.login);
+        loginButton.setOnClickListener(view -> sdk.login(this, null));
+        final View jwtButton = findViewById(R.id.jwt);
+        jwtButton.setOnClickListener(view -> getJwt());
+
+        tokenLabel = (TextView) findViewById(R.id.status_label);
+        jwtLabel = (TextView) findViewById(R.id.jwt_label);
+        jwtContainer = findViewById(R.id.jwt_container);
 
         LoginSdkConfig config = LoginSdkConfig.builder()
                 .clientId(CLIENT_ID)
@@ -41,23 +64,46 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         sdk.onSaveInstanceState(outState);
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         final boolean handled = sdk.onActivityResult(
                 requestCode,
                 resultCode,
                 data,
-                token -> label.setText(token.toString()),
-                error -> label.setText(error.getMessage())
+                token -> {
+                    this.token = token;
+                    tokenLabel.setText(token.toString());
+                    jwtContainer.setVisibility(View.VISIBLE);
+                },
+                error -> tokenLabel.setText(error.getMessage())
         );
 
         if (!handled) {
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    private void getJwt() {
+        final ProgressDialog dialog = new ProgressDialog(this);
+        dialog.setMessage("Waiting");
+        dialog.show();
+
+        assert token != null;
+        sdk.getJwt(
+                token.token(),
+                token -> {
+                    dialog.cancel();
+                    jwtLabel.setText(token);
+                },
+                error -> {
+                    dialog.cancel();
+                    jwtLabel.setText(Arrays.toString(error.getErrors()));
+                }
+        );
     }
 }

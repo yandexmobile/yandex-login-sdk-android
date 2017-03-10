@@ -1,4 +1,4 @@
-package com.yandex.yaloginsdk;
+package com.yandex.yaloginsdk.internal;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -9,16 +9,16 @@ import android.support.v7.app.AppCompatActivity;
 
 import java.util.UUID;
 
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.EXTRA_CLIENT_ID;
+import static com.yandex.yaloginsdk.internal.YaLoginSdkConstants.EXTRA_CLIENT_ID;
 
-public class BrowserActivity extends AppCompatActivity {
+public class BrowserLoginActivity extends AppCompatActivity {
 
     @SuppressWarnings("NullableProblems") // onCreate
     @NonNull
     private ExternalLoginHandler loginHandler;
 
     @Override
-    protected void onNewIntent(Intent intent) {
+    protected void onNewIntent(final Intent intent) {
         super.onNewIntent(intent);
 
         final Uri data = intent.getData();
@@ -28,7 +28,7 @@ public class BrowserActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         loginHandler = new ExternalLoginHandler(() -> UUID.randomUUID().toString());
@@ -44,12 +44,12 @@ public class BrowserActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
+    protected void onSaveInstanceState(@NonNull final Bundle outState) {
         super.onSaveInstanceState(outState);
         loginHandler.saveState(outState);
     }
 
-    private void parseTokenFromUri(@NonNull Uri data) {
+    private void parseTokenFromUri(@NonNull final Uri data) {
         final Intent result = loginHandler.parseResult(data);
         setResult(RESULT_OK, result);
         finish();

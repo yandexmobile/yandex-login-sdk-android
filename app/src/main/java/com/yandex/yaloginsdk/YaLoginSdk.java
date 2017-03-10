@@ -3,27 +3,33 @@ package com.yandex.yaloginsdk;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
-import com.yandex.yaloginsdk.strategy.LoginStrategy;
-import com.yandex.yaloginsdk.strategy.LoginStrategy.ResultExtractor;
-import com.yandex.yaloginsdk.strategy.LoginStrategyProvider;
-import com.yandex.yaloginsdk.strategy.LoginType;
+import com.yandex.yaloginsdk.internal.ActivityStarter;
+import com.yandex.yaloginsdk.internal.JwtRequest;
+import com.yandex.yaloginsdk.internal.Logger;
+import com.yandex.yaloginsdk.internal.strategy.LoginStrategy;
+import com.yandex.yaloginsdk.internal.strategy.LoginStrategy.ResultExtractor;
+import com.yandex.yaloginsdk.internal.strategy.LoginStrategyProvider;
+import com.yandex.yaloginsdk.internal.strategy.LoginType;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Set;
 
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.STATE_LOGIN_TYPE;
-import static com.yandex.yaloginsdk.YaLoginSdkConstants.LOGIN_REQUEST_CODE;
-
 public class YaLoginSdk {
 
+    private static int LOGIN_REQUEST_CODE = 312; // TODO choose number?
+    private static final String STATE_LOGIN_TYPE = "com.yandex.yaloginsdk.STATE_LOGIN_TYPE";
     private static final String TAG = YaLoginSdk.class.getSimpleName();
 
     @NonNull
-    public static YaLoginSdk get(@NonNull LoginSdkConfig config) {
+    public static YaLoginSdk get(@NonNull final LoginSdkConfig config) {
         return new YaLoginSdk(config);
     }
 
@@ -33,22 +39,21 @@ public class YaLoginSdk {
     @NonNull
     private final LoginSdkConfig config;
 
-    private YaLoginSdk(@NonNull LoginSdkConfig config) {
+    private YaLoginSdk(@NonNull final LoginSdkConfig config) {
         this.config = config;
     }
 
-    public void login(@NonNull Activity activity, @Nullable Set<String> scopes) {
-        final LoginStrategy strategy = new LoginStrategyProvider().getLoginStrategy(config.applicationContext());
-        activity.startActivityForResult(
-                strategy.getLoginIntent(config, scopes == null ? Collections.emptySet() : scopes),
-                LOGIN_REQUEST_CODE
-        );
-        loginType = strategy.getType();
+    public void login(@NonNull final Activity activity, @Nullable final Set<String> scopes) {
+        startAuthorization(new ActivityStarter(activity), scopes);
     }
 
-    public void login(@NonNull Fragment fragment, @Nullable Set<String> scopes) {
+    public void login(@NonNull final Fragment fragment, @Nullable final Set<String> scopes) {
+        startAuthorization(new ActivityStarter(fragment), scopes);
+    }
+
+    private void startAuthorization(@NonNull final ActivityStarter starter, @Nullable final Set<String> scopes) {
         final LoginStrategy strategy = new LoginStrategyProvider().getLoginStrategy(config.applicationContext());
-        fragment.startActivityForResult(
+        starter.startActivityForResult(
                 strategy.getLoginIntent(config, scopes == null ? Collections.emptySet() : scopes),
                 LOGIN_REQUEST_CODE
         );
@@ -56,11 +61,11 @@ public class YaLoginSdk {
     }
 
     public boolean onActivityResult(
-            int requestCode,
-            int resultCode,
-            @Nullable Intent data,
-            @NonNull LoginSuccessListener successListener,
-            @NonNull LoginErrorListener errorListener
+            final int requestCode,
+            final int resultCode,
+            @Nullable final Intent data,
+            @NonNull final SuccessListener<Token> successListener,
+            @NonNull final ErrorListener errorListener
     ) {
         // TODO add cancel listener?
         if (data == null || resultCode != Activity.RESULT_OK || requestCode != LOGIN_REQUEST_CODE) {
@@ -70,7 +75,7 @@ public class YaLoginSdk {
             Logger.d(
                     TAG,
                     "requestCode is equals to LOGIN_REQUEST_CODE, but login is unknown. " +
-                    "Please, check that you call \"onSaveInstanceState\" and \"onRestoreInstanceState\" on YaLoginSdk"
+                            "Please, check that you call \"onSaveInstanceState\" and \"onRestoreInstanceState\" on YaLoginSdk"
             );
             return false;
         }
@@ -80,7 +85,7 @@ public class YaLoginSdk {
         final Token token = extractor.tryExtractToken(data);
         if (token != null) {
             Logger.d(TAG, "Token received");
-            successListener.onLoggedIn(token);
+            successListener.onSuccess(token);
             return true;
         }
 
@@ -95,15 +100,38 @@ public class YaLoginSdk {
         return false;
     }
 
+    public void getJwt(
+            @NonNull final String token,
+            @NonNull final SuccessListener<String> successListener,
+            @NonNull final ErrorListener errorListener
+    ) {
+        final HandlerThread handlerThread = new HandlerThread("YaLoginSdkIOThread");
+        handlerThread.start();
+        final Handler ioHandler = new Handler(handlerThread.getLooper());
+        final Handler uiHandler = new Handler(Looper.getMainLooper());
+
+        ioHandler.post(() -> {
+            try {
+                String jwt = new JwtRequest(token).get();
+                uiHandler.post(() -> successListener.onSuccess(jwt));
+            } catch (YaLoginSdkError e) {
+                uiHandler.post(() -> errorListener.onError(e));
+            } catch (IOException e) {
+                uiHandler.post(() -> errorListener.onError(new YaLoginSdkError(e)));
+            }
+            handlerThread.quit();
+        });
+    }
+
     public void logout() {
 
     }
 
-    public void onSaveInstanceState(@NonNull Bundle state) {
+    public void onSaveInstanceState(@NonNull final Bundle state) {
         state.putSerializable(STATE_LOGIN_TYPE, loginType);
     }
 
-    public void onRestoreInstanceState(@NonNull Bundle state) {
+    public void onRestoreInstanceState(@NonNull final Bundle state) {
         loginType = (LoginType) state.getSerializable(STATE_LOGIN_TYPE);
     }
 }

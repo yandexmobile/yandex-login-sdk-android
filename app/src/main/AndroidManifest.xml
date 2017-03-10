@@ -10,8 +10,8 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".BrowserActivity"
-            android:launchMode="singleTop">
+            android:name=".internal.BrowserLoginActivity"
+            android:launchMode="singleInstance">
 
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
