@@ -14,6 +14,10 @@ import java.net.URL;
 
 public class JwtRequest {
 
+    public static final String JWT_REQUEST_URL_FORMAT = "https://login.yandex.ru/info?format=jwt&oauth_token=%s";
+
+    public static final int RESPONSE_CODE_UNAUTHORIZED = 401;
+
     @NonNull
     private final String token;
 
@@ -25,9 +29,9 @@ public class JwtRequest {
     public String get() throws IOException {
         disableConnectionReuseIfNecessary();
 
-        final URL url = new URL("https://login.yandex.ru/info?format=jwt&oauth_token=" + token);
+        final URL url = new URL(String.format(JWT_REQUEST_URL_FORMAT, token));
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        if (connection.getResponseCode() == 401) {
+        if (connection.getResponseCode() == RESPONSE_CODE_UNAUTHORIZED) {
             throw new YaLoginSdkError(YaLoginSdkError.JWT_AUTHORIZATION_ERROR);
         }
         try {
@@ -48,11 +52,15 @@ public class JwtRequest {
     @NonNull
     private static String readToString(@NonNull InputStream is) throws IOException {
         final BufferedReader r = new BufferedReader(new InputStreamReader(is));
-        final StringBuilder total = new StringBuilder();
-        String line;
-        while ((line = r.readLine()) != null) {
-            total.append(line).append('\n');
+        try {
+            final StringBuilder total = new StringBuilder();
+            String line;
+            while ((line = r.readLine()) != null) {
+                total.append(line).append('\n');
+            }
+            return total.toString();
+        } finally {
+            r.close();
         }
-        return total.toString();
     }
 }
