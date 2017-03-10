@@ -21,7 +21,7 @@ public class JwtRequest {
     @NonNull
     private final String token;
 
-    public JwtRequest(@NonNull String token) {
+    public JwtRequest(@NonNull final String token) {
         this.token = token;
     }
 
@@ -50,7 +50,7 @@ public class JwtRequest {
     }
 
     @NonNull
-    private static String readToString(@NonNull InputStream is) throws IOException {
+    private static String readToString(@NonNull final InputStream is) throws IOException {
         final BufferedReader r = new BufferedReader(new InputStreamReader(is));
         try {
             final StringBuilder total = new StringBuilder();

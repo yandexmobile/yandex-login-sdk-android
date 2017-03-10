@@ -16,7 +16,7 @@ public abstract class Token implements Parcelable {
 
     public abstract long expiresIn();
 
-    public static Token create(@NonNull String token, @NonNull String type, long expiresIn) {
+    public static Token create(@NonNull final String token, @NonNull final String type, final long expiresIn) {
         return new AutoValue_Token(token, type, expiresIn);
     }
 }

@@ -19,20 +19,20 @@ import static com.yandex.yaloginsdk.internal.strategy.LoginType.BROWSER;
 class BrowserLoginStrategy extends LoginStrategy {
 
     @NonNull
-    static LoginStrategy get(@NonNull Context context) {
+    static LoginStrategy get(@NonNull final Context context) {
         return new BrowserLoginStrategy(context);
     }
 
     @NonNull
     private final Context context;
 
-    private BrowserLoginStrategy(@NonNull Context context) {
+    private BrowserLoginStrategy(@NonNull final Context context) {
         this.context = context;
     }
 
     @Override
     @NonNull
-    public Intent getLoginIntent(@NonNull LoginSdkConfig config, @NonNull Set<String> scopes) {
+    public Intent getLoginIntent(@NonNull final LoginSdkConfig config, @NonNull final Set<String> scopes) {
         final Intent loginIntent = new Intent(context, BrowserLoginActivity.class);
         putExtras(loginIntent, scopes, config.clientId());
         return loginIntent;
@@ -48,13 +48,13 @@ class BrowserLoginStrategy extends LoginStrategy {
 
         @Override
         @Nullable
-        public Token tryExtractToken(@NonNull Intent data) {
+        public Token tryExtractToken(@NonNull final Intent data) {
             return data.getParcelableExtra(EXTRA_TOKEN);
         }
 
         @Override
         @Nullable
-        public YaLoginSdkError tryExtractError(@NonNull Intent data) {
+        public YaLoginSdkError tryExtractError(@NonNull final Intent data) {
             return (YaLoginSdkError) data.getSerializableExtra(EXTRA_ERROR);
         }
     }

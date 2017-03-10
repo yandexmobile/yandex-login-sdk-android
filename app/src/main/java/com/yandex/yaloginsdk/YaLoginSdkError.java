@@ -18,16 +18,16 @@ public class YaLoginSdkError extends RuntimeException {
     @NonNull
     private final String[] errors;
 
-    public YaLoginSdkError(@NonNull String error) {
+    public YaLoginSdkError(@NonNull final String error) {
         this(new String[]{error});
     }
 
-    public YaLoginSdkError(@NonNull String[] errors) {
+    public YaLoginSdkError(@NonNull final String[] errors) {
         super(Arrays.toString(errors));
         this.errors = errors;
     }
 
-    public YaLoginSdkError(@NonNull IOException e) {
+    public YaLoginSdkError(@NonNull final IOException e) {
         super(IO_ERROR, e);
         errors = new String[]{IO_ERROR};
     }
@@ -38,7 +38,7 @@ public class YaLoginSdkError extends RuntimeException {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 

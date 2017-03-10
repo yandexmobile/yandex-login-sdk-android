@@ -16,13 +16,13 @@ public class FingerprintExtractor {
     public static final String TAG = FingerprintExtractor.class.getSimpleName();
 
     @Nullable
-    public String[] get(@NonNull String packageName, @NonNull PackageManager packageManager) {
+    public String[] get(@NonNull final String packageName, @NonNull final PackageManager packageManager) {
         try {
             @SuppressLint("PackageManagerGetSignatures")
             final PackageInfo info = packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES);
             final String[] result = new String[info.signatures.length];
             int i = 0;
-            for (Signature signature : info.signatures) {
+            for (final Signature signature : info.signatures) {
                 final MessageDigest md = MessageDigest.getInstance("SHA");
                 md.update(signature.toByteArray());
                 result[i++] = toHex(md.digest());
@@ -35,7 +35,7 @@ public class FingerprintExtractor {
     }
 
     @NonNull
-    private String toHex(@NonNull byte[] bytes) {
+    private String toHex(@NonNull final byte[] bytes) {
         BigInteger bi = new BigInteger(1, bytes);
         return String.format("%0" + (bytes.length << 1) + "X", bi);
     }

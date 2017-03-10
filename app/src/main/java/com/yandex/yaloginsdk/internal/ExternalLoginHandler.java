@@ -45,7 +45,7 @@ class ExternalLoginHandler {
     }
 
     @NonNull
-    String getUrl(@NonNull String clientId) {
+    String getUrl(@NonNull final String clientId) {
         state = stateGenerator.generate();
         try {
             final String redirectUri = URLEncoder.encode(SUPPORT_APPLINKS ? REDIRECT_URI_APPLINKS : REDIRECT_URI_SCHEME, "UTF-8");
@@ -57,7 +57,7 @@ class ExternalLoginHandler {
     }
 
     @NonNull
-    Intent parseResult(@NonNull Uri data) {
+    Intent parseResult(@NonNull final Uri data) {
         final String fragment = data.getFragment();
 
         final Uri dummyUri = Uri.parse("dummy://dummy?" + fragment);
@@ -82,11 +82,11 @@ class ExternalLoginHandler {
         return result;
     }
 
-    void saveState(@NonNull Bundle outState) {
+    void saveState(@NonNull final Bundle outState) {
         outState.putString(STATE_KEY, state);
     }
 
-    void restoreState(@NonNull Bundle outState) {
+    void restoreState(@NonNull final Bundle outState) {
         state = outState.getString(STATE_KEY);
     }
 

@@ -29,7 +29,7 @@ public class YaLoginSdk {
     private static final String TAG = YaLoginSdk.class.getSimpleName();
 
     @NonNull
-    public static YaLoginSdk get(@NonNull LoginSdkConfig config) {
+    public static YaLoginSdk get(@NonNull final LoginSdkConfig config) {
         return new YaLoginSdk(config);
     }
 
@@ -39,19 +39,19 @@ public class YaLoginSdk {
     @NonNull
     private final LoginSdkConfig config;
 
-    private YaLoginSdk(@NonNull LoginSdkConfig config) {
+    private YaLoginSdk(@NonNull final LoginSdkConfig config) {
         this.config = config;
     }
 
-    public void login(@NonNull Activity activity, @Nullable Set<String> scopes) {
+    public void login(@NonNull final Activity activity, @Nullable final Set<String> scopes) {
         startAuthorization(new ActivityStarter(activity), scopes);
     }
 
-    public void login(@NonNull Fragment fragment, @Nullable Set<String> scopes) {
+    public void login(@NonNull final Fragment fragment, @Nullable final Set<String> scopes) {
         startAuthorization(new ActivityStarter(fragment), scopes);
     }
 
-    private void startAuthorization(@NonNull ActivityStarter starter, @Nullable Set<String> scopes) {
+    private void startAuthorization(@NonNull final ActivityStarter starter, @Nullable final Set<String> scopes) {
         final LoginStrategy strategy = new LoginStrategyProvider().getLoginStrategy(config.applicationContext());
         starter.startActivityForResult(
                 strategy.getLoginIntent(config, scopes == null ? Collections.emptySet() : scopes),
@@ -61,11 +61,11 @@ public class YaLoginSdk {
     }
 
     public boolean onActivityResult(
-            int requestCode,
-            int resultCode,
-            @Nullable Intent data,
-            @NonNull SuccessListener<Token> successListener,
-            @NonNull ErrorListener errorListener
+            final int requestCode,
+            final int resultCode,
+            @Nullable final Intent data,
+            @NonNull final SuccessListener<Token> successListener,
+            @NonNull final ErrorListener errorListener
     ) {
         // TODO add cancel listener?
         if (data == null || resultCode != Activity.RESULT_OK || requestCode != LOGIN_REQUEST_CODE) {
@@ -100,7 +100,11 @@ public class YaLoginSdk {
         return false;
     }
 
-    public void getJwt(@NonNull String token, @NonNull SuccessListener<String> successListener, @NonNull ErrorListener errorListener) {
+    public void getJwt(
+            @NonNull final String token,
+            @NonNull final SuccessListener<String> successListener,
+            @NonNull final ErrorListener errorListener
+    ) {
         final HandlerThread handlerThread = new HandlerThread("YaLoginSdkIOThread");
         handlerThread.start();
         final Handler ioHandler = new Handler(handlerThread.getLooper());
@@ -123,11 +127,11 @@ public class YaLoginSdk {
 
     }
 
-    public void onSaveInstanceState(@NonNull Bundle state) {
+    public void onSaveInstanceState(@NonNull final Bundle state) {
         state.putSerializable(STATE_LOGIN_TYPE, loginType);
     }
 
-    public void onRestoreInstanceState(@NonNull Bundle state) {
+    public void onRestoreInstanceState(@NonNull final Bundle state) {
         loginType = (LoginType) state.getSerializable(STATE_LOGIN_TYPE);
     }
 }

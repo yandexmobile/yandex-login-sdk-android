@@ -4,5 +4,5 @@ import android.support.annotation.NonNull;
 
 public interface ErrorListener {
 
-    void onError(@NonNull YaLoginSdkError error);
+    void onError(@NonNull final YaLoginSdkError error);
 }

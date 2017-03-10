@@ -44,7 +44,7 @@ class NativeLoginStrategy extends LoginStrategy {
      * @return LoginStrategy for native authorization or null
      */
     @Nullable
-    static LoginStrategy getIfPossible(@NonNull PackageManager packageManager, @NonNull FingerprintExtractor fingerprintExtractor) {
+    static LoginStrategy getIfPossible(@NonNull final PackageManager packageManager, @NonNull final FingerprintExtractor fingerprintExtractor) {
         final Intent amSdkIntent = new Intent(ACTION_YA_SDK_LOGIN);
         final List<ResolveInfo> infos = packageManager.queryIntentActivities(amSdkIntent, PackageManager.MATCH_DEFAULT_ONLY);
 
@@ -61,9 +61,9 @@ class NativeLoginStrategy extends LoginStrategy {
     @VisibleForTesting
     @Nullable
     static ResolveInfo findBest(
-            @NonNull List<ResolveInfo> infos,
-            @NonNull PackageManager packageManager,
-            @NonNull FingerprintExtractor fingerprintExtractor
+            @NonNull final List<ResolveInfo> infos,
+            @NonNull final PackageManager packageManager,
+            @NonNull final FingerprintExtractor fingerprintExtractor
     ) {
         float maxVersion = 0;
         ResolveInfo best = null;
@@ -89,7 +89,7 @@ class NativeLoginStrategy extends LoginStrategy {
                 // no fingerprints found
                 continue;
             }
-            for (String fingerprint : fingerPrints) {
+            for (final String fingerprint : fingerPrints) {
                 if (FINGERPRINT.equals(fingerprint)) {
                     // correct fingerprint, check for max AM version
                     final float amVersion = metadata.getFloat(META_AM_VERSION);
@@ -106,13 +106,13 @@ class NativeLoginStrategy extends LoginStrategy {
     @NonNull
     private final Intent packagedIntent;
 
-    private NativeLoginStrategy(@NonNull Intent packagedIntent) {
+    private NativeLoginStrategy(@NonNull final Intent packagedIntent) {
         this.packagedIntent = packagedIntent;
     }
 
     @Override
     @NonNull
-    public Intent getLoginIntent(@NonNull LoginSdkConfig config, @NonNull Set<String> scopes) {
+    public Intent getLoginIntent(@NonNull final LoginSdkConfig config, @NonNull final Set<String> scopes) {
         return putExtras(packagedIntent, scopes, config.clientId());
     }
 
@@ -126,7 +126,7 @@ class NativeLoginStrategy extends LoginStrategy {
 
         @Override
         @Nullable
-        public Token tryExtractToken(@NonNull Intent data) {
+        public Token tryExtractToken(@NonNull final Intent data) {
             final String token = data.getStringExtra(EXTRA_OAUTH_TOKEN);
             final String type = data.getStringExtra(EXTRA_OAUTH_TOKEN_TYPE);
             final long expiresIn = data.getLongExtra(EXTRA_OAUTH_TOKEN_EXPIRES, 0);
@@ -138,7 +138,7 @@ class NativeLoginStrategy extends LoginStrategy {
 
         @Override
         @Nullable
-        public YaLoginSdkError tryExtractError(@NonNull Intent data) {
+        public YaLoginSdkError tryExtractError(@NonNull final Intent data) {
             final boolean isError = data.getBooleanExtra(OAUTH_TOKEN_ERROR, false);
             if (!isError) {
                 return null;

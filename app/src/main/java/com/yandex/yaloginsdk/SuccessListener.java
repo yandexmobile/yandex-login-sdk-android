@@ -4,5 +4,5 @@ import android.support.annotation.NonNull;
 
 public interface SuccessListener<T> {
 
-    void onSuccess(@NonNull T result);
+    void onSuccess(@NonNull final T result);
 }

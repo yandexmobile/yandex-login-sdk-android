@@ -5,11 +5,11 @@ import android.util.Log;
 
 public class Logger {
 
-    public static void e(@NonNull String tag, @NonNull String message, @NonNull Throwable e) {
+    public static void e(@NonNull final String tag, @NonNull final String message, @NonNull final Throwable e) {
         Log.e(tag, message, e);
     }
 
-    public static void d(@NonNull String tag, @NonNull String message) {
+    public static void d(@NonNull final String tag, @NonNull final String message) {
         Log.d(tag, message);
     }
 }
