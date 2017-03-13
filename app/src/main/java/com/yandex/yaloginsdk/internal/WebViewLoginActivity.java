@@ -34,6 +34,10 @@ public class WebViewLoginActivity extends AppCompatActivity {
         webView.loadUrl(loginHandler.getUrl(getIntent().getStringExtra(EXTRA_CLIENT_ID)));
 
         setContentView(webView);
+
+        if (savedInstanceState != null) {
+            loginHandler.restoreState(savedInstanceState);
+        }
     }
 
     private void clearCookies() {

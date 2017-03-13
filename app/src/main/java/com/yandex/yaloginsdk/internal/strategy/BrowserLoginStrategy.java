@@ -11,7 +11,9 @@ import android.support.annotation.VisibleForTesting;
 
 import com.yandex.yaloginsdk.LoginSdkConfig;
 import com.yandex.yaloginsdk.Token;
+import com.yandex.yaloginsdk.YaLoginSdk;
 import com.yandex.yaloginsdk.YaLoginSdkError;
+import com.yandex.yaloginsdk.internal.ActivityStarter;
 import com.yandex.yaloginsdk.internal.BrowserLoginActivity;
 
 import java.util.List;
@@ -23,6 +25,8 @@ import static com.yandex.yaloginsdk.internal.YaLoginSdkConstants.EXTRA_TOKEN;
 import static com.yandex.yaloginsdk.internal.strategy.LoginType.BROWSER;
 
 class BrowserLoginStrategy extends LoginStrategy {
+
+    private static final String TEST_WEB_URI = "https://ya.ru";
 
     enum SupportedBrowser {
 
@@ -41,7 +45,7 @@ class BrowserLoginStrategy extends LoginStrategy {
 
     @Nullable
     static LoginStrategy getIfPossible(@NonNull final Context context, @NonNull final PackageManager packageManager) {
-        final Uri sampleUri = Uri.parse("https://ya.ru");
+        final Uri sampleUri = Uri.parse(TEST_WEB_URI);
         final Intent browserIntent = new Intent(Intent.ACTION_VIEW, sampleUri);
         final List<ResolveInfo> infos = packageManager.queryIntentActivities(browserIntent, PackageManager.MATCH_DEFAULT_ONLY);
 
@@ -67,7 +71,7 @@ class BrowserLoginStrategy extends LoginStrategy {
                 }
             }
         }
-        return best == null ? null : best.packageName;
+        return best != null ? best.packageName : null;
     }
 
     @NonNull
@@ -82,12 +86,16 @@ class BrowserLoginStrategy extends LoginStrategy {
     }
 
     @Override
-    @NonNull
-    public Intent getLoginIntent(@NonNull final LoginSdkConfig config, @NonNull final Set<String> scopes) {
+    public void login(
+            @NonNull final ActivityStarter activityStarter,
+            @NonNull final LoginSdkConfig config,
+            @NonNull final Set<String> scopes
+    ) {
         final Intent loginIntent = new Intent(context, BrowserLoginActivity.class);
         loginIntent.putExtra(EXTRA_BROWSER_PACKAGE_NAME, browserPackageName);
         putExtras(loginIntent, scopes, config.clientId());
-        return loginIntent;
+
+        activityStarter.startActivityForResult(loginIntent, YaLoginSdk.LOGIN_REQUEST_CODE);
     }
 
     @Override

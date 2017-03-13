@@ -1,6 +1,5 @@
 package com.yandex.yaloginsdk.internal.strategy;
 
-import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,7 +7,8 @@ import android.support.annotation.Nullable;
 import com.yandex.yaloginsdk.LoginSdkConfig;
 import com.yandex.yaloginsdk.Token;
 import com.yandex.yaloginsdk.YaLoginSdkError;
-import com.yandex.yaloginsdk.internal.WebViewLoginActivity;
+import com.yandex.yaloginsdk.internal.ActivityStarter;
+import com.yandex.yaloginsdk.internal.WebViewLoginDialogFragment;
 
 import java.util.Set;
 
@@ -19,23 +19,19 @@ import static com.yandex.yaloginsdk.internal.strategy.LoginType.WEBVIEW;
 class WebViewLoginStrategy extends LoginStrategy {
 
     @NonNull
-    static LoginStrategy get(@NonNull Context context) {
-        return new WebViewLoginStrategy(context);
-    }
-
-    @NonNull
-    private final Context context;
-
-    private WebViewLoginStrategy(@NonNull Context context) {
-        this.context = context;
+    static LoginStrategy get() {
+        return new WebViewLoginStrategy();
     }
 
     @Override
-    @NonNull
-    public Intent getLoginIntent(@NonNull LoginSdkConfig config, @NonNull Set<String> scopes) {
-        final Intent loginIntent = new Intent(context, WebViewLoginActivity.class);
-        putExtras(loginIntent, scopes, config.clientId());
-        return loginIntent;
+    public void login(
+            @NonNull final ActivityStarter activityStarter,
+            @NonNull final LoginSdkConfig config,
+            @NonNull final Set<String> scopes
+    ) {
+        final WebViewLoginDialogFragment dialog = new WebViewLoginDialogFragment();
+        dialog.setArguments(extras(scopes, config.clientId()));
+        activityStarter.showDialogFragment(dialog);
     }
 
     @Override

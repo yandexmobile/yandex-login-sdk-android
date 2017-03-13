@@ -8,6 +8,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 
+import com.yandex.yaloginsdk.YaLoginSdk;
+import com.yandex.yaloginsdk.internal.ActivityStarter;
 import com.yandex.yaloginsdk.internal.FingerprintExtractor;
 import com.yandex.yaloginsdk.LoginSdkConfig;
 import com.yandex.yaloginsdk.Token;
@@ -111,9 +113,13 @@ class NativeLoginStrategy extends LoginStrategy {
     }
 
     @Override
-    @NonNull
-    public Intent getLoginIntent(@NonNull final LoginSdkConfig config, @NonNull final Set<String> scopes) {
-        return putExtras(packagedIntent, scopes, config.clientId());
+    public void login(
+            @NonNull final ActivityStarter activityStarter,
+            @NonNull final LoginSdkConfig config,
+            @NonNull final Set<String> scopes
+    ) {
+        final Intent intent = putExtras(packagedIntent, scopes, config.clientId());
+        activityStarter.startActivityForResult(intent, YaLoginSdk.LOGIN_REQUEST_CODE);
     }
 
     @Override

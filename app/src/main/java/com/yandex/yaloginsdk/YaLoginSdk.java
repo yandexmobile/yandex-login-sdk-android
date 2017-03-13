@@ -9,6 +9,7 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 
 import com.yandex.yaloginsdk.internal.ActivityStarter;
 import com.yandex.yaloginsdk.internal.JwtRequest;
@@ -19,12 +20,13 @@ import com.yandex.yaloginsdk.internal.strategy.LoginStrategyProvider;
 import com.yandex.yaloginsdk.internal.strategy.LoginType;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Set;
+
+import static java.util.Collections.emptySet;
 
 public class YaLoginSdk {
 
-    private static int LOGIN_REQUEST_CODE = 312; // TODO choose number?
+    public static int LOGIN_REQUEST_CODE = 312; // TODO choose number?
     private static final String STATE_LOGIN_TYPE = "com.yandex.yaloginsdk.STATE_LOGIN_TYPE";
     private static final String TAG = YaLoginSdk.class.getSimpleName();
 
@@ -43,7 +45,7 @@ public class YaLoginSdk {
         this.config = config;
     }
 
-    public void login(@NonNull final Activity activity, @Nullable final Set<String> scopes) {
+    public void login(@NonNull final FragmentActivity activity, @Nullable final Set<String> scopes) {
         startAuthorization(new ActivityStarter(activity), scopes);
     }
 
@@ -53,11 +55,8 @@ public class YaLoginSdk {
 
     private void startAuthorization(@NonNull final ActivityStarter starter, @Nullable final Set<String> scopes) {
         final LoginStrategy strategy = new LoginStrategyProvider().getLoginStrategy(config.applicationContext());
-        starter.startActivityForResult(
-                strategy.getLoginIntent(config, scopes == null ? Collections.emptySet() : scopes),
-                LOGIN_REQUEST_CODE
-        );
         loginType = strategy.getType();
+        strategy.login(starter, config, scopes == null ? emptySet() : scopes);
     }
 
     public boolean onActivityResult(
@@ -74,7 +73,7 @@ public class YaLoginSdk {
         if (loginType == null) {
             Logger.d(
                     TAG,
-                    "requestCode is equals to LOGIN_REQUEST_CODE, but login is unknown. " +
+                    "requestCode is equals to LOGIN_REQUEST_CODE, but login type is unknown. " +
                             "Please, check that you call \"onSaveInstanceState\" and \"onRestoreInstanceState\" on YaLoginSdk"
             );
             return false;
@@ -123,15 +122,15 @@ public class YaLoginSdk {
         });
     }
 
-    public void logout() {
-
-    }
-
     public void onSaveInstanceState(@NonNull final Bundle state) {
-        state.putSerializable(STATE_LOGIN_TYPE, loginType);
+        if (loginType != null) {
+            state.putInt(STATE_LOGIN_TYPE, loginType.ordinal());
+        }
     }
 
     public void onRestoreInstanceState(@NonNull final Bundle state) {
-        loginType = (LoginType) state.getSerializable(STATE_LOGIN_TYPE);
+        if (state.containsKey(STATE_LOGIN_TYPE)) {
+            loginType = LoginType.values()[state.getInt(STATE_LOGIN_TYPE)];
+        }
     }
 }

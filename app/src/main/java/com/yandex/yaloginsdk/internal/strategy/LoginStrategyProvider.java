@@ -19,7 +19,7 @@ public class LoginStrategyProvider {
             return strategy;
         }
 
-        return WebViewLoginStrategy.get(context);
+        return WebViewLoginStrategy.get();
     }
 
     @NonNull
