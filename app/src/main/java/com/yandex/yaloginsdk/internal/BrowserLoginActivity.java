@@ -13,6 +13,8 @@ import static com.yandex.yaloginsdk.internal.YaLoginSdkConstants.EXTRA_CLIENT_ID
 
 public class BrowserLoginActivity extends AppCompatActivity {
 
+    public static final String EXTRA_BROWSER_PACKAGE_NAME = "com.yandex.yaloginsdk.internal.EXTRA_BROWSER_PACKAGE_NAME";
+
     public static final String STATE_LOADING_STATE = "com.yandex.yaloginsdk.STATE_LOADING_STATE";
 
     private enum State {
@@ -45,6 +47,7 @@ public class BrowserLoginActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             final Intent browserIntent = new Intent(Intent.ACTION_VIEW);
+            browserIntent.setPackage(getIntent().getStringExtra(EXTRA_BROWSER_PACKAGE_NAME));
             final String clientId = getIntent().getStringExtra(EXTRA_CLIENT_ID);
             browserIntent.setData(Uri.parse(loginHandler.getUrl(clientId)));
             startActivity(browserIntent);

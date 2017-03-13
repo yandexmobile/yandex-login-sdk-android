@@ -14,6 +14,11 @@ public class LoginStrategyProvider {
             return strategy;
         }
 
+        strategy = BrowserLoginStrategy.getIfPossible(context, context.getPackageManager());
+        if (strategy != null) {
+            return strategy;
+        }
+
         return WebViewLoginStrategy.get(context);
     }
 
