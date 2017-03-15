@@ -128,8 +128,8 @@ public class YaLoginSdk {
         }
     }
 
-    public void onRestoreInstanceState(@NonNull final Bundle state) {
-        if (state.containsKey(STATE_LOGIN_TYPE)) {
+    public void onRestoreInstanceState(@Nullable final Bundle state) {
+        if (state != null && state.containsKey(STATE_LOGIN_TYPE)) {
             loginType = LoginType.values()[state.getInt(STATE_LOGIN_TYPE)];
         }
     }
