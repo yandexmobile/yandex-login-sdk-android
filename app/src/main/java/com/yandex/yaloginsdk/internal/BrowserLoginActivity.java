@@ -13,9 +13,18 @@ import static com.yandex.yaloginsdk.internal.YaLoginSdkConstants.EXTRA_CLIENT_ID
 
 public class BrowserLoginActivity extends AppCompatActivity {
 
+    public static final String STATE_LOADING_STATE = "com.yandex.yaloginsdk.STATE_LOADING_STATE";
+
+    private enum State {
+        INITIAL, TOKEN_REQUESTED, TOKEN_LOADED;
+    }
+
     @SuppressWarnings("NullableProblems") // onCreate
     @NonNull
     private ExternalLoginHandler loginHandler;
+
+    @NonNull
+    private State state = State.INITIAL;
 
     @Override
     protected void onNewIntent(final Intent intent) {
@@ -25,6 +34,7 @@ public class BrowserLoginActivity extends AppCompatActivity {
         if (data != null) {
             parseTokenFromUri(data);
         }
+        state = State.TOKEN_LOADED;
     }
 
     @Override
@@ -38,15 +48,28 @@ public class BrowserLoginActivity extends AppCompatActivity {
             final String clientId = getIntent().getStringExtra(EXTRA_CLIENT_ID);
             browserIntent.setData(Uri.parse(loginHandler.getUrl(clientId)));
             startActivity(browserIntent);
+            state = State.INITIAL;
         } else {
             loginHandler.restoreState(savedInstanceState);
+            state = State.values()[savedInstanceState.getInt(STATE_LOADING_STATE)];
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (state == State.TOKEN_REQUESTED) {
+            finish();
+        }
+        state = State.TOKEN_REQUESTED;
     }
 
     @Override
     protected void onSaveInstanceState(@NonNull final Bundle outState) {
         super.onSaveInstanceState(outState);
         loginHandler.saveState(outState);
+        outState.putInt(STATE_LOADING_STATE, state.ordinal());
     }
 
     private void parseTokenFromUri(@NonNull final Uri data) {
