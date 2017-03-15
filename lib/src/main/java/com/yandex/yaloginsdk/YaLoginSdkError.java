@@ -15,6 +15,8 @@ public class YaLoginSdkError extends RuntimeException {
 
     public static final String IO_ERROR = "io.error";
 
+    public static final String OAUTH_TOKEN_ERROR = "oauth_token.invalid";
+
     @NonNull
     private final String[] errors;
 

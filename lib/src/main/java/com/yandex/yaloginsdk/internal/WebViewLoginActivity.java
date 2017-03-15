@@ -12,6 +12,8 @@ import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 
+import com.yandex.yaloginsdk.internal.ExternalLoginHandler;
+
 import java.util.UUID;
 
 import static com.yandex.yaloginsdk.internal.YaLoginSdkConstants.EXTRA_CLIENT_ID;

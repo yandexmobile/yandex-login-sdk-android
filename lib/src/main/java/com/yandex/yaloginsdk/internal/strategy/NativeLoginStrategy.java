@@ -6,7 +6,6 @@ import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.VisibleForTesting;
 
 import com.yandex.yaloginsdk.YaLoginSdk;
 import com.yandex.yaloginsdk.internal.ActivityStarter;
@@ -60,7 +59,6 @@ class NativeLoginStrategy extends LoginStrategy {
         return null;
     }
 
-    @VisibleForTesting
     @Nullable
     static ResolveInfo findBest(
             @NonNull final List<ResolveInfo> infos,

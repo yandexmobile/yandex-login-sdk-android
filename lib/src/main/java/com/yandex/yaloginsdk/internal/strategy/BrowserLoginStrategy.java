@@ -7,7 +7,6 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.VisibleForTesting;
 
 import com.yandex.yaloginsdk.LoginSdkConfig;
 import com.yandex.yaloginsdk.Token;
@@ -57,7 +56,6 @@ class BrowserLoginStrategy extends LoginStrategy {
         return null;
     }
 
-    @VisibleForTesting
     @Nullable
     static String findBest(@NonNull final List<ResolveInfo> infos) {
         SupportedBrowser best = null;
