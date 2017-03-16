@@ -1,0 +1,6 @@
+<resources>
+    <string name="webview_login_dialog_title">Uyarı</string>
+    <string name="webview_login_dialog_message">Giriş yapmak için Yandex\'teki kullanıcı adınız ve şifreniz kullanılacaktır. Bu, verilerinizin çalınmasına yol açabilir. Uygulamanın geliştiricisine güveniyorsanız \"Devam\" butonuna tıklayın.</string>
+    <string name="webview_login_dialog_positive_button">Devam</string>
+    <string name="webview_login_dialog_negative_button">İptal</string>
+</resources>

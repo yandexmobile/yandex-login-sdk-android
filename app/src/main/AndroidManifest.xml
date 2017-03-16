@@ -5,7 +5,6 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
@@ -20,8 +19,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:path="/auth/finish"
                     android:host="yxfcdddf83a97843ae80815c1c9247015b.oauth.yandex.ru"
+                    android:path="/auth/finish"
                     android:scheme="https" />
             </intent-filter>
 
@@ -37,5 +36,9 @@
                     tools:ignore="GoogleAppIndexingUrlError" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".internal.WebViewLoginActivity"
+            android:theme="@style/AppTheme.FullScreen" />
     </application>
 </manifest>

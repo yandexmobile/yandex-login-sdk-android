@@ -14,7 +14,12 @@ public class LoginStrategyProvider {
             return strategy;
         }
 
-        return BrowserLoginStrategy.get(context);
+        strategy = BrowserLoginStrategy.getIfPossible(context, context.getPackageManager());
+        if (strategy != null) {
+            return strategy;
+        }
+
+        return WebViewLoginStrategy.get();
     }
 
     @NonNull
@@ -24,6 +29,8 @@ public class LoginStrategyProvider {
                 return new NativeLoginStrategy.ResultExtractor();
             case BROWSER:
                 return new BrowserLoginStrategy.ResultExtractor();
+            case WEBVIEW:
+                return new WebViewLoginStrategy.ResultExtractor();
             default:
                 throw new IllegalArgumentException("Unknown login type: " + type);
         }

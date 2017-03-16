@@ -1,0 +1,6 @@
+<resources>
+    <string name="webview_login_dialog_title">Попередження</string>
+    <string name="webview_login_dialog_message">Для входу буде використано ваш логін та пароль від Яндекса, що може призвести до витоку даних. Натисніть на «Далі», тільки якщо ви довіряєте розробникові цієї програми.</string>
+    <string name="webview_login_dialog_positive_button">Далі</string>
+    <string name="webview_login_dialog_negative_button">Скасування</string>
+</resources>
