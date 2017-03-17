@@ -25,7 +25,13 @@ class ExternalLoginHandler {
 
     private static final String TAG = BrowserLoginActivity.class.getSimpleName();
 
-    private static final String LOGIN_URL_FORMAT = "https://oauth.yandex.ru/authorize?response_type=token&client_id=%s&redirect_uri=%s&state=%s&force_confirm=true";
+    private static final String LOGIN_URL_FORMAT = "https://oauth.yandex.ru/authorize" +
+            "?response_type=token" +
+            "&client_id=%s" +
+            "&redirect_uri=%s" +
+            "&state=%s" +
+            "&force_confirm=true" +
+            "&origin=yandex_auth_sdk_android";
 
     private static final String REDIRECT_URI_APPLINKS = "https://yxfcdddf83a97843ae80815c1c9247015b.oauth.yandex.ru/auth/finish?platform=android";
 
