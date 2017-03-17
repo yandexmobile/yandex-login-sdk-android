@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Set;
 
 import static com.yandex.yaloginsdk.internal.YaLoginSdkConstants.EXTRA_CLIENT_ID;
+import static com.yandex.yaloginsdk.internal.YaLoginSdkConstants.EXTRA_CONFIG;
 
 public abstract class LoginStrategy {
 
@@ -31,15 +32,26 @@ public abstract class LoginStrategy {
             @NonNull final Set<String> scopes,
             @NonNull final String clientId
     ) {
-        intent.putExtras(extras(scopes, clientId));
+        intent.putExtra(EXTRA_SCOPES, new ArrayList<>(scopes));
+        intent.putExtra(EXTRA_CLIENT_ID, clientId);
         return intent;
     }
 
     @NonNull
-    static Bundle extras(@NonNull final Set<String> scopes, @NonNull final String clientId) {
+    static Intent putExtras(
+            @NonNull final Intent intent,
+            @NonNull final Set<String> scopes,
+            @NonNull final LoginSdkConfig config
+    ) {
+        intent.putExtras(extras(scopes, config));
+        return intent;
+    }
+
+    @NonNull
+    static Bundle extras(@NonNull final Set<String> scopes, @NonNull final LoginSdkConfig config) {
         final Bundle bundle = new Bundle(2);
         bundle.putStringArrayList(EXTRA_SCOPES, new ArrayList<>(scopes));
-        bundle.putString(EXTRA_CLIENT_ID, clientId);
+        bundle.putParcelable(EXTRA_CONFIG, config);
         return bundle;
     }
 

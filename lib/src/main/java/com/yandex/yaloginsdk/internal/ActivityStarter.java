@@ -1,5 +1,6 @@
 package com.yandex.yaloginsdk.internal;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -39,9 +40,20 @@ public class ActivityStarter {
         final String tag = dialog.getClass().getName();
         if (activity != null) {
             dialog.show(activity.getSupportFragmentManager(), tag);
-        }  else if (fragment != null) {
+        } else if (fragment != null) {
             dialog.setTargetFragment(fragment, 0);
             dialog.show(fragment.getActivity().getSupportFragmentManager(), tag);
+        } else {
+            throw new IllegalStateException("Either activity or fragment should be set!");
+        }
+    }
+
+    @NonNull
+    public Context getContext() {
+        if (activity != null) {
+            return activity;
+        } else if (fragment != null) {
+            return fragment.getActivity();
         } else {
             throw new IllegalStateException("Either activity or fragment should be set!");
         }

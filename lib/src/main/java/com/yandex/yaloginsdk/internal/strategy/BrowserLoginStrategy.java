@@ -91,7 +91,7 @@ class BrowserLoginStrategy extends LoginStrategy {
     ) {
         final Intent loginIntent = new Intent(context, BrowserLoginActivity.class);
         loginIntent.putExtra(EXTRA_BROWSER_PACKAGE_NAME, browserPackageName);
-        putExtras(loginIntent, scopes, config.clientId());
+        putExtras(loginIntent, scopes, config);
 
         activityStarter.startActivityForResult(loginIntent, YaLoginSdk.LOGIN_REQUEST_CODE);
     }

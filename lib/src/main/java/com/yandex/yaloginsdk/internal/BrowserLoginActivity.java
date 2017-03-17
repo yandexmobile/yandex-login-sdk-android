@@ -7,9 +7,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
+import com.yandex.yaloginsdk.LoginSdkConfig;
+
 import java.util.UUID;
 
-import static com.yandex.yaloginsdk.internal.YaLoginSdkConstants.EXTRA_CLIENT_ID;
+import static com.yandex.yaloginsdk.internal.YaLoginSdkConstants.EXTRA_CONFIG;
 
 public class BrowserLoginActivity extends AppCompatActivity {
 
@@ -43,13 +45,14 @@ public class BrowserLoginActivity extends AppCompatActivity {
     public void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        loginHandler = new ExternalLoginHandler(() -> UUID.randomUUID().toString());
+        final LoginSdkConfig config = getIntent().getParcelableExtra(EXTRA_CONFIG);
+
+        loginHandler = new ExternalLoginHandler(config, () -> UUID.randomUUID().toString());
 
         if (savedInstanceState == null) {
             final Intent browserIntent = new Intent(Intent.ACTION_VIEW);
             browserIntent.setPackage(getIntent().getStringExtra(EXTRA_BROWSER_PACKAGE_NAME));
-            final String clientId = getIntent().getStringExtra(EXTRA_CLIENT_ID);
-            browserIntent.setData(Uri.parse(loginHandler.getUrl(clientId)));
+            browserIntent.setData(Uri.parse(loginHandler.getUrl(config.clientId())));
             startActivity(browserIntent);
             state = State.INITIAL;
         } else {

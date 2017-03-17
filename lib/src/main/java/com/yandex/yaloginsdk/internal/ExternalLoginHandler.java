@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.yandex.yaloginsdk.LoginSdkConfig;
 import com.yandex.yaloginsdk.Token;
 import com.yandex.yaloginsdk.YaLoginSdkError;
 
@@ -38,9 +39,13 @@ class ExternalLoginHandler {
     String state;
 
     @NonNull
+    private final LoginSdkConfig config;
+
+    @NonNull
     private final StateGenerator stateGenerator;
 
-    public ExternalLoginHandler(@NonNull StateGenerator stateGenerator) {
+    public ExternalLoginHandler(@NonNull final LoginSdkConfig config, @NonNull final StateGenerator stateGenerator) {
+        this.config = config;
         this.stateGenerator = stateGenerator;
     }
 
@@ -51,7 +56,7 @@ class ExternalLoginHandler {
             final String redirectUri = URLEncoder.encode(REDIRECT_URL, "UTF-8");
             return String.format(LOGIN_URL_FORMAT, clientId, redirectUri, state);
         } catch (UnsupportedEncodingException e) {
-            Logger.e(TAG, "No UTF-8 found", e);
+            Logger.e(config, TAG, "No UTF-8 found", e);
             throw new RuntimeException(e);
         }
     }

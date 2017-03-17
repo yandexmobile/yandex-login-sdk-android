@@ -45,11 +45,15 @@ class NativeLoginStrategy extends LoginStrategy {
      * @return LoginStrategy for native authorization or null
      */
     @Nullable
-    static LoginStrategy getIfPossible(@NonNull final PackageManager packageManager, @NonNull final FingerprintExtractor fingerprintExtractor) {
+    static LoginStrategy getIfPossible(
+            @NonNull final LoginSdkConfig config,
+            @NonNull final PackageManager packageManager,
+            @NonNull final FingerprintExtractor fingerprintExtractor
+    ) {
         final Intent amSdkIntent = new Intent(ACTION_YA_SDK_LOGIN);
         final List<ResolveInfo> infos = packageManager.queryIntentActivities(amSdkIntent, PackageManager.MATCH_DEFAULT_ONLY);
 
-        final ResolveInfo bestInfo = findBest(infos, packageManager, fingerprintExtractor);
+        final ResolveInfo bestInfo = findBest(config, infos, packageManager, fingerprintExtractor);
         if (bestInfo != null) {
             final Intent intent = new Intent(ACTION_YA_SDK_LOGIN);
             intent.setPackage(bestInfo.activityInfo.packageName);
@@ -61,6 +65,7 @@ class NativeLoginStrategy extends LoginStrategy {
 
     @Nullable
     static ResolveInfo findBest(
+            @NonNull final LoginSdkConfig config,
             @NonNull final List<ResolveInfo> infos,
             @NonNull final PackageManager packageManager,
             @NonNull final FingerprintExtractor fingerprintExtractor
@@ -84,7 +89,7 @@ class NativeLoginStrategy extends LoginStrategy {
             }
 
             // filter by am fingerprint
-            final String[] fingerPrints = fingerprintExtractor.get(info.activityInfo.packageName, packageManager);
+            final String[] fingerPrints = fingerprintExtractor.get(info.activityInfo.packageName, packageManager, config);
             if (fingerPrints == null) {
                 // no fingerprints found
                 continue;

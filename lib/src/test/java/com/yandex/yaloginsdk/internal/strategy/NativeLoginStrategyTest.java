@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.yandex.yaloginsdk.LoginSdkConfig;
 import com.yandex.yaloginsdk.Token;
 import com.yandex.yaloginsdk.YaLoginSdkError;
 import com.yandex.yaloginsdk.internal.FingerprintExtractor;
@@ -61,6 +62,9 @@ public class NativeLoginStrategyTest {
     @Mock
     PackageManager packageManager;
 
+    @NonNull
+    private final LoginSdkConfig config = new LoginSdkConfig("client_id", true);
+
     @Before
     public void beforeEachTest() {
         initMocks(this);
@@ -69,25 +73,25 @@ public class NativeLoginStrategyTest {
     @Test
     public void findBest_returnsMatching() throws PackageManager.NameNotFoundException {
         ResolveInfo info = createResolveInfo(SDK_VERSION_CORRECT, AM_VERSION, "package.name", new String[]{"wrong", FINGERPRINT});
-        assertThat(NativeLoginStrategy.findBest(toList(info), packageManager, extractor)).isEqualTo(info);
+        assertThat(NativeLoginStrategy.findBest(config, toList(info), packageManager, extractor)).isEqualTo(info);
     }
 
     @Test
     public void findBest_returnsMatchingWithBiggerSdkVersion() throws PackageManager.NameNotFoundException {
         ResolveInfo info = createResolveInfo(SDK_VERSION_CORRECT_BIGGER, AM_VERSION, "package.name", new String[]{"wrong", FINGERPRINT});
-        assertThat(NativeLoginStrategy.findBest(toList(info), packageManager, extractor)).isEqualTo(info);
+        assertThat(NativeLoginStrategy.findBest(config, toList(info), packageManager, extractor)).isEqualTo(info);
     }
 
     @Test
     public void findBest_nullOnWrongFingerprint() throws PackageManager.NameNotFoundException {
         ResolveInfo info = createResolveInfo(SDK_VERSION_CORRECT, AM_VERSION, "package.name", new String[]{"wrong", "and_wrong"});
-        assertThat(NativeLoginStrategy.findBest(toList(info), packageManager, extractor)).isNull();
+        assertThat(NativeLoginStrategy.findBest(config, toList(info), packageManager, extractor)).isNull();
     }
 
     @Test
     public void findBest_nullOnWrongSdkVersion() throws PackageManager.NameNotFoundException {
         ResolveInfo info = createResolveInfo(SDK_VERSION_WRONG, AM_VERSION, "package.name", new String[]{FINGERPRINT});
-        assertThat(NativeLoginStrategy.findBest(toList(info), packageManager, extractor)).isNull();
+        assertThat(NativeLoginStrategy.findBest(config, toList(info), packageManager, extractor)).isNull();
     }
 
     @Test
@@ -95,7 +99,7 @@ public class NativeLoginStrategyTest {
         ResolveInfo info1 = createResolveInfo(SDK_VERSION_CORRECT, AM_VERSION, "package.name1", new String[]{FINGERPRINT});
         ResolveInfo info2 = createResolveInfo(SDK_VERSION_CORRECT_BIGGER, AM_VERSION + 1, "package.name2", new String[]{FINGERPRINT});
         ResolveInfo info3 = createResolveInfo(SDK_VERSION_CORRECT, AM_VERSION + 2, "package.name3", new String[]{FINGERPRINT});
-        assertThat(NativeLoginStrategy.findBest(toList(info1, info2, info3), packageManager, extractor)).isEqualTo(info3);
+        assertThat(NativeLoginStrategy.findBest(config, toList(info1, info2, info3), packageManager, extractor)).isEqualTo(info3);
     }
 
     @Test
@@ -179,7 +183,7 @@ public class NativeLoginStrategyTest {
         appInfo.metaData = metadata;
 
         when(packageManager.getApplicationInfo(info.activityInfo.packageName, PackageManager.GET_META_DATA)).thenReturn(appInfo);
-        when(extractor.get(info.activityInfo.packageName, packageManager)).thenReturn(fingerprints);
+        when(extractor.get(info.activityInfo.packageName, packageManager, config)).thenReturn(fingerprints);
 
         return info;
     }

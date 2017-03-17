@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.yandex.yaloginsdk.LoginSdkConfig;
 import com.yandex.yaloginsdk.Token;
 import com.yandex.yaloginsdk.YaLoginSdkError;
 
@@ -27,9 +28,12 @@ public class ExternalLoginHandlerTest {
     @NonNull
     private ExternalLoginHandler loginHandler;
 
+    @NonNull
+    private final LoginSdkConfig config = new LoginSdkConfig("client_id", true);
+
     @Before
     public void before() {
-        loginHandler = new ExternalLoginHandler(() -> STATE);
+        loginHandler = new ExternalLoginHandler(config, () -> STATE);
         loginHandler.getUrl("clientId");
     }
 
@@ -70,7 +74,7 @@ public class ExternalLoginHandlerTest {
         Bundle savedState = new Bundle(1);
         loginHandler.saveState(savedState);
 
-        ExternalLoginHandler newHandler = new ExternalLoginHandler(() -> "some_new_state");
+        ExternalLoginHandler newHandler = new ExternalLoginHandler(config, () -> "some_new_state");
         newHandler.restoreState(savedState);
         assertThat(newHandler.state).isEqualTo(STATE);
     }

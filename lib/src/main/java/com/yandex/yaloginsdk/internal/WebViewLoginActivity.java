@@ -12,11 +12,12 @@ import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 
-import com.yandex.yaloginsdk.internal.ExternalLoginHandler;
+import com.yandex.yaloginsdk.LoginSdkConfig;
 
 import java.util.UUID;
 
-import static com.yandex.yaloginsdk.internal.YaLoginSdkConstants.EXTRA_CLIENT_ID;
+import static com.yandex.yaloginsdk.internal.YaLoginSdkConstants.EXTRA_CONFIG;
+
 
 public class WebViewLoginActivity extends AppCompatActivity {
 
@@ -28,12 +29,14 @@ public class WebViewLoginActivity extends AppCompatActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        loginHandler = new ExternalLoginHandler(() -> UUID.randomUUID().toString());
+        final LoginSdkConfig config = getIntent().getParcelableExtra(EXTRA_CONFIG);
+
+        loginHandler = new ExternalLoginHandler(config, () -> UUID.randomUUID().toString());
 
         clearCookies();
         final WebView webView = new WebView(this);
         webView.setWebViewClient(new WebViewClient());
-        webView.loadUrl(loginHandler.getUrl(getIntent().getStringExtra(EXTRA_CLIENT_ID)));
+        webView.loadUrl(loginHandler.getUrl(config.clientId()));
 
         setContentView(webView);
 

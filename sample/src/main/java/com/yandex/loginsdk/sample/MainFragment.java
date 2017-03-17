@@ -66,7 +66,7 @@ public class MainFragment extends Fragment {
         jwtLabel = (TextView) view.findViewById(R.id.jwt_label);
         jwtContainer = view.findViewById(R.id.jwt_container);
 
-        final LoginSdkConfig config = new LoginSdkConfig(CLIENT_ID, getActivity().getApplication());
+        final LoginSdkConfig config = new LoginSdkConfig(CLIENT_ID, true);
         sdk = YaLoginSdk.get(config);
         sdk.onRestoreInstanceState(savedInstanceState);
 

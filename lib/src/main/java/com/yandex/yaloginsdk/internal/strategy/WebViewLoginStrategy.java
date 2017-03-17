@@ -30,7 +30,7 @@ class WebViewLoginStrategy extends LoginStrategy {
             @NonNull final Set<String> scopes
     ) {
         final WebViewLoginDialogFragment dialog = new WebViewLoginDialogFragment();
-        dialog.setArguments(extras(scopes, config.clientId()));
+        dialog.setArguments(extras(scopes, config));
         activityStarter.showDialogFragment(dialog);
     }
 

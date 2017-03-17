@@ -54,7 +54,7 @@ public class YaLoginSdk {
     }
 
     private void startAuthorization(@NonNull final ActivityStarter starter, @Nullable final Set<String> scopes) {
-        final LoginStrategy strategy = new LoginStrategyProvider().getLoginStrategy(config.applicationContext());
+        final LoginStrategy strategy = new LoginStrategyProvider().getLoginStrategy(starter.getContext(), config);
         loginType = strategy.getType();
         strategy.login(starter, config, scopes == null ? emptySet() : scopes);
     }
@@ -72,6 +72,7 @@ public class YaLoginSdk {
         }
         if (loginType == null) {
             Logger.d(
+                    config,
                     TAG,
                     "requestCode is equals to LOGIN_REQUEST_CODE, but login type is unknown. " +
                             "Please, check that you call \"onSaveInstanceState\" and \"onRestoreInstanceState\" on YaLoginSdk"
@@ -83,19 +84,19 @@ public class YaLoginSdk {
 
         final Token token = extractor.tryExtractToken(data);
         if (token != null) {
-            Logger.d(TAG, "Token received");
+            Logger.d(config, TAG, "Token received");
             successListener.onSuccess(token);
             return true;
         }
 
         final YaLoginSdkError error = extractor.tryExtractError(data);
         if (error != null) {
-            Logger.d(TAG, "Error received");
+            Logger.d(config, TAG, "Error received");
             errorListener.onError(error);
             return true;
         }
 
-        Logger.d(TAG, "Nothing received");
+        Logger.d(config, TAG, "Nothing received");
         return false;
     }
 
