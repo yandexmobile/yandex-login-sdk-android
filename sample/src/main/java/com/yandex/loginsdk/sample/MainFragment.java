@@ -1,10 +1,12 @@
 package com.yandex.loginsdk.sample;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +43,13 @@ public class MainFragment extends Fragment {
     private Token token;
 
     @Nullable
+    private String jwt;
+
+    public MainFragment() {
+        setRetainInstance(true);
+    }
+
+    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_main, container, false);
@@ -57,14 +66,18 @@ public class MainFragment extends Fragment {
         jwtLabel = (TextView) view.findViewById(R.id.jwt_label);
         jwtContainer = view.findViewById(R.id.jwt_container);
 
-        LoginSdkConfig config = LoginSdkConfig.builder()
+        final LoginSdkConfig config = LoginSdkConfig.builder()
                 .clientId(CLIENT_ID)
                 .applicationContext(getActivity().getApplication())
                 .build();
         sdk = YaLoginSdk.get(config);
+        sdk.onRestoreInstanceState(savedInstanceState);
 
-        if (savedInstanceState != null) {
-            sdk.onRestoreInstanceState(savedInstanceState);
+        if (token != null) {
+            onTokenReceived(token);
+        }
+        if (jwt != null) {
+            onJwtReceived(jwt);
         }
     }
 
@@ -80,11 +93,7 @@ public class MainFragment extends Fragment {
                 requestCode,
                 resultCode,
                 data,
-                token -> {
-                    this.token = token;
-                    tokenLabel.setText(token.toString());
-                    jwtContainer.setVisibility(View.VISIBLE);
-                },
+                this::onTokenReceived,
                 error -> tokenLabel.setText(error.getMessage())
         );
 
@@ -93,22 +102,54 @@ public class MainFragment extends Fragment {
         }
     }
 
+    private void onTokenReceived(@NonNull Token token) {
+        this.token = token;
+        tokenLabel.setText(token.toString());
+        jwtContainer.setVisibility(View.VISIBLE);
+    }
+
+    private void onJwtReceived(@NonNull String jwt) {
+        this.jwt = jwt;
+        jwtLabel.setText(jwt);
+    }
+
     private void getJwt() {
-        final ProgressDialog dialog = new ProgressDialog(getActivity());
-        dialog.setMessage("Waiting");
-        dialog.show();
+        final DialogFragment dialog = new ProgressDialogFragment();
+        dialog.setCancelable(false);
+        dialog.show(getFragmentManager(), ProgressDialogFragment.TAG);
 
         assert token != null;
         sdk.getJwt(
                 token.token(),
                 token -> {
-                    dialog.cancel();
-                    jwtLabel.setText(token);
+                    dismissProgress();
+                    onJwtReceived(token);
                 },
                 error -> {
-                    dialog.cancel();
+                    dismissProgress();
                     jwtLabel.setText(Arrays.toString(error.getErrors()));
                 }
         );
+    }
+
+    private void dismissProgress() {
+        final Fragment dialogFragment = getFragmentManager().findFragmentByTag(ProgressDialogFragment.TAG);
+        if (dialogFragment != null) {
+            ((DialogFragment) dialogFragment).dismiss();
+        }
+    }
+
+    public static class ProgressDialogFragment extends DialogFragment {
+
+        private static final String TAG = ProgressDialogFragment.class.getCanonicalName();
+
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+            final ProgressDialog dialog = new ProgressDialog(getActivity());
+            dialog.setMessage("Waiting");
+            dialog.setCancelable(false);
+            return dialog;
+        }
     }
 }
