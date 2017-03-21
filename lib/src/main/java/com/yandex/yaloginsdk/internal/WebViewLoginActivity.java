@@ -31,18 +31,18 @@ public class WebViewLoginActivity extends AppCompatActivity {
 
         final LoginSdkConfig config = getIntent().getParcelableExtra(EXTRA_CONFIG);
 
+        // no need to save state, url will be loaded once again after rotation
         loginHandler = new ExternalLoginHandler(config, () -> UUID.randomUUID().toString());
 
-        clearCookies();
+        if (savedInstanceState == null) {
+            clearCookies();
+        }
+
         final WebView webView = new WebView(this);
         webView.setWebViewClient(new WebViewClient());
         webView.loadUrl(loginHandler.getUrl(config.clientId()));
 
         setContentView(webView);
-
-        if (savedInstanceState != null) {
-            loginHandler.restoreState(savedInstanceState);
-        }
     }
 
     private void clearCookies() {
@@ -58,12 +58,6 @@ public class WebViewLoginActivity extends AppCompatActivity {
             cookieSyncMngr.stopSync();
             cookieSyncMngr.sync();
         }
-    }
-
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        loginHandler.saveState(outState);
     }
 
     private void parseTokenFromUrl(@NonNull String url) {
