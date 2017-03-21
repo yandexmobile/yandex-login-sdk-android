@@ -10,7 +10,15 @@
 
         <activity
             android:name=".internal.BrowserLoginActivity"
-            android:launchMode="singleInstance">
+            android:launchMode="singleTop" />
+
+        <activity
+            android:name=".internal.WebViewLoginActivity"
+            android:theme="@style/AppTheme.FullScreen" />
+
+        <activity
+            android:name=".internal.BrowserDataActivity"
+            android:theme="@style/AppTheme.FullScreen">
 
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
@@ -36,9 +44,5 @@
                     tools:ignore="GoogleAppIndexingUrlError" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".internal.WebViewLoginActivity"
-            android:theme="@style/AppTheme.FullScreen" />
     </application>
 </manifest>
