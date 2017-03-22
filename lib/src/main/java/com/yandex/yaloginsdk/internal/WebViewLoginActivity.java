@@ -1,5 +1,6 @@
 package com.yandex.yaloginsdk.internal;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -25,6 +26,7 @@ public class WebViewLoginActivity extends AppCompatActivity {
     @NonNull
     private ExternalLoginHandler loginHandler;
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +43,7 @@ public class WebViewLoginActivity extends AppCompatActivity {
         final WebView webView = new WebView(this);
         webView.setWebViewClient(new WebViewClient());
         webView.loadUrl(loginHandler.getUrl(config.clientId()));
+        webView.getSettings().setJavaScriptEnabled(true);
 
         setContentView(webView);
     }
