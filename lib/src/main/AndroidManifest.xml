@@ -1,0 +1,49 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.yandex.yaloginsdk">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <activity
+            android:name=".internal.BrowserLoginActivity"
+            android:launchMode="singleTop" />
+
+        <activity
+            android:name=".internal.WebViewLoginActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:theme="@style/AppTheme.FullScreen" />
+
+        <activity
+            android:name=".internal.BrowserDataActivity"
+            android:theme="@style/AppTheme.FullScreen">
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="yxfcdddf83a97843ae80815c1c9247015b.oauth.yandex.ru"
+                    android:path="/auth/finish"
+                    android:scheme="https" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:path="/auth/finish"
+                    android:scheme="yxfcdddf83a97843ae80815c1c9247015b"
+                    tools:ignore="GoogleAppIndexingUrlError" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
