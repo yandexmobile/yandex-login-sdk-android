@@ -13,8 +13,6 @@ public class YaLoginSdkError extends RuntimeException {
 
     public static final String JWT_AUTHORIZATION_ERROR = "jwt.authorization.error";
 
-    public static final String IO_ERROR = "io.error";
-
     public static final String OAUTH_TOKEN_ERROR = "oauth_token.invalid";
 
     @NonNull
@@ -30,8 +28,8 @@ public class YaLoginSdkError extends RuntimeException {
     }
 
     public YaLoginSdkError(@NonNull final IOException e) {
-        super(IO_ERROR, e);
-        errors = new String[]{IO_ERROR};
+        super(CONNECTION_ERROR, e);
+        errors = new String[]{CONNECTION_ERROR};
     }
 
     @NonNull
