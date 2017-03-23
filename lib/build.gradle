@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'maven'
 
-def versionNameConst = '1.0'
+def versionNameConst = '1.0.1'
 def getBuildNumber() {
     (System.getenv('BUILD_NUMBER') ?: Integer.MAX_VALUE) as int
 }
