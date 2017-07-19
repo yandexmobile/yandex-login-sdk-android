@@ -1,0 +1,3 @@
+The following authors have created the source code of "Yandex Login SDK Android" published and distributed by YANDEX LLC as the owner:
+Rustam Sinukov <rustik1@yandex-team.ru>
+Vitaliy Kholyavin <vkholyavin@yandex-team.ru>

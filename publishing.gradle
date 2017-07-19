@@ -1,0 +1,160 @@
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+def isTeamcityBuild = project.hasProperty("teamcity")
+def isReleaseBuild = rootProject.properties.containsKey('teamcity') && rootProject.teamcity['release.branch'] == 'true'
+
+println ">>>>>>>>> isTeamcityBuild=${isTeamcityBuild} isReleaseBuild=${isReleaseBuild} <<<<<<<<<"
+
+if (isTeamcityBuild) {
+    signing {
+        project.ext["signing.keyId"] = teamcity['signing.keyId']
+        project.ext["signing.password"] = teamcity['signing.password']
+        project.ext["signing.secretKeyRingFile"] = teamcity['signing.secretKeyRingFile']
+    }
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.srcDirs
+}
+
+task javadoc(type: Javadoc) {
+    failOnError false
+    source = android.sourceSets.main.java.srcDirs
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+task signSourcesJar(type: Sign, dependsOn: sourcesJar) {
+    sign sourcesJar
+}
+
+task signJavadocJar(type: Sign, dependsOn: javadocJar) {
+    sign javadocJar
+}
+
+def createSignTask(def targetFile) {
+    return task(type: Sign, "sign${targetFile.name.capitalize()}Output") {
+        sign targetFile
+    }
+}
+
+def createSignAarTask() {
+    return task(type: Sign, "signAar") {
+        sign bundleRelease
+        dependsOn bundleRelease
+    }
+}
+
+publishing {
+    publications {
+
+        release(MavenPublication) {
+            groupId = project.group
+            version = project.android.defaultConfig.versionName + (isReleaseBuild ? "" : "-SNAPSHOT")
+            artifactId = project.artifactId
+            pom.packaging = 'aar'
+            artifact(bundleRelease) {
+                classifier null
+            }
+            artifact javadocJar
+            artifact sourcesJar
+            generatePom(pom)
+
+            if (isTeamcityBuild) {
+                artifact(signSourcesJar.signatureFiles.collect { it }[0]) {
+                    extension 'jar.asc'
+                    classifier 'sources'
+                    builtBy signSourcesJar
+                }
+                artifact(signJavadocJar.signatureFiles.collect { it }[0]) {
+                    extension 'jar.asc'
+                    classifier 'javadoc'
+                    builtBy signJavadocJar
+                }
+
+                def task = createSignAarTask()
+
+                artifact(signAar.signatureFiles.collect { it }[0]) {
+                    extension 'aar.asc'
+                    builtBy signAar
+                }
+
+                def pomFile = new File(buildDir, "publications/" + name + "/pom-default.xml")
+                task = createSignTask(pomFile)
+                artifact(task.signatureFiles.collect { it }[0]) {
+                    extension 'pom.asc'
+                    builtBy task
+                }
+            }
+
+        }
+    }
+    repositories {
+        //https://docs.gradle.org/current/dsl/org.gradle.api.artifacts.repositories.MavenArtifactRepository.html
+        if (isTeamcityBuild) {
+            maven {
+                name 'artifactory'
+
+                credentials {
+                    username teamcity['artifactory.username']
+                    password teamcity['artifactory.password']
+                }
+
+                url isReleaseBuild ? teamcity['artifactory.release_url'] :
+                        teamcity['artifactory.snapshot_url']
+            }
+
+            maven {
+                name = 'sonatype'
+
+                credentials {
+                    username teamcity['sonatype.username']
+                    password teamcity['sonatype.password']
+                }
+
+                url isReleaseBuild ? 'https://oss.sonatype.org/service/local/staging/deploy/maven2/' :
+                        'https://oss.sonatype.org/content/repositories/snapshots/'
+
+            }
+        }
+    }
+}
+
+
+def generatePom(def pom) {
+    pom.withXml {
+        def dependenciesNode = asNode().appendNode('dependencies')
+
+        // List all compile dependencies and write to POM
+        configurations.compile.getAllDependencies().each { Dependency dep ->
+            if (dep.group == null || dep.version == null || dep.name == null || dep.name == "unspecified")
+                return // ignore invalid dependencies
+
+            def dependencyNode = dependenciesNode.appendNode('dependency')
+            dependencyNode.appendNode('groupId', dep.group)
+            dependencyNode.appendNode('artifactId', dep.name)
+            dependencyNode.appendNode('version', dep.version)
+            dependencyNode.appendNode('scope', 'compile')
+
+            if (!dep.transitive) {
+                // If this dependency is transitive, we should force exclude all its dependencies them from the POM
+                def exclusionNode = dependencyNode.appendNode('exclusions').appendNode('exclusion')
+                exclusionNode.appendNode('groupId', '*')
+                exclusionNode.appendNode('artifactId', '*')
+            } else if (!dep.properties.excludeRules.empty) {
+                // Otherwise add specified exclude rules
+                def exclusionsNode = dependencyNode.appendNode('exclusions')
+                dep.properties.excludeRules.each { ExcludeRule rule ->
+                    def exclusionNode = exclusionsNode.appendNode('exclusion')
+                    exclusionNode.appendNode('groupId', rule.group ?: '*')
+                    exclusionNode.appendNode('artifactId', rule.module ?: '*')
+                }
+            }
+        }
+    }
+}
