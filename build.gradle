@@ -6,16 +6,12 @@ ext {
 
 buildscript {
     repositories {
-        maven { url 'http://artifactory.yandex.net/artifactory/yandex_mobile_releases/' }
-        maven { url 'http://artifactory.yandex.net/artifactory/yandex_mobile_snapshots/' }
         jcenter()
         mavenCentral()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.3'
         classpath 'me.tatarka:gradle-retrolambda:3.6.1'
-        classpath 'com.yandex.mobile.tools:yandex-signer:2.1.0'
-        classpath ('com.yandex.mobile.tools:gradle-upload-beta-plugin:3.0.0-SNAPSHOT') {changing = true}
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }

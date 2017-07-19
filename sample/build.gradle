@@ -1,7 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: 'yandex-signer-android'
 apply plugin: 'me.tatarka.retrolambda'
-apply plugin: 'upload-beta-android'
 
 android {
     compileSdkVersion 25
@@ -27,17 +25,6 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
-    }
-}
-
-uploadBeta {
-    applicationName = "loginsdk"
-
-    getBranchId = { defaultBranch, variantData ->
-        if (project.hasProperty("teamcity")) {
-            return project.teamcity["build.branch"]
-        }
-        return defaultBranch.replaceAll("/", "_")
     }
 }
 
