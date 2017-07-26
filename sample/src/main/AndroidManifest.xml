@@ -17,6 +17,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="com.yandex.auth.CLIENT_ID"
+            android:value="@string/client_id" />
     </application>
 
 </manifest>

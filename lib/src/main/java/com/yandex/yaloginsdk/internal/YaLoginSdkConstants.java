@@ -6,7 +6,9 @@ public class YaLoginSdkConstants {
 
     public static final String EXTRA_ERROR = "com.yandex.yaloginsdk.EXTRA_ERROR";
 
-    public static final String EXTRA_CONFIG = "com.yandex.auth.EXTRA_CONFIG";
+    public static final String EXTRA_CONFIG = "com.yandex.yaloginsdk.EXTRA_CONFIG";
+
+    public static final String EXTRA_SCOPES = "com.yandex.yaloginsdk.EXTRA_SCOPES";
 
     public static final String EXTRA_CLIENT_ID = "com.yandex.auth.CLIENT_ID";
 }

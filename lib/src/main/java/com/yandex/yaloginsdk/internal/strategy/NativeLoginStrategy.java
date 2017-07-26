@@ -6,16 +6,16 @@ import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 
-import com.yandex.yaloginsdk.YaLoginSdk;
-import com.yandex.yaloginsdk.internal.ActivityStarter;
-import com.yandex.yaloginsdk.internal.FingerprintExtractor;
 import com.yandex.yaloginsdk.LoginSdkConfig;
 import com.yandex.yaloginsdk.Token;
 import com.yandex.yaloginsdk.YaLoginSdkError;
+import com.yandex.yaloginsdk.internal.FingerprintExtractor;
+import com.yandex.yaloginsdk.internal.LoginSdkActivity;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import static com.yandex.yaloginsdk.YaLoginSdkError.CONNECTION_ERROR;
 
@@ -117,12 +117,12 @@ class NativeLoginStrategy extends LoginStrategy {
 
     @Override
     public void login(
-            @NonNull final ActivityStarter activityStarter,
+            @NonNull final FragmentActivity activity,
             @NonNull final LoginSdkConfig config,
-            @NonNull final Set<String> scopes
+            @NonNull final ArrayList<String> scopes
     ) {
         final Intent intent = putExtras(packagedIntent, scopes, config.clientId());
-        activityStarter.startActivityForResult(intent, YaLoginSdk.LOGIN_REQUEST_CODE);
+        activity.startActivityForResult(intent, LoginSdkActivity.LOGIN_REQUEST_CODE);
     }
 
     @Override

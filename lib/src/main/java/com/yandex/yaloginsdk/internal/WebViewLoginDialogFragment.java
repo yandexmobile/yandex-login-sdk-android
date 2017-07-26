@@ -6,11 +6,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 
 import com.yandex.yaloginsdk.R;
-import com.yandex.yaloginsdk.YaLoginSdk;
 
 public class WebViewLoginDialogFragment extends DialogFragment {
 
@@ -31,12 +29,6 @@ public class WebViewLoginDialogFragment extends DialogFragment {
     private void startWebViewActivity() {
         final Intent loginIntent = new Intent(getActivity(), WebViewLoginActivity.class);
         loginIntent.putExtras(getArguments());
-
-        final Fragment targetFragment = getTargetFragment();
-        if (targetFragment == null) {
-            getActivity().startActivityForResult(loginIntent, YaLoginSdk.LOGIN_REQUEST_CODE);
-        } else {
-            targetFragment.startActivityForResult(loginIntent, YaLoginSdk.LOGIN_REQUEST_CODE);
-        }
+        getActivity().startActivityForResult(loginIntent, LoginSdkActivity.LOGIN_REQUEST_CODE);
     }
 }

@@ -1,95 +1,65 @@
 package com.yandex.yaloginsdk;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 
-import com.yandex.yaloginsdk.internal.ActivityStarter;
 import com.yandex.yaloginsdk.internal.JwtRequest;
 import com.yandex.yaloginsdk.internal.Logger;
-import com.yandex.yaloginsdk.internal.strategy.LoginStrategy;
-import com.yandex.yaloginsdk.internal.strategy.LoginStrategy.ResultExtractor;
-import com.yandex.yaloginsdk.internal.strategy.LoginStrategyProvider;
-import com.yandex.yaloginsdk.internal.strategy.LoginType;
+import com.yandex.yaloginsdk.internal.LoginSdkActivity;
+import com.yandex.yaloginsdk.internal.YaLoginSdkConstants;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Set;
-
-import static java.util.Collections.emptySet;
 
 public class YaLoginSdk {
 
-    public static int LOGIN_REQUEST_CODE = 312; // TODO choose number?
-    private static final String STATE_LOGIN_TYPE = "com.yandex.yaloginsdk.STATE_LOGIN_TYPE";
     private static final String TAG = YaLoginSdk.class.getSimpleName();
+
+    @NonNull
+    private final LoginSdkConfig config;
 
     @NonNull
     public static YaLoginSdk get(@NonNull final LoginSdkConfig config) {
         return new YaLoginSdk(config);
     }
 
-    @Nullable
-    private LoginType loginType;
-
-    @NonNull
-    private final LoginSdkConfig config;
-
     private YaLoginSdk(@NonNull final LoginSdkConfig config) {
         this.config = config;
     }
 
-    public void login(@NonNull final FragmentActivity activity, @Nullable final Set<String> scopes) {
-        startAuthorization(new ActivityStarter(activity), scopes);
-    }
-
-    public void login(@NonNull final Fragment fragment, @Nullable final Set<String> scopes) {
-        startAuthorization(new ActivityStarter(fragment), scopes);
-    }
-
-    private void startAuthorization(@NonNull final ActivityStarter starter, @Nullable final Set<String> scopes) {
-        final LoginStrategy strategy = new LoginStrategyProvider().getLoginStrategy(starter.getContext(), config);
-        loginType = strategy.getType();
-        strategy.login(starter, config, scopes == null ? emptySet() : scopes);
+    @NonNull
+    public Intent createLoginIntent(@NonNull final Context context, @Nullable final Set<String> scopes) {
+        final Intent intent = new Intent(context, LoginSdkActivity.class);
+        if (scopes != null) {
+            intent.putExtra(YaLoginSdkConstants.EXTRA_SCOPES, new ArrayList<>(scopes));
+        }
+        intent.putExtra(YaLoginSdkConstants.EXTRA_CONFIG, config);
+        return intent;
     }
 
     public boolean onActivityResult(
-            final int requestCode,
             final int resultCode,
             @Nullable final Intent data,
             @NonNull final SuccessListener<Token> successListener,
             @NonNull final ErrorListener errorListener
     ) {
         // TODO add cancel listener?
-        if (data == null || resultCode != Activity.RESULT_OK || requestCode != LOGIN_REQUEST_CODE) {
-            return false;
-        }
-        if (loginType == null) {
-            Logger.d(
-                    config,
-                    TAG,
-                    "requestCode is equals to LOGIN_REQUEST_CODE, but login type is unknown. " +
-                            "Please, check that you call \"onSaveInstanceState\" and \"onRestoreInstanceState\" on YaLoginSdk"
-            );
+        if (data == null || resultCode != Activity.RESULT_OK) {
             return false;
         }
 
-        final ResultExtractor extractor = new LoginStrategyProvider().getResultExtractor(loginType);
-
-        final Token token = extractor.tryExtractToken(data);
+        final Token token = data.getParcelableExtra(YaLoginSdkConstants.EXTRA_TOKEN);
         if (token != null) {
             Logger.d(config, TAG, "Token received");
             successListener.onSuccess(token);
             return true;
         }
 
-        final YaLoginSdkError error = extractor.tryExtractError(data);
+        final YaLoginSdkError error = (YaLoginSdkError) data.getSerializableExtra(YaLoginSdkConstants.EXTRA_ERROR);
         if (error != null) {
             Logger.d(config, TAG, "Error received");
             errorListener.onError(error);
@@ -100,38 +70,11 @@ public class YaLoginSdk {
         return false;
     }
 
-    public void getJwt(
-            @NonNull final String token,
-            @NonNull final SuccessListener<String> successListener,
-            @NonNull final ErrorListener errorListener
-    ) {
-        final HandlerThread handlerThread = new HandlerThread("YaLoginSdkIOThread");
-        handlerThread.start();
-        final Handler ioHandler = new Handler(handlerThread.getLooper());
-        final Handler uiHandler = new Handler(Looper.getMainLooper());
-
-        ioHandler.post(() -> {
-            try {
-                String jwt = new JwtRequest(token).get();
-                uiHandler.post(() -> successListener.onSuccess(jwt));
-            } catch (YaLoginSdkError e) {
-                uiHandler.post(() -> errorListener.onError(e));
-            } catch (IOException e) {
-                uiHandler.post(() -> errorListener.onError(new YaLoginSdkError(e)));
-            }
-            handlerThread.quit();
-        });
-    }
-
-    public void onSaveInstanceState(@NonNull final Bundle state) {
-        if (loginType != null) {
-            state.putInt(STATE_LOGIN_TYPE, loginType.ordinal());
-        }
-    }
-
-    public void onRestoreInstanceState(@Nullable final Bundle state) {
-        if (state != null && state.containsKey(STATE_LOGIN_TYPE)) {
-            loginType = LoginType.values()[state.getInt(STATE_LOGIN_TYPE)];
+    public String getJwt(String token) throws YaLoginSdkError {
+        try {
+            return new JwtRequest(token).get();
+        } catch (IOException e) {
+            throw new YaLoginSdkError(e);
         }
     }
 }

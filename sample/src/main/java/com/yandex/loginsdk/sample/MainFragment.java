@@ -16,12 +16,14 @@ import android.widget.TextView;
 import com.yandex.yaloginsdk.LoginSdkConfig;
 import com.yandex.yaloginsdk.Token;
 import com.yandex.yaloginsdk.YaLoginSdk;
+import com.yandex.yaloginsdk.YaLoginSdkError;
 
 import java.util.Arrays;
 
 public class MainFragment extends Fragment {
 
     public static final String CLIENT_ID = "fcdddf83a97843ae80815c1c9247015b";
+    private static final int REQUEST_LOGIN_SDK = 1;
 
     @SuppressWarnings("NullableProblems") // onCreate
     @NonNull
@@ -58,7 +60,8 @@ public class MainFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         final View loginButton = view.findViewById(R.id.login);
-        loginButton.setOnClickListener(v -> sdk.login(this, null));
+        loginButton.setOnClickListener(v ->
+                startActivityForResult(sdk.createLoginIntent(getActivity(), null), REQUEST_LOGIN_SDK));
         final View jwtButton = view.findViewById(R.id.jwt);
         jwtButton.setOnClickListener(v -> getJwt());
 
@@ -66,9 +69,7 @@ public class MainFragment extends Fragment {
         jwtLabel = (TextView) view.findViewById(R.id.jwt_label);
         jwtContainer = view.findViewById(R.id.jwt_container);
 
-        final LoginSdkConfig config = new LoginSdkConfig(CLIENT_ID, true);
-        sdk = YaLoginSdk.get(config);
-        sdk.onRestoreInstanceState(savedInstanceState);
+        sdk = YaLoginSdk.get(new LoginSdkConfig(getContext(), true));
 
         if (token != null) {
             onTokenReceived(token);
@@ -79,15 +80,8 @@ public class MainFragment extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        sdk.onSaveInstanceState(outState);
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         final boolean handled = sdk.onActivityResult(
-                requestCode,
                 resultCode,
                 data,
                 this::onTokenReceived,
@@ -116,17 +110,22 @@ public class MainFragment extends Fragment {
         dialog.show(getFragmentManager(), ProgressDialogFragment.TAG);
 
         assert token != null;
-        sdk.getJwt(
-                token.token(),
-                token -> {
+
+        new Thread(() -> {
+            try {
+                final String jwt = sdk.getJwt(token.token());
+                getActivity().runOnUiThread(() -> {
+                    onJwtReceived(jwt);
                     dismissProgress();
-                    onJwtReceived(token);
-                },
-                error -> {
+                });
+            } catch (YaLoginSdkError e) {
+                getActivity().runOnUiThread(() -> {
+                    jwtLabel.setText(Arrays.toString(e.getErrors()));
                     dismissProgress();
-                    jwtLabel.setText(Arrays.toString(error.getErrors()));
-                }
-        );
+                });
+            }
+
+        }).start();
     }
 
     private void dismissProgress() {

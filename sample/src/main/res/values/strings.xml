@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name" translatable="false">YaLoginSDK Sample</string>
+    <!-- Don't use this client id in you app. Registration of new application: https://tech.yandex.ru -->
+    <string name="client_id" translatable="false">fcdddf83a97843ae80815c1c9247015b</string>
 </resources>

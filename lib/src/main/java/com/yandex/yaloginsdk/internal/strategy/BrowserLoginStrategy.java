@@ -7,16 +7,16 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 
 import com.yandex.yaloginsdk.LoginSdkConfig;
 import com.yandex.yaloginsdk.Token;
-import com.yandex.yaloginsdk.YaLoginSdk;
 import com.yandex.yaloginsdk.YaLoginSdkError;
-import com.yandex.yaloginsdk.internal.ActivityStarter;
 import com.yandex.yaloginsdk.internal.BrowserLoginActivity;
+import com.yandex.yaloginsdk.internal.LoginSdkActivity;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import static com.yandex.yaloginsdk.internal.BrowserLoginActivity.EXTRA_BROWSER_PACKAGE_NAME;
 import static com.yandex.yaloginsdk.internal.YaLoginSdkConstants.EXTRA_ERROR;
@@ -85,15 +85,15 @@ class BrowserLoginStrategy extends LoginStrategy {
 
     @Override
     public void login(
-            @NonNull final ActivityStarter activityStarter,
+            @NonNull final FragmentActivity activity,
             @NonNull final LoginSdkConfig config,
-            @NonNull final Set<String> scopes
+            @NonNull final ArrayList<String> scopes
     ) {
         final Intent loginIntent = new Intent(context, BrowserLoginActivity.class);
         loginIntent.putExtra(EXTRA_BROWSER_PACKAGE_NAME, browserPackageName);
         putExtras(loginIntent, scopes, config);
 
-        activityStarter.startActivityForResult(loginIntent, YaLoginSdk.LOGIN_REQUEST_CODE);
+        activity.startActivityForResult(loginIntent, LoginSdkActivity.LOGIN_REQUEST_CODE);
     }
 
     @Override

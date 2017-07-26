@@ -2,8 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.yandex.yaloginsdk">
 
-    <application
-        android:theme="@style/AppTheme">
+    <application>
+
+        <activity
+            android:label=""
+            android:name=".internal.LoginSdkActivity"
+            android:theme="@style/Theme.AuthSdk.Transparent" />
 
         <activity
             android:name=".internal.BrowserLoginActivity"
@@ -12,11 +16,11 @@
         <activity
             android:name=".internal.WebViewLoginActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:theme="@style/AppTheme.FullScreen" />
+            android:theme="@style/Theme.AuthSdk" />
 
         <activity
             android:name=".internal.BrowserDataActivity"
-            android:theme="@style/AppTheme.FullScreen">
+            android:theme="@style/Theme.AuthSdk.Transparent">
 
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
