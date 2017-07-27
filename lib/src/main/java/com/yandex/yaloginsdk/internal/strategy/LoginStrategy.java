@@ -1,10 +1,10 @@
 package com.yandex.yaloginsdk.internal.strategy;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 
 import com.yandex.yaloginsdk.LoginSdkConfig;
 import com.yandex.yaloginsdk.Token;
@@ -20,7 +20,7 @@ public abstract class LoginStrategy {
     static final String EXTRA_SCOPES = "com.yandex.auth.SCOPES";
 
     public abstract void login(
-            @NonNull final FragmentActivity activity,
+            @NonNull final Activity activity,
             @NonNull final LoginSdkConfig config,
             @NonNull final ArrayList<String> scopes
     );

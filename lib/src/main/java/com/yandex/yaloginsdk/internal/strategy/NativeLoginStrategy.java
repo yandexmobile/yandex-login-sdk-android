@@ -1,12 +1,12 @@
 package com.yandex.yaloginsdk.internal.strategy;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 
 import com.yandex.yaloginsdk.LoginSdkConfig;
 import com.yandex.yaloginsdk.Token;
@@ -117,7 +117,7 @@ class NativeLoginStrategy extends LoginStrategy {
 
     @Override
     public void login(
-            @NonNull final FragmentActivity activity,
+            @NonNull final Activity activity,
             @NonNull final LoginSdkConfig config,
             @NonNull final ArrayList<String> scopes
     ) {

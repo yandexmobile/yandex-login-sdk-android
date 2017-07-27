@@ -1,9 +1,9 @@
 package com.yandex.yaloginsdk.internal.strategy;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 
 import com.yandex.yaloginsdk.LoginSdkConfig;
 import com.yandex.yaloginsdk.Token;
@@ -25,13 +25,13 @@ class WebViewLoginStrategy extends LoginStrategy {
 
     @Override
     public void login(
-            @NonNull final FragmentActivity activity,
+            @NonNull final Activity activity,
             @NonNull final LoginSdkConfig config,
             @NonNull final ArrayList<String> scopes
     ) {
         final WebViewLoginDialogFragment dialog = new WebViewLoginDialogFragment();
         dialog.setArguments(extras(scopes, config));
-        dialog.show(activity.getSupportFragmentManager(), WebViewLoginDialogFragment.class.getSimpleName());
+        dialog.show(activity.getFragmentManager(), WebViewLoginDialogFragment.class.getSimpleName());
     }
 
     @Override

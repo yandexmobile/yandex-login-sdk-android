@@ -33,9 +33,7 @@ android {
 }
 
 dependencies {
-    //noinspection GradleCompatible using lowest version
-    compile 'com.android.support:appcompat-v7:22.1.0'
-
+    provided 'com.android.support:support-annotations:26.0.0'
     testCompile 'junit:junit:4.12'
     testCompile 'org.robolectric:robolectric:3.3.2'
     testCompile 'org.robolectric:shadows-support-v4:3.2.2'

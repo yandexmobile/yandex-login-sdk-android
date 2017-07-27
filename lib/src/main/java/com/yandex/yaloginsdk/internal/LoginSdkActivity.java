@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 
 import com.yandex.yaloginsdk.LoginSdkConfig;
 import com.yandex.yaloginsdk.Token;
@@ -17,7 +16,7 @@ import com.yandex.yaloginsdk.internal.strategy.LoginType;
 import java.util.ArrayList;
 
 
-public class LoginSdkActivity extends AppCompatActivity {
+public class LoginSdkActivity extends Activity {
 
     public static final int LOGIN_REQUEST_CODE = 312; // TODO choose number?
 

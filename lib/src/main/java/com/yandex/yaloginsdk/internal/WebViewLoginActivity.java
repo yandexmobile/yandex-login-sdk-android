@@ -1,6 +1,7 @@
 package com.yandex.yaloginsdk.internal;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -8,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
@@ -20,7 +20,7 @@ import java.util.UUID;
 import static com.yandex.yaloginsdk.internal.YaLoginSdkConstants.EXTRA_CONFIG;
 
 
-public class WebViewLoginActivity extends AppCompatActivity {
+public class WebViewLoginActivity extends Activity {
 
     @SuppressWarnings("NullableProblems") // onCreate
     @NonNull
