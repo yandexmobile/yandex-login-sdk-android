@@ -1,6 +1,0 @@
-<resources>
-    <string name="webview_login_dialog_title">Warning</string>
-    <string name="webview_login_dialog_message">Your Yandex login and password will be used to log into this app. This may constitute a security risk to your Yandex account. Press \"Continue\" only if you trust this app\'s developer.</string>
-    <string name="webview_login_dialog_positive_button">Continue</string>
-    <string name="webview_login_dialog_negative_button">Cancel</string>
-</resources>

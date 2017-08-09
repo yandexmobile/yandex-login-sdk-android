@@ -8,7 +8,8 @@ import android.support.annotation.Nullable;
 import com.yandex.yaloginsdk.LoginSdkConfig;
 import com.yandex.yaloginsdk.Token;
 import com.yandex.yaloginsdk.YaLoginSdkError;
-import com.yandex.yaloginsdk.internal.WebViewLoginDialogFragment;
+import com.yandex.yaloginsdk.internal.LoginSdkActivity;
+import com.yandex.yaloginsdk.internal.WebViewLoginActivity;
 
 import java.util.ArrayList;
 
@@ -29,9 +30,9 @@ class WebViewLoginStrategy extends LoginStrategy {
             @NonNull final LoginSdkConfig config,
             @NonNull final ArrayList<String> scopes
     ) {
-        final WebViewLoginDialogFragment dialog = new WebViewLoginDialogFragment();
-        dialog.setArguments(extras(scopes, config));
-        dialog.show(activity.getFragmentManager(), WebViewLoginDialogFragment.class.getSimpleName());
+        final Intent loginIntent = new Intent(activity, WebViewLoginActivity.class);
+        loginIntent.putExtras(extras(scopes, config));
+        activity.startActivityForResult(loginIntent, LoginSdkActivity.LOGIN_REQUEST_CODE);
     }
 
     @Override
