@@ -9,9 +9,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.yandex.yaloginsdk.LoginSdkConfig;
-import com.yandex.yaloginsdk.Token;
-import com.yandex.yaloginsdk.YaLoginSdkError;
+import com.yandex.yaloginsdk.YandexAuthException;
+import com.yandex.yaloginsdk.YandexAuthOptions;
+import com.yandex.yaloginsdk.YandexAuthToken;
 import com.yandex.yaloginsdk.internal.FingerprintExtractor;
 import com.yandex.yaloginsdk.internal.strategy.NativeLoginStrategy.ResultExtractor;
 
@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.yandex.yaloginsdk.YaLoginSdkError.CONNECTION_ERROR;
+import static com.yandex.yaloginsdk.YandexAuthException.CONNECTION_ERROR;
 import static com.yandex.yaloginsdk.internal.strategy.NativeLoginStrategy.EXTRA_OAUTH_TOKEN;
 import static com.yandex.yaloginsdk.internal.strategy.NativeLoginStrategy.EXTRA_OAUTH_TOKEN_EXPIRES;
 import static com.yandex.yaloginsdk.internal.strategy.NativeLoginStrategy.EXTRA_OAUTH_TOKEN_TYPE;
@@ -63,7 +63,7 @@ public class NativeLoginStrategyTest {
     PackageManager packageManager;
 
     @NonNull
-    private final LoginSdkConfig config = new LoginSdkConfig("client_id", true);
+    private final YandexAuthOptions options = new YandexAuthOptions("client_id", true);
 
     @Before
     public void beforeEachTest() {
@@ -73,25 +73,25 @@ public class NativeLoginStrategyTest {
     @Test
     public void findBest_returnsMatching() throws PackageManager.NameNotFoundException {
         ResolveInfo info = createResolveInfo(SDK_VERSION_CORRECT, AM_VERSION, "package.name", new String[]{"wrong", FINGERPRINT});
-        assertThat(NativeLoginStrategy.findBest(config, toList(info), packageManager, extractor)).isEqualTo(info);
+        assertThat(NativeLoginStrategy.findBest(options, toList(info), packageManager, extractor)).isEqualTo(info);
     }
 
     @Test
     public void findBest_returnsMatchingWithBiggerSdkVersion() throws PackageManager.NameNotFoundException {
         ResolveInfo info = createResolveInfo(SDK_VERSION_CORRECT_BIGGER, AM_VERSION, "package.name", new String[]{"wrong", FINGERPRINT});
-        assertThat(NativeLoginStrategy.findBest(config, toList(info), packageManager, extractor)).isEqualTo(info);
+        assertThat(NativeLoginStrategy.findBest(options, toList(info), packageManager, extractor)).isEqualTo(info);
     }
 
     @Test
     public void findBest_nullOnWrongFingerprint() throws PackageManager.NameNotFoundException {
         ResolveInfo info = createResolveInfo(SDK_VERSION_CORRECT, AM_VERSION, "package.name", new String[]{"wrong", "and_wrong"});
-        assertThat(NativeLoginStrategy.findBest(config, toList(info), packageManager, extractor)).isNull();
+        assertThat(NativeLoginStrategy.findBest(options, toList(info), packageManager, extractor)).isNull();
     }
 
     @Test
     public void findBest_nullOnWrongSdkVersion() throws PackageManager.NameNotFoundException {
         ResolveInfo info = createResolveInfo(SDK_VERSION_WRONG, AM_VERSION, "package.name", new String[]{FINGERPRINT});
-        assertThat(NativeLoginStrategy.findBest(config, toList(info), packageManager, extractor)).isNull();
+        assertThat(NativeLoginStrategy.findBest(options, toList(info), packageManager, extractor)).isNull();
     }
 
     @Test
@@ -99,7 +99,7 @@ public class NativeLoginStrategyTest {
         ResolveInfo info1 = createResolveInfo(SDK_VERSION_CORRECT, AM_VERSION, "package.name1", new String[]{FINGERPRINT});
         ResolveInfo info2 = createResolveInfo(SDK_VERSION_CORRECT_BIGGER, AM_VERSION + 1, "package.name2", new String[]{FINGERPRINT});
         ResolveInfo info3 = createResolveInfo(SDK_VERSION_CORRECT, AM_VERSION + 2, "package.name3", new String[]{FINGERPRINT});
-        assertThat(NativeLoginStrategy.findBest(config, toList(info1, info2, info3), packageManager, extractor)).isEqualTo(info3);
+        assertThat(NativeLoginStrategy.findBest(options, toList(info1, info2, info3), packageManager, extractor)).isEqualTo(info3);
     }
 
     @Test
@@ -110,7 +110,7 @@ public class NativeLoginStrategyTest {
         tokenData.putExtra(EXTRA_OAUTH_TOKEN_TYPE, "type");
         tokenData.putExtra(EXTRA_OAUTH_TOKEN_EXPIRES, 1L);
 
-        assertThat(extractor.tryExtractToken(tokenData)).isEqualTo(Token.create("token", "type", 1L));
+        assertThat(extractor.tryExtractToken(tokenData)).isEqualTo(new YandexAuthToken("token", 1L));
     }
 
     @Test
@@ -120,7 +120,7 @@ public class NativeLoginStrategyTest {
         tokenData.putExtra(EXTRA_OAUTH_TOKEN, "token");
         tokenData.putExtra(EXTRA_OAUTH_TOKEN_TYPE, "type");
 
-        assertThat(extractor.tryExtractToken(tokenData)).isEqualTo(Token.create("token", "type", 0L));
+        assertThat(extractor.tryExtractToken(tokenData)).isEqualTo(new YandexAuthToken("token", 0L));
     }
 
     @Test
@@ -128,16 +128,6 @@ public class NativeLoginStrategyTest {
         ResultExtractor extractor = new ResultExtractor();
         Intent tokenData = new Intent();
         tokenData.putExtra(EXTRA_OAUTH_TOKEN_TYPE, "type");
-        tokenData.putExtra(EXTRA_OAUTH_TOKEN_EXPIRES, 1d);
-
-        assertThat(extractor.tryExtractToken(tokenData)).isNull();
-    }
-
-    @Test
-    public void tryExtractToken_shouldReturnNullIfNoType() {
-        ResultExtractor extractor = new ResultExtractor();
-        Intent tokenData = new Intent();
-        tokenData.putExtra(EXTRA_OAUTH_TOKEN, "token");
         tokenData.putExtra(EXTRA_OAUTH_TOKEN_EXPIRES, 1d);
 
         assertThat(extractor.tryExtractToken(tokenData)).isNull();
@@ -157,7 +147,7 @@ public class NativeLoginStrategyTest {
         Intent errorData = new Intent();
         errorData.putExtra(OAUTH_TOKEN_ERROR, true);
 
-        assertThat(extractor.tryExtractError(errorData)).isEqualTo(new YaLoginSdkError(CONNECTION_ERROR));
+        assertThat(extractor.tryExtractError(errorData)).isEqualTo(new YandexAuthException(CONNECTION_ERROR));
     }
 
     @Test
@@ -167,7 +157,7 @@ public class NativeLoginStrategyTest {
         errorData.putExtra(OAUTH_TOKEN_ERROR, true);
         errorData.putExtra(OAUTH_TOKEN_ERROR_MESSAGES, new String[]{"error.message", "one.more.error"});
 
-        assertThat(extractor.tryExtractError(errorData)).isEqualTo(new YaLoginSdkError(new String[]{"error.message", "one.more.error"}));
+        assertThat(extractor.tryExtractError(errorData)).isEqualTo(new YandexAuthException(new String[]{"error.message", "one.more.error"}));
     }
 
     @NonNull
@@ -183,7 +173,7 @@ public class NativeLoginStrategyTest {
         appInfo.metaData = metadata;
 
         when(packageManager.getApplicationInfo(info.activityInfo.packageName, PackageManager.GET_META_DATA)).thenReturn(appInfo);
-        when(extractor.get(info.activityInfo.packageName, packageManager, config)).thenReturn(fingerprints);
+        when(extractor.get(info.activityInfo.packageName, packageManager, options)).thenReturn(fingerprints);
 
         return info;
     }

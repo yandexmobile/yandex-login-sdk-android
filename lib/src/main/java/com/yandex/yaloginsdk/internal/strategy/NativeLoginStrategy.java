@@ -8,16 +8,16 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.yandex.yaloginsdk.LoginSdkConfig;
-import com.yandex.yaloginsdk.Token;
-import com.yandex.yaloginsdk.YaLoginSdkError;
+import com.yandex.yaloginsdk.YandexAuthException;
+import com.yandex.yaloginsdk.YandexAuthOptions;
+import com.yandex.yaloginsdk.YandexAuthToken;
 import com.yandex.yaloginsdk.internal.FingerprintExtractor;
 import com.yandex.yaloginsdk.internal.LoginSdkActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.yandex.yaloginsdk.YaLoginSdkError.CONNECTION_ERROR;
+import static com.yandex.yaloginsdk.YandexAuthException.CONNECTION_ERROR;
 
 class NativeLoginStrategy extends LoginStrategy {
 
@@ -46,14 +46,14 @@ class NativeLoginStrategy extends LoginStrategy {
      */
     @Nullable
     static LoginStrategy getIfPossible(
-            @NonNull final LoginSdkConfig config,
+            @NonNull final YandexAuthOptions options,
             @NonNull final PackageManager packageManager,
             @NonNull final FingerprintExtractor fingerprintExtractor
     ) {
         final Intent amSdkIntent = new Intent(ACTION_YA_SDK_LOGIN);
         final List<ResolveInfo> infos = packageManager.queryIntentActivities(amSdkIntent, PackageManager.MATCH_DEFAULT_ONLY);
 
-        final ResolveInfo bestInfo = findBest(config, infos, packageManager, fingerprintExtractor);
+        final ResolveInfo bestInfo = findBest(options, infos, packageManager, fingerprintExtractor);
         if (bestInfo != null) {
             final Intent intent = new Intent(ACTION_YA_SDK_LOGIN);
             intent.setPackage(bestInfo.activityInfo.packageName);
@@ -65,7 +65,7 @@ class NativeLoginStrategy extends LoginStrategy {
 
     @Nullable
     static ResolveInfo findBest(
-            @NonNull final LoginSdkConfig config,
+            @NonNull final YandexAuthOptions options,
             @NonNull final List<ResolveInfo> infos,
             @NonNull final PackageManager packageManager,
             @NonNull final FingerprintExtractor fingerprintExtractor
@@ -89,7 +89,7 @@ class NativeLoginStrategy extends LoginStrategy {
             }
 
             // filter by am fingerprint
-            final String[] fingerPrints = fingerprintExtractor.get(info.activityInfo.packageName, packageManager, config);
+            final String[] fingerPrints = fingerprintExtractor.get(info.activityInfo.packageName, packageManager, options);
             if (fingerPrints == null) {
                 // no fingerprints found
                 continue;
@@ -118,10 +118,10 @@ class NativeLoginStrategy extends LoginStrategy {
     @Override
     public void login(
             @NonNull final Activity activity,
-            @NonNull final LoginSdkConfig config,
+            @NonNull final YandexAuthOptions options,
             @NonNull final ArrayList<String> scopes
     ) {
-        final Intent intent = putExtras(packagedIntent, scopes, config.clientId());
+        final Intent intent = putExtras(packagedIntent, scopes, options.clientId());
         activity.startActivityForResult(intent, LoginSdkActivity.LOGIN_REQUEST_CODE);
     }
 
@@ -135,26 +135,24 @@ class NativeLoginStrategy extends LoginStrategy {
 
         @Override
         @Nullable
-        public Token tryExtractToken(@NonNull final Intent data) {
+        public YandexAuthToken tryExtractToken(@NonNull final Intent data) {
             final String token = data.getStringExtra(EXTRA_OAUTH_TOKEN);
-            final String type = data.getStringExtra(EXTRA_OAUTH_TOKEN_TYPE);
             final long expiresIn = data.getLongExtra(EXTRA_OAUTH_TOKEN_EXPIRES, 0);
 
-            return token != null && type != null
-                    ? Token.create(token, type, expiresIn)
+            return token != null ? new YandexAuthToken(token, expiresIn)
                     : null;
         }
 
         @Override
         @Nullable
-        public YaLoginSdkError tryExtractError(@NonNull final Intent data) {
+        public YandexAuthException tryExtractError(@NonNull final Intent data) {
             final boolean isError = data.getBooleanExtra(OAUTH_TOKEN_ERROR, false);
             if (!isError) {
                 return null;
             }
 
             final String[] errorMessages = data.getStringArrayExtra(OAUTH_TOKEN_ERROR_MESSAGES);
-            return errorMessages == null ? new YaLoginSdkError(CONNECTION_ERROR) : new YaLoginSdkError(errorMessages);
+            return errorMessages == null ? new YandexAuthException(CONNECTION_ERROR) : new YandexAuthException(errorMessages);
         }
     }
 }

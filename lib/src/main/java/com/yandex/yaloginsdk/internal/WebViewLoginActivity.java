@@ -13,11 +13,11 @@ import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 
-import com.yandex.yaloginsdk.LoginSdkConfig;
+import com.yandex.yaloginsdk.YandexAuthOptions;
 
 import java.util.UUID;
 
-import static com.yandex.yaloginsdk.internal.YaLoginSdkConstants.EXTRA_CONFIG;
+import static com.yandex.yaloginsdk.internal.Constants.EXTRA_OPTIONS;
 
 
 public class WebViewLoginActivity extends Activity {
@@ -31,10 +31,10 @@ public class WebViewLoginActivity extends Activity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final LoginSdkConfig config = getIntent().getParcelableExtra(EXTRA_CONFIG);
+        final YandexAuthOptions options = getIntent().getParcelableExtra(EXTRA_OPTIONS);
 
         // no need to save state, url will be loaded once again after rotation
-        loginHandler = new ExternalLoginHandler(config, () -> UUID.randomUUID().toString());
+        loginHandler = new ExternalLoginHandler(options, () -> UUID.randomUUID().toString());
 
         if (savedInstanceState == null) {
             clearCookies();
@@ -42,7 +42,7 @@ public class WebViewLoginActivity extends Activity {
 
         final WebView webView = new WebView(this);
         webView.setWebViewClient(new WebViewClient());
-        webView.loadUrl(loginHandler.getUrl(config.clientId()));
+        webView.loadUrl(loginHandler.getUrl(options.clientId()));
         webView.getSettings().setJavaScriptEnabled(true);
 
         setContentView(webView);

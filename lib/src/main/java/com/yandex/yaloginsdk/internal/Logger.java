@@ -3,27 +3,27 @@ package com.yandex.yaloginsdk.internal;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.yandex.yaloginsdk.LoginSdkConfig;
+import com.yandex.yaloginsdk.YandexAuthOptions;
 
 public class Logger {
 
     public static void e(
-            @NonNull final LoginSdkConfig config,
+            @NonNull final YandexAuthOptions options,
             @NonNull final String tag,
             @NonNull final String message,
             @NonNull final Throwable e
     ) {
-        if (config.isLoggingEnabled()) {
+        if (options.isLoggingEnabled()) {
             Log.e(tag, message, e);
         }
     }
 
     public static void d(
-            @NonNull final LoginSdkConfig config,
+            @NonNull final YandexAuthOptions options,
             @NonNull final String tag,
             @NonNull final String message
     ) {
-        if (config.isLoggingEnabled()) {
+        if (options.isLoggingEnabled()) {
             Log.d(tag, message);
         }
     }

@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import java.io.IOException;
 import java.util.Arrays;
 
-public class YaLoginSdkError extends RuntimeException {
+public class YandexAuthException extends Exception {
 
     public static final String CONNECTION_ERROR = "connection.error";
 
@@ -18,16 +18,16 @@ public class YaLoginSdkError extends RuntimeException {
     @NonNull
     private final String[] errors;
 
-    public YaLoginSdkError(@NonNull final String error) {
+    public YandexAuthException(@NonNull final String error) {
         this(new String[]{error});
     }
 
-    public YaLoginSdkError(@NonNull final String[] errors) {
+    public YandexAuthException(@NonNull final String[] errors) {
         super(Arrays.toString(errors));
         this.errors = errors;
     }
 
-    public YaLoginSdkError(@NonNull final IOException e) {
+    public YandexAuthException(@NonNull final IOException e) {
         super(CONNECTION_ERROR, e);
         errors = new String[]{CONNECTION_ERROR};
     }
@@ -42,7 +42,7 @@ public class YaLoginSdkError extends RuntimeException {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        final YaLoginSdkError error = (YaLoginSdkError) o;
+        final YandexAuthException error = (YandexAuthException) o;
 
         // Probably incorrect - comparing Object[] arrays with Arrays.equals
         return Arrays.equals(errors, error.errors);

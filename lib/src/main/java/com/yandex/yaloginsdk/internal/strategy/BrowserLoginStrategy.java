@@ -9,9 +9,9 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.yandex.yaloginsdk.LoginSdkConfig;
-import com.yandex.yaloginsdk.Token;
-import com.yandex.yaloginsdk.YaLoginSdkError;
+import com.yandex.yaloginsdk.YandexAuthOptions;
+import com.yandex.yaloginsdk.YandexAuthToken;
+import com.yandex.yaloginsdk.YandexAuthException;
 import com.yandex.yaloginsdk.internal.BrowserLoginActivity;
 import com.yandex.yaloginsdk.internal.LoginSdkActivity;
 
@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.yandex.yaloginsdk.internal.BrowserLoginActivity.EXTRA_BROWSER_PACKAGE_NAME;
-import static com.yandex.yaloginsdk.internal.YaLoginSdkConstants.EXTRA_ERROR;
-import static com.yandex.yaloginsdk.internal.YaLoginSdkConstants.EXTRA_TOKEN;
+import static com.yandex.yaloginsdk.internal.Constants.EXTRA_ERROR;
+import static com.yandex.yaloginsdk.internal.Constants.EXTRA_TOKEN;
 import static com.yandex.yaloginsdk.internal.strategy.LoginType.BROWSER;
 
 class BrowserLoginStrategy extends LoginStrategy {
@@ -86,12 +86,12 @@ class BrowserLoginStrategy extends LoginStrategy {
     @Override
     public void login(
             @NonNull final Activity activity,
-            @NonNull final LoginSdkConfig config,
+            @NonNull final YandexAuthOptions options,
             @NonNull final ArrayList<String> scopes
     ) {
         final Intent loginIntent = new Intent(context, BrowserLoginActivity.class);
         loginIntent.putExtra(EXTRA_BROWSER_PACKAGE_NAME, browserPackageName);
-        putExtras(loginIntent, scopes, config);
+        putExtras(loginIntent, scopes, options);
 
         activity.startActivityForResult(loginIntent, LoginSdkActivity.LOGIN_REQUEST_CODE);
     }
@@ -106,14 +106,14 @@ class BrowserLoginStrategy extends LoginStrategy {
 
         @Override
         @Nullable
-        public Token tryExtractToken(@NonNull final Intent data) {
+        public YandexAuthToken tryExtractToken(@NonNull final Intent data) {
             return data.getParcelableExtra(EXTRA_TOKEN);
         }
 
         @Override
         @Nullable
-        public YaLoginSdkError tryExtractError(@NonNull final Intent data) {
-            return (YaLoginSdkError) data.getSerializableExtra(EXTRA_ERROR);
+        public YandexAuthException tryExtractError(@NonNull final Intent data) {
+            return (YandexAuthException) data.getSerializableExtra(EXTRA_ERROR);
         }
     }
 }

@@ -7,21 +7,21 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
-import com.yandex.yaloginsdk.internal.YaLoginSdkConstants;
+import com.yandex.yaloginsdk.internal.Constants;
 
-public class LoginSdkConfig implements Parcelable {
+public class YandexAuthOptions implements Parcelable {
 
-    public static final Creator<LoginSdkConfig> CREATOR = new Creator<LoginSdkConfig>() {
+    public static final Creator<YandexAuthOptions> CREATOR = new Creator<YandexAuthOptions>() {
         @Override
         @NonNull
-        public LoginSdkConfig createFromParcel(@NonNull final Parcel in) {
-            return new LoginSdkConfig(in);
+        public YandexAuthOptions createFromParcel(@NonNull final Parcel in) {
+            return new YandexAuthOptions(in);
         }
 
         @Override
         @NonNull
-        public LoginSdkConfig[] newArray(final int size) {
-            return new LoginSdkConfig[size];
+        public YandexAuthOptions[] newArray(final int size) {
+            return new YandexAuthOptions[size];
         }
     };
 
@@ -30,12 +30,12 @@ public class LoginSdkConfig implements Parcelable {
 
     private final boolean loggingEnabled;
 
-    public LoginSdkConfig(@NonNull final String clientId, final boolean loggingEnabled) {
+    public YandexAuthOptions(@NonNull final String clientId, final boolean loggingEnabled) {
         this.clientId = clientId;
         this.loggingEnabled = loggingEnabled;
     }
 
-    public LoginSdkConfig(@NonNull final Context context, final boolean loggingEnabled) {
+    public YandexAuthOptions(@NonNull final Context context, final boolean loggingEnabled) {
         final ApplicationInfo app;
         try {
             app = context.getPackageManager().getApplicationInfo(context.getPackageName(),
@@ -44,17 +44,17 @@ public class LoginSdkConfig implements Parcelable {
             throw new RuntimeException(e);
         }
 
-        final String clientId = app.metaData.getString(YaLoginSdkConstants.EXTRA_CLIENT_ID);
+        final String clientId = app.metaData.getString(Constants.META_CLIENT_ID);
         if (clientId == null) {
             throw new IllegalStateException(
                     String.format("Application should provide %s in AndroidManifest.xml",
-                            YaLoginSdkConstants.EXTRA_CLIENT_ID));
+                            Constants.META_CLIENT_ID));
         }
         this.clientId = clientId;
         this.loggingEnabled = loggingEnabled;
     }
 
-    protected LoginSdkConfig(@NonNull final Parcel in) {
+    protected YandexAuthOptions(@NonNull final Parcel in) {
         clientId = in.readString();
         loggingEnabled = in.readByte() != 0;
     }

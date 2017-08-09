@@ -7,11 +7,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.yandex.yaloginsdk.LoginSdkConfig;
+import com.yandex.yaloginsdk.YandexAuthOptions;
 
 import java.util.UUID;
 
-import static com.yandex.yaloginsdk.internal.YaLoginSdkConstants.EXTRA_CONFIG;
+import static com.yandex.yaloginsdk.internal.Constants.EXTRA_OPTIONS;
 
 public class BrowserLoginActivity extends Activity {
 
@@ -45,14 +45,14 @@ public class BrowserLoginActivity extends Activity {
     public void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final LoginSdkConfig config = getIntent().getParcelableExtra(EXTRA_CONFIG);
+        final YandexAuthOptions options = getIntent().getParcelableExtra(EXTRA_OPTIONS);
 
-        loginHandler = new ExternalLoginHandler(config, () -> UUID.randomUUID().toString());
+        loginHandler = new ExternalLoginHandler(options, () -> UUID.randomUUID().toString());
 
         if (savedInstanceState == null) {
             final Intent browserIntent = new Intent(Intent.ACTION_VIEW);
             browserIntent.setPackage(getIntent().getStringExtra(EXTRA_BROWSER_PACKAGE_NAME));
-            browserIntent.setData(Uri.parse(loginHandler.getUrl(config.clientId())));
+            browserIntent.setData(Uri.parse(loginHandler.getUrl(options.clientId())));
             startActivity(browserIntent);
             state = State.INITIAL;
         } else {

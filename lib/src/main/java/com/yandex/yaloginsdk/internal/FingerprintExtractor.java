@@ -7,7 +7,7 @@ import android.content.pm.Signature;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.yandex.yaloginsdk.LoginSdkConfig;
+import com.yandex.yaloginsdk.YandexAuthOptions;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -15,10 +15,10 @@ import java.security.NoSuchAlgorithmException;
 
 public class FingerprintExtractor {
 
-    public static final String TAG = FingerprintExtractor.class.getSimpleName();
+    private static final String TAG = FingerprintExtractor.class.getSimpleName();
 
     @Nullable
-    public String[] get(@NonNull final String packageName, @NonNull final PackageManager packageManager, @NonNull final LoginSdkConfig config) {
+    public String[] get(@NonNull final String packageName, @NonNull final PackageManager packageManager, @NonNull final YandexAuthOptions options) {
         try {
             @SuppressLint("PackageManagerGetSignatures")
             final PackageInfo info = packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES);
@@ -31,7 +31,7 @@ public class FingerprintExtractor {
             }
             return result;
         } catch (PackageManager.NameNotFoundException | NoSuchAlgorithmException e) {
-            Logger.e(config, TAG, "Error getting fingerprint", e);
+            Logger.e(options, TAG, "Error getting fingerprint", e);
             return null;
         }
     }

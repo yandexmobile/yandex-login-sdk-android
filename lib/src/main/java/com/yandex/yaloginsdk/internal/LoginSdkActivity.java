@@ -6,9 +6,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.yandex.yaloginsdk.LoginSdkConfig;
-import com.yandex.yaloginsdk.Token;
-import com.yandex.yaloginsdk.YaLoginSdkError;
+import com.yandex.yaloginsdk.YandexAuthOptions;
+import com.yandex.yaloginsdk.YandexAuthToken;
+import com.yandex.yaloginsdk.YandexAuthException;
 import com.yandex.yaloginsdk.internal.strategy.LoginStrategy;
 import com.yandex.yaloginsdk.internal.strategy.LoginStrategyProvider;
 import com.yandex.yaloginsdk.internal.strategy.LoginType;
@@ -25,17 +25,17 @@ public class LoginSdkActivity extends Activity {
 
     @Nullable
     private LoginType loginType;
-    private LoginSdkConfig config;
+    private YandexAuthOptions options;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        config = getIntent().getParcelableExtra(YaLoginSdkConstants.EXTRA_CONFIG);
+        options = getIntent().getParcelableExtra(Constants.EXTRA_OPTIONS);
         if (savedInstanceState == null) {
-            final ArrayList<String> scopes = getIntent().getStringArrayListExtra(YaLoginSdkConstants.EXTRA_SCOPES);
-            final LoginStrategy strategy = new LoginStrategyProvider().getLoginStrategy(this, config);
+            final ArrayList<String> scopes = getIntent().getStringArrayListExtra(Constants.EXTRA_SCOPES);
+            final LoginStrategy strategy = new LoginStrategyProvider().getLoginStrategy(this, options);
             loginType = strategy.getType();
-            strategy.login(this, config, scopes == null ? new ArrayList<>() : scopes);
+            strategy.login(this, options, scopes == null ? new ArrayList<>() : scopes);
         } else {
             loginType = LoginType.values()[savedInstanceState.getInt(STATE_LOGIN_TYPE)];
         }
@@ -63,26 +63,26 @@ public class LoginSdkActivity extends Activity {
 
         final LoginStrategy.ResultExtractor extractor = new LoginStrategyProvider().getResultExtractor(loginType);
 
-        final Token token = extractor.tryExtractToken(data);
-        if (token != null) {
-            Logger.d(config, TAG, "Token received");
+        final YandexAuthToken yandexAuthToken = extractor.tryExtractToken(data);
+        if (yandexAuthToken != null) {
+            Logger.d(options, TAG, "Token received");
             Intent intent = new Intent();
-            intent.putExtra(YaLoginSdkConstants.EXTRA_TOKEN, token);
+            intent.putExtra(Constants.EXTRA_TOKEN, yandexAuthToken);
             setResult(Activity.RESULT_OK, intent);
             finish();
             return;
         }
 
-        final YaLoginSdkError error = extractor.tryExtractError(data);
+        final YandexAuthException error = extractor.tryExtractError(data);
         if (error != null) {
-            Logger.d(config, TAG, "Error received");
+            Logger.d(options, TAG, "Error received");
             Intent intent = new Intent();
-            intent.putExtra(YaLoginSdkConstants.EXTRA_ERROR, error);
+            intent.putExtra(Constants.EXTRA_ERROR, error);
             setResult(Activity.RESULT_OK, intent);
             finish();
             return;
         }
 
-        Logger.d(config, TAG, "Nothing received");
+        Logger.d(options, TAG, "Nothing received");
     }
 }

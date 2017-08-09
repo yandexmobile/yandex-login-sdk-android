@@ -2,26 +2,24 @@ package com.yandex.yaloginsdk.internal.strategy;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.yandex.yaloginsdk.LoginSdkConfig;
-import com.yandex.yaloginsdk.Token;
-import com.yandex.yaloginsdk.YaLoginSdkError;
+import com.yandex.yaloginsdk.YandexAuthException;
+import com.yandex.yaloginsdk.YandexAuthOptions;
+import com.yandex.yaloginsdk.YandexAuthToken;
 
 import java.util.ArrayList;
 
-import static com.yandex.yaloginsdk.internal.YaLoginSdkConstants.EXTRA_CLIENT_ID;
-import static com.yandex.yaloginsdk.internal.YaLoginSdkConstants.EXTRA_CONFIG;
+import static com.yandex.yaloginsdk.internal.Constants.EXTRA_CLIENT_ID;
+import static com.yandex.yaloginsdk.internal.Constants.EXTRA_OPTIONS;
+import static com.yandex.yaloginsdk.internal.Constants.EXTRA_SCOPES;
 
 public abstract class LoginStrategy {
 
-    static final String EXTRA_SCOPES = "com.yandex.auth.SCOPES";
-
     public abstract void login(
             @NonNull final Activity activity,
-            @NonNull final LoginSdkConfig config,
+            @NonNull final YandexAuthOptions options,
             @NonNull final ArrayList<String> scopes
     );
 
@@ -40,18 +38,11 @@ public abstract class LoginStrategy {
     static Intent putExtras(
             @NonNull final Intent intent,
             @NonNull final ArrayList<String> scopes,
-            @NonNull final LoginSdkConfig config
+            @NonNull final YandexAuthOptions options
     ) {
-        intent.putExtras(extras(scopes, config));
+        intent.putExtra(EXTRA_SCOPES, scopes);
+        intent.putExtra(EXTRA_OPTIONS, options);
         return intent;
-    }
-
-    @NonNull
-    static Bundle extras(@NonNull final ArrayList<String> scopes, @NonNull final LoginSdkConfig config) {
-        final Bundle bundle = new Bundle(2);
-        bundle.putStringArrayList(EXTRA_SCOPES, scopes);
-        bundle.putParcelable(EXTRA_CONFIG, config);
-        return bundle;
     }
 
     @NonNull
@@ -60,9 +51,9 @@ public abstract class LoginStrategy {
     public interface ResultExtractor {
 
         @Nullable
-        Token tryExtractToken(@NonNull final Intent data);
+        YandexAuthToken tryExtractToken(@NonNull final Intent data);
 
         @Nullable
-        YaLoginSdkError tryExtractError(@NonNull final Intent data);
+        YandexAuthException tryExtractError(@NonNull final Intent data);
     }
 }

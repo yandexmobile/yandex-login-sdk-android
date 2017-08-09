@@ -13,10 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.yandex.yaloginsdk.LoginSdkConfig;
-import com.yandex.yaloginsdk.Token;
-import com.yandex.yaloginsdk.YaLoginSdk;
-import com.yandex.yaloginsdk.YaLoginSdkError;
+import com.yandex.yaloginsdk.YandexAuthException;
+import com.yandex.yaloginsdk.YandexAuthOptions;
+import com.yandex.yaloginsdk.YandexAuthSdk;
+import com.yandex.yaloginsdk.YandexAuthToken;
 
 import java.util.Arrays;
 
@@ -35,14 +35,14 @@ public class MainFragment extends Fragment {
 
     @SuppressWarnings("NullableProblems") // onCreate
     @NonNull
-    private YaLoginSdk sdk;
+    private YandexAuthSdk sdk;
 
     @SuppressWarnings("NullableProblems") // onCreate
     @NonNull
     private View jwtContainer;
 
     @Nullable
-    private Token token;
+    private YandexAuthToken yandexAuthToken;
 
     @Nullable
     private String jwt;
@@ -69,10 +69,10 @@ public class MainFragment extends Fragment {
         jwtLabel = (TextView) view.findViewById(R.id.jwt_label);
         jwtContainer = view.findViewById(R.id.jwt_container);
 
-        sdk = YaLoginSdk.get(new LoginSdkConfig(getContext(), true));
+        sdk = new YandexAuthSdk(new YandexAuthOptions(getContext(), true));
 
-        if (token != null) {
-            onTokenReceived(token);
+        if (yandexAuthToken != null) {
+            onTokenReceived(yandexAuthToken);
         }
         if (jwt != null) {
             onJwtReceived(jwt);
@@ -80,22 +80,24 @@ public class MainFragment extends Fragment {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        final boolean handled = sdk.onActivityResult(
-                resultCode,
-                data,
-                this::onTokenReceived,
-                error -> tokenLabel.setText(error.getMessage())
-        );
-
-        if (!handled) {
+    public void onActivityResult(int requestCode, int resultCode, @Nullable final Intent data) {
+        if (requestCode == REQUEST_LOGIN_SDK) {
+            try {
+                final YandexAuthToken yandexAuthToken = sdk.extractToken(resultCode, data);
+                if (yandexAuthToken != null) {
+                    onTokenReceived(yandexAuthToken);
+                }
+            } catch (YandexAuthException e) {
+                tokenLabel.setText(e.getLocalizedMessage());
+            }
+        } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
-    private void onTokenReceived(@NonNull Token token) {
-        this.token = token;
-        tokenLabel.setText(token.toString());
+    private void onTokenReceived(@NonNull YandexAuthToken yandexAuthToken) {
+        this.yandexAuthToken = yandexAuthToken;
+        tokenLabel.setText(yandexAuthToken.toString());
         jwtContainer.setVisibility(View.VISIBLE);
     }
 
@@ -109,16 +111,16 @@ public class MainFragment extends Fragment {
         dialog.setCancelable(false);
         dialog.show(getFragmentManager(), ProgressDialogFragment.TAG);
 
-        assert token != null;
+        assert yandexAuthToken != null;
 
         new Thread(() -> {
             try {
-                final String jwt = sdk.getJwt(token.token());
+                final String jwt = sdk.getJwt(yandexAuthToken);
                 getActivity().runOnUiThread(() -> {
                     onJwtReceived(jwt);
                     dismissProgress();
                 });
-            } catch (YaLoginSdkError e) {
+            } catch (YandexAuthException e) {
                 getActivity().runOnUiThread(() -> {
                     jwtLabel.setText(Arrays.toString(e.getErrors()));
                     dismissProgress();

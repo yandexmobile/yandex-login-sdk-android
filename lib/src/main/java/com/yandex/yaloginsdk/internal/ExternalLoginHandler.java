@@ -7,17 +7,17 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.yandex.yaloginsdk.LoginSdkConfig;
-import com.yandex.yaloginsdk.Token;
-import com.yandex.yaloginsdk.YaLoginSdkError;
+import com.yandex.yaloginsdk.YandexAuthOptions;
+import com.yandex.yaloginsdk.YandexAuthToken;
+import com.yandex.yaloginsdk.YandexAuthException;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import static android.text.TextUtils.isEmpty;
-import static com.yandex.yaloginsdk.internal.YaLoginSdkConstants.EXTRA_ERROR;
-import static com.yandex.yaloginsdk.internal.YaLoginSdkConstants.EXTRA_TOKEN;
-import static com.yandex.yaloginsdk.YaLoginSdkError.SECURITY_ERROR;
+import static com.yandex.yaloginsdk.internal.Constants.EXTRA_ERROR;
+import static com.yandex.yaloginsdk.internal.Constants.EXTRA_TOKEN;
+import static com.yandex.yaloginsdk.YandexAuthException.SECURITY_ERROR;
 
 class ExternalLoginHandler {
 
@@ -45,13 +45,13 @@ class ExternalLoginHandler {
     String state;
 
     @NonNull
-    private final LoginSdkConfig config;
+    private final YandexAuthOptions options;
 
     @NonNull
     private final StateGenerator stateGenerator;
 
-    public ExternalLoginHandler(@NonNull final LoginSdkConfig config, @NonNull final StateGenerator stateGenerator) {
-        this.config = config;
+    public ExternalLoginHandler(@NonNull final YandexAuthOptions options, @NonNull final StateGenerator stateGenerator) {
+        this.options = options;
         this.stateGenerator = stateGenerator;
     }
 
@@ -62,7 +62,7 @@ class ExternalLoginHandler {
             final String redirectUri = URLEncoder.encode(REDIRECT_URL, "UTF-8");
             return String.format(LOGIN_URL_FORMAT, clientId, redirectUri, state);
         } catch (UnsupportedEncodingException e) {
-            Logger.e(config, TAG, "No UTF-8 found", e);
+            Logger.e(options, TAG, "No UTF-8 found", e);
             throw new RuntimeException(e);
         }
     }
@@ -77,18 +77,17 @@ class ExternalLoginHandler {
 
         final String serverState = dummyUri.getQueryParameter("state");
         if (isEmpty(serverState) || !serverState.equals(state)) {
-            result.putExtra(EXTRA_ERROR, new YaLoginSdkError(SECURITY_ERROR));
+            result.putExtra(EXTRA_ERROR, new YandexAuthException(SECURITY_ERROR));
             return result;
         }
 
         final String error = dummyUri.getQueryParameter("error");
         if (error != null) {
-            result.putExtra(EXTRA_ERROR, new YaLoginSdkError(error));
+            result.putExtra(EXTRA_ERROR, new YandexAuthException(error));
         } else {
             final String token = dummyUri.getQueryParameter("access_token");
-            final String type = dummyUri.getQueryParameter("token_type");
             final long expiresIn = Long.parseLong(dummyUri.getQueryParameter("expires_in"));
-            result.putExtra(EXTRA_TOKEN, Token.create(token, type, expiresIn));
+            result.putExtra(EXTRA_TOKEN, new YandexAuthToken(token, expiresIn));
         }
         return result;
     }
