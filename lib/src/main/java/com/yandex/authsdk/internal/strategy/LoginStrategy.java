@@ -1,19 +1,19 @@
-package com.yandex.yaloginsdk.internal.strategy;
+package com.yandex.authsdk.internal.strategy;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.yandex.yaloginsdk.YandexAuthException;
-import com.yandex.yaloginsdk.YandexAuthOptions;
-import com.yandex.yaloginsdk.YandexAuthToken;
+import com.yandex.authsdk.YandexAuthException;
+import com.yandex.authsdk.YandexAuthOptions;
+import com.yandex.authsdk.YandexAuthToken;
 
 import java.util.ArrayList;
 
-import static com.yandex.yaloginsdk.internal.Constants.EXTRA_CLIENT_ID;
-import static com.yandex.yaloginsdk.internal.Constants.EXTRA_OPTIONS;
-import static com.yandex.yaloginsdk.internal.Constants.EXTRA_SCOPES;
+import static com.yandex.authsdk.internal.Constants.EXTRA_CLIENT_ID;
+import static com.yandex.authsdk.internal.Constants.EXTRA_OPTIONS;
+import static com.yandex.authsdk.internal.Constants.EXTRA_SCOPES;
 
 public abstract class LoginStrategy {
 

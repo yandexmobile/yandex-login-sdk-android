@@ -1,9 +1,9 @@
-package com.yandex.yaloginsdk.internal;
+package com.yandex.authsdk.internal;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.yandex.yaloginsdk.YandexAuthOptions;
+import com.yandex.authsdk.YandexAuthOptions;
 
 public class Logger {
 

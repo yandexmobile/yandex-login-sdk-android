@@ -1,4 +1,4 @@
-package com.yandex.yaloginsdk;
+package com.yandex.authsdk;
 
 import android.app.Activity;
 import android.content.Context;
@@ -6,10 +6,10 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.yandex.yaloginsdk.internal.Constants;
-import com.yandex.yaloginsdk.internal.JwtRequest;
-import com.yandex.yaloginsdk.internal.Logger;
-import com.yandex.yaloginsdk.internal.LoginSdkActivity;
+import com.yandex.authsdk.internal.Constants;
+import com.yandex.authsdk.internal.JwtRequest;
+import com.yandex.authsdk.internal.Logger;
+import com.yandex.authsdk.internal.AuthSdkActivity;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class YandexAuthSdk {
 
     @NonNull
     public Intent createLoginIntent(@NonNull final Context context, @Nullable final Set<String> scopes) {
-        final Intent intent = new Intent(context, LoginSdkActivity.class);
+        final Intent intent = new Intent(context, AuthSdkActivity.class);
         if (scopes != null) {
             intent.putExtra(Constants.EXTRA_SCOPES, new ArrayList<>(scopes));
         }

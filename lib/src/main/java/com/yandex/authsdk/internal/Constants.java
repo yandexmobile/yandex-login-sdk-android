@@ -1,4 +1,4 @@
-package com.yandex.yaloginsdk.internal;
+package com.yandex.authsdk.internal;
 
 public class Constants {
 

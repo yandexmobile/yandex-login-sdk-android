@@ -1,4 +1,4 @@
-package com.yandex.yaloginsdk.internal;
+package com.yandex.authsdk.internal;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,22 +6,22 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.yandex.yaloginsdk.YandexAuthOptions;
-import com.yandex.yaloginsdk.YandexAuthToken;
-import com.yandex.yaloginsdk.YandexAuthException;
-import com.yandex.yaloginsdk.internal.strategy.LoginStrategy;
-import com.yandex.yaloginsdk.internal.strategy.LoginStrategyProvider;
-import com.yandex.yaloginsdk.internal.strategy.LoginType;
+import com.yandex.authsdk.YandexAuthOptions;
+import com.yandex.authsdk.YandexAuthToken;
+import com.yandex.authsdk.YandexAuthException;
+import com.yandex.authsdk.internal.strategy.LoginStrategy;
+import com.yandex.authsdk.internal.strategy.LoginStrategyProvider;
+import com.yandex.authsdk.internal.strategy.LoginType;
 
 import java.util.ArrayList;
 
 
-public class LoginSdkActivity extends Activity {
+public class AuthSdkActivity extends Activity {
 
     public static final int LOGIN_REQUEST_CODE = 312; // TODO choose number?
 
-    private static final String STATE_LOGIN_TYPE = "com.yandex.yaloginsdk.STATE_LOGIN_TYPE";
-    private static final String TAG = LoginSdkActivity.class.getSimpleName();
+    private static final String STATE_LOGIN_TYPE = "com.yandex.authsdk.STATE_LOGIN_TYPE";
+    private static final String TAG = AuthSdkActivity.class.getSimpleName();
 
     @Nullable
     private LoginType loginType;

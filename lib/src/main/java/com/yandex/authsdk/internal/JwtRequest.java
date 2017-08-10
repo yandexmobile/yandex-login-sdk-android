@@ -1,8 +1,8 @@
-package com.yandex.yaloginsdk.internal;
+package com.yandex.authsdk.internal;
 
 import android.support.annotation.NonNull;
 
-import com.yandex.yaloginsdk.YandexAuthException;
+import com.yandex.authsdk.YandexAuthException;
 
 import java.io.BufferedReader;
 import java.io.IOException;

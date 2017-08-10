@@ -1,4 +1,4 @@
-package com.yandex.yaloginsdk;
+package com.yandex.authsdk;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
@@ -7,7 +7,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
-import com.yandex.yaloginsdk.internal.Constants;
+import com.yandex.authsdk.internal.Constants;
 
 public class YandexAuthOptions implements Parcelable {
 

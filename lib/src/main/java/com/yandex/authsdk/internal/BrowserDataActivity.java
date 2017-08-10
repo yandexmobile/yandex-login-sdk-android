@@ -1,4 +1,4 @@
-package com.yandex.yaloginsdk.internal;
+package com.yandex.authsdk.internal;
 
 import android.app.Activity;
 import android.content.Intent;

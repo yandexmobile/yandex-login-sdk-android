@@ -1,4 +1,4 @@
-package com.yandex.yaloginsdk.internal;
+package com.yandex.authsdk.internal;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -13,11 +13,11 @@ import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 
-import com.yandex.yaloginsdk.YandexAuthOptions;
+import com.yandex.authsdk.YandexAuthOptions;
 
 import java.util.UUID;
 
-import static com.yandex.yaloginsdk.internal.Constants.EXTRA_OPTIONS;
+import static com.yandex.authsdk.internal.Constants.EXTRA_OPTIONS;
 
 
 public class WebViewLoginActivity extends Activity {

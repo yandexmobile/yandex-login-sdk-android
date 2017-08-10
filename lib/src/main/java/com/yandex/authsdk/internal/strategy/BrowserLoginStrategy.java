@@ -1,4 +1,4 @@
-package com.yandex.yaloginsdk.internal.strategy;
+package com.yandex.authsdk.internal.strategy;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,19 +9,19 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.yandex.yaloginsdk.YandexAuthOptions;
-import com.yandex.yaloginsdk.YandexAuthToken;
-import com.yandex.yaloginsdk.YandexAuthException;
-import com.yandex.yaloginsdk.internal.BrowserLoginActivity;
-import com.yandex.yaloginsdk.internal.LoginSdkActivity;
+import com.yandex.authsdk.YandexAuthOptions;
+import com.yandex.authsdk.YandexAuthToken;
+import com.yandex.authsdk.YandexAuthException;
+import com.yandex.authsdk.internal.BrowserLoginActivity;
+import com.yandex.authsdk.internal.AuthSdkActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.yandex.yaloginsdk.internal.BrowserLoginActivity.EXTRA_BROWSER_PACKAGE_NAME;
-import static com.yandex.yaloginsdk.internal.Constants.EXTRA_ERROR;
-import static com.yandex.yaloginsdk.internal.Constants.EXTRA_TOKEN;
-import static com.yandex.yaloginsdk.internal.strategy.LoginType.BROWSER;
+import static com.yandex.authsdk.internal.BrowserLoginActivity.EXTRA_BROWSER_PACKAGE_NAME;
+import static com.yandex.authsdk.internal.Constants.EXTRA_ERROR;
+import static com.yandex.authsdk.internal.Constants.EXTRA_TOKEN;
+import static com.yandex.authsdk.internal.strategy.LoginType.BROWSER;
 
 class BrowserLoginStrategy extends LoginStrategy {
 
@@ -93,7 +93,7 @@ class BrowserLoginStrategy extends LoginStrategy {
         loginIntent.putExtra(EXTRA_BROWSER_PACKAGE_NAME, browserPackageName);
         putExtras(loginIntent, scopes, options);
 
-        activity.startActivityForResult(loginIntent, LoginSdkActivity.LOGIN_REQUEST_CODE);
+        activity.startActivityForResult(loginIntent, AuthSdkActivity.LOGIN_REQUEST_CODE);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.yandex.loginsdk.sample;
+package com.yandex.authsdk.sample;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -13,10 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.yandex.yaloginsdk.YandexAuthException;
-import com.yandex.yaloginsdk.YandexAuthOptions;
-import com.yandex.yaloginsdk.YandexAuthSdk;
-import com.yandex.yaloginsdk.YandexAuthToken;
+import com.yandex.authsdk.YandexAuthException;
+import com.yandex.authsdk.YandexAuthOptions;
+import com.yandex.authsdk.YandexAuthSdk;
+import com.yandex.authsdk.YandexAuthToken;
 
 import java.util.Arrays;
 

@@ -1,22 +1,22 @@
-package com.yandex.yaloginsdk.internal;
+package com.yandex.authsdk.internal;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.yandex.yaloginsdk.YandexAuthOptions;
-import com.yandex.yaloginsdk.YandexAuthToken;
-import com.yandex.yaloginsdk.YandexAuthException;
+import com.yandex.authsdk.YandexAuthOptions;
+import com.yandex.authsdk.YandexAuthToken;
+import com.yandex.authsdk.YandexAuthException;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
-import static com.yandex.yaloginsdk.YandexAuthException.SECURITY_ERROR;
-import static com.yandex.yaloginsdk.internal.Constants.EXTRA_ERROR;
-import static com.yandex.yaloginsdk.internal.Constants.EXTRA_TOKEN;
+import static com.yandex.authsdk.YandexAuthException.SECURITY_ERROR;
+import static com.yandex.authsdk.internal.Constants.EXTRA_ERROR;
+import static com.yandex.authsdk.internal.Constants.EXTRA_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(RobolectricTestRunner.class)

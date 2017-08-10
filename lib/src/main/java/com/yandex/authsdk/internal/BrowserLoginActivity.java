@@ -1,4 +1,4 @@
-package com.yandex.yaloginsdk.internal;
+package com.yandex.authsdk.internal;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,17 +7,17 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.yandex.yaloginsdk.YandexAuthOptions;
+import com.yandex.authsdk.YandexAuthOptions;
 
 import java.util.UUID;
 
-import static com.yandex.yaloginsdk.internal.Constants.EXTRA_OPTIONS;
+import static com.yandex.authsdk.internal.Constants.EXTRA_OPTIONS;
 
 public class BrowserLoginActivity extends Activity {
 
-    public static final String EXTRA_BROWSER_PACKAGE_NAME = "com.yandex.yaloginsdk.internal.EXTRA_BROWSER_PACKAGE_NAME";
+    public static final String EXTRA_BROWSER_PACKAGE_NAME = "com.yandex.authsdk.internal.EXTRA_BROWSER_PACKAGE_NAME";
 
-    public static final String STATE_LOADING_STATE = "com.yandex.yaloginsdk.STATE_LOADING_STATE";
+    public static final String STATE_LOADING_STATE = "com.yandex.authsdk.STATE_LOADING_STATE";
 
     private enum State {
         INITIAL, TOKEN_REQUESTED, TOKEN_LOADED;

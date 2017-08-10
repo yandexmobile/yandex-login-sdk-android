@@ -1,4 +1,4 @@
-package com.yandex.yaloginsdk.internal.strategy;
+package com.yandex.authsdk.internal.strategy;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,16 +8,16 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.yandex.yaloginsdk.YandexAuthException;
-import com.yandex.yaloginsdk.YandexAuthOptions;
-import com.yandex.yaloginsdk.YandexAuthToken;
-import com.yandex.yaloginsdk.internal.FingerprintExtractor;
-import com.yandex.yaloginsdk.internal.LoginSdkActivity;
+import com.yandex.authsdk.YandexAuthException;
+import com.yandex.authsdk.YandexAuthOptions;
+import com.yandex.authsdk.YandexAuthToken;
+import com.yandex.authsdk.internal.FingerprintExtractor;
+import com.yandex.authsdk.internal.AuthSdkActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.yandex.yaloginsdk.YandexAuthException.CONNECTION_ERROR;
+import static com.yandex.authsdk.YandexAuthException.CONNECTION_ERROR;
 
 class NativeLoginStrategy extends LoginStrategy {
 
@@ -122,7 +122,7 @@ class NativeLoginStrategy extends LoginStrategy {
             @NonNull final ArrayList<String> scopes
     ) {
         final Intent intent = putExtras(packagedIntent, scopes, options.clientId());
-        activity.startActivityForResult(intent, LoginSdkActivity.LOGIN_REQUEST_CODE);
+        activity.startActivityForResult(intent, AuthSdkActivity.LOGIN_REQUEST_CODE);
     }
 
     @Override

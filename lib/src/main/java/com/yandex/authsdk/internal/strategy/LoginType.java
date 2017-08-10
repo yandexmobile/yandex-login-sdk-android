@@ -1,4 +1,4 @@
-package com.yandex.yaloginsdk.internal.strategy;
+package com.yandex.authsdk.internal.strategy;
 
 public enum LoginType {
 

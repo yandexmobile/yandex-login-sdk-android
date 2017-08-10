@@ -1,4 +1,4 @@
-package com.yandex.yaloginsdk;
+package com.yandex.authsdk;
 
 import android.os.Parcel;
 import android.os.Parcelable;
