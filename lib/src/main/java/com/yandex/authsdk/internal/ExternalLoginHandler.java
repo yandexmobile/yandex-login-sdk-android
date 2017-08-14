@@ -7,17 +7,17 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.yandex.authsdk.YandexAuthException;
 import com.yandex.authsdk.YandexAuthOptions;
 import com.yandex.authsdk.YandexAuthToken;
-import com.yandex.authsdk.YandexAuthException;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import static android.text.TextUtils.isEmpty;
+import static com.yandex.authsdk.YandexAuthException.SECURITY_ERROR;
 import static com.yandex.authsdk.internal.Constants.EXTRA_ERROR;
 import static com.yandex.authsdk.internal.Constants.EXTRA_TOKEN;
-import static com.yandex.authsdk.YandexAuthException.SECURITY_ERROR;
 
 class ExternalLoginHandler {
 
@@ -33,9 +33,9 @@ class ExternalLoginHandler {
             "&force_confirm=true" +
             "&origin=yandex_auth_sdk_android";
 
-    private static final String REDIRECT_URI_APPLINKS = "https://yxfcdddf83a97843ae80815c1c9247015b.oauth.yandex.ru/auth/finish?platform=android";
+    private static final String REDIRECT_URI_APPLINKS = "https://yx%s.oauth.yandex.ru/auth/finish?platform=android";
 
-    private static final String REDIRECT_URI_SCHEME = "yxfcdddf83a97843ae80815c1c9247015b:///auth/finish?platform=android";
+    private static final String REDIRECT_URI_SCHEME = "yx%s:///auth/finish?platform=android";
 
     private static final boolean SUPPORT_APPLINKS = Build.VERSION.SDK_INT >= 23;
 
@@ -59,7 +59,7 @@ class ExternalLoginHandler {
     String getUrl(@NonNull final String clientId) {
         state = stateGenerator.generate();
         try {
-            final String redirectUri = URLEncoder.encode(REDIRECT_URL, "UTF-8");
+            final String redirectUri = URLEncoder.encode(String.format(REDIRECT_URL, clientId), "UTF-8");
             return String.format(LOGIN_URL_FORMAT, clientId, redirectUri, state);
         } catch (UnsupportedEncodingException e) {
             Logger.e(options, TAG, "No UTF-8 found", e);
@@ -92,8 +92,8 @@ class ExternalLoginHandler {
         return result;
     }
 
-    public boolean isFinalUrl(@NonNull final String url) {
-        return url.startsWith(REDIRECT_URL);
+    public boolean isFinalUrl(@NonNull final String url, @NonNull final String clientId) {
+        return url.startsWith(String.format(REDIRECT_URL, clientId));
     }
 
     void saveState(@NonNull final Bundle outState) {

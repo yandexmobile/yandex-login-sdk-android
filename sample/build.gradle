@@ -14,6 +14,8 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
+        // Don't use this client id in you app. Registration of new application: https://tech.yandex.ru
+        manifestPlaceholders = [YANDEX_CLIENT_ID:"fcdddf83a97843ae80815c1c9247015b"]
     }
     buildTypes {
         release {

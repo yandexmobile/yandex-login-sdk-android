@@ -51,8 +51,8 @@ public class BrowserLoginActivity extends Activity {
 
         if (savedInstanceState == null) {
             final Intent browserIntent = new Intent(Intent.ACTION_VIEW);
-            browserIntent.setPackage(getIntent().getStringExtra(EXTRA_BROWSER_PACKAGE_NAME));
-            browserIntent.setData(Uri.parse(loginHandler.getUrl(options.clientId())));
+            browserIntent.setPackage(getIntent().getStringExtra(EXTRA_BROWSER_PACKAGE_NAME)); // FIXME Crash if flag "Don't keep activities" checked
+            browserIntent.setData(Uri.parse(loginHandler.getUrl(options.getClientId())));
             startActivity(browserIntent);
             state = State.INITIAL;
         } else {

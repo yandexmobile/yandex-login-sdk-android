@@ -22,7 +22,6 @@ import java.util.Arrays;
 
 public class MainFragment extends Fragment {
 
-    public static final String CLIENT_ID = "fcdddf83a97843ae80815c1c9247015b";
     private static final int REQUEST_LOGIN_SDK = 1;
 
     @SuppressWarnings("NullableProblems") // onCreate

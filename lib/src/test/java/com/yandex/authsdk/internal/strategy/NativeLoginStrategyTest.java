@@ -63,7 +63,7 @@ public class NativeLoginStrategyTest {
     PackageManager packageManager;
 
     @NonNull
-    private final YandexAuthOptions options = new YandexAuthOptions("client_id", true);
+    private final YandexAuthOptions options = mock(YandexAuthOptions.class);
 
     @Before
     public void beforeEachTest() {

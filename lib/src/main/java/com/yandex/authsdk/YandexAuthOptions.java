@@ -30,11 +30,6 @@ public class YandexAuthOptions implements Parcelable {
 
     private final boolean loggingEnabled;
 
-    public YandexAuthOptions(@NonNull final String clientId, final boolean loggingEnabled) {
-        this.clientId = clientId;
-        this.loggingEnabled = loggingEnabled;
-    }
-
     public YandexAuthOptions(@NonNull final Context context, final boolean loggingEnabled) {
         final ApplicationInfo app;
         try {
@@ -60,7 +55,7 @@ public class YandexAuthOptions implements Parcelable {
     }
 
     @NonNull
-    public String clientId() {
+    public String getClientId() {
         return clientId;
     }
 

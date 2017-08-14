@@ -26,12 +26,16 @@ public class WebViewLoginActivity extends Activity {
     @NonNull
     private ExternalLoginHandler loginHandler;
 
+    @SuppressWarnings("NullableProblems") // onCreate
+    @NonNull
+    private YandexAuthOptions options;
+
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final YandexAuthOptions options = getIntent().getParcelableExtra(EXTRA_OPTIONS);
+        options = getIntent().getParcelableExtra(EXTRA_OPTIONS);
 
         // no need to save state, url will be loaded once again after rotation
         loginHandler = new ExternalLoginHandler(options, () -> UUID.randomUUID().toString());
@@ -42,7 +46,7 @@ public class WebViewLoginActivity extends Activity {
 
         final WebView webView = new WebView(this);
         webView.setWebViewClient(new WebViewClient());
-        webView.loadUrl(loginHandler.getUrl(options.clientId()));
+        webView.loadUrl(loginHandler.getUrl(options.getClientId()));
         webView.getSettings().setJavaScriptEnabled(true);
 
         setContentView(webView);
@@ -73,7 +77,7 @@ public class WebViewLoginActivity extends Activity {
 
         @Override
         public void onPageStarted(@NonNull WebView view, @NonNull String url, @NonNull Bitmap favicon) {
-            if (loginHandler.isFinalUrl(url)) {
+            if (loginHandler.isFinalUrl(url, options.getClientId())) {
                 parseTokenFromUrl(url);
             } else {
                 super.onPageStarted(view, url, favicon);
