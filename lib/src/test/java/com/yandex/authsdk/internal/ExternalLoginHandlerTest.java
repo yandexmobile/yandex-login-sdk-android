@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 
 import static com.yandex.authsdk.YandexAuthException.SECURITY_ERROR;
 import static com.yandex.authsdk.internal.Constants.EXTRA_ERROR;
@@ -32,9 +33,12 @@ public class ExternalLoginHandlerTest {
     @NonNull
     private final YandexAuthOptions options = mock(YandexAuthOptions.class);
 
+    @NonNull
+    private final PreferencesHelper preferencesHelper = new PreferencesHelper(RuntimeEnvironment.application);
+
     @Before
     public void before() {
-        loginHandler = new ExternalLoginHandler(options, () -> STATE);
+        loginHandler = new ExternalLoginHandler(preferencesHelper, () -> STATE);
         loginHandler.getUrl("clientId");
     }
 
@@ -68,15 +72,5 @@ public class ExternalLoginHandlerTest {
         final Intent result = loginHandler.parseResult(data);
         assertThat(result.getSerializableExtra(EXTRA_ERROR)).isEqualTo(new YandexAuthException(SECURITY_ERROR));
         assertThat((YandexAuthToken) result.getParcelableExtra(EXTRA_TOKEN)).isNull();
-    }
-
-    @Test
-    public void shouldSaveState() {
-        Bundle savedState = new Bundle(1);
-        loginHandler.saveState(savedState);
-
-        ExternalLoginHandler newHandler = new ExternalLoginHandler(options, () -> "some_new_state");
-        newHandler.restoreState(savedState);
-        assertThat(newHandler.state).isEqualTo(STATE);
     }
 }

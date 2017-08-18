@@ -38,7 +38,7 @@ public class WebViewLoginActivity extends Activity {
         options = getIntent().getParcelableExtra(EXTRA_OPTIONS);
 
         // no need to save state, url will be loaded once again after rotation
-        loginHandler = new ExternalLoginHandler(options, () -> UUID.randomUUID().toString());
+        loginHandler = new ExternalLoginHandler(new PreferencesHelper(this), () -> UUID.randomUUID().toString());
 
         if (savedInstanceState == null) {
             clearCookies();

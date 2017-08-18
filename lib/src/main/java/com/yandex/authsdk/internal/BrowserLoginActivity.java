@@ -47,7 +47,12 @@ public class BrowserLoginActivity extends Activity {
 
         final YandexAuthOptions options = getIntent().getParcelableExtra(EXTRA_OPTIONS);
 
-        loginHandler = new ExternalLoginHandler(options, () -> UUID.randomUUID().toString());
+        loginHandler = new ExternalLoginHandler(new PreferencesHelper(this), () -> UUID.randomUUID().toString());
+
+        if (options == null) {
+            parseTokenFromUri(getIntent().getData());
+            return;
+        }
 
         if (savedInstanceState == null) {
             final Intent browserIntent = new Intent(Intent.ACTION_VIEW);
@@ -56,7 +61,6 @@ public class BrowserLoginActivity extends Activity {
             startActivity(browserIntent);
             state = State.INITIAL;
         } else {
-            loginHandler.restoreState(savedInstanceState);
             state = State.values()[savedInstanceState.getInt(STATE_LOADING_STATE)];
         }
     }
@@ -74,7 +78,6 @@ public class BrowserLoginActivity extends Activity {
     @Override
     protected void onSaveInstanceState(@NonNull final Bundle outState) {
         super.onSaveInstanceState(outState);
-        loginHandler.saveState(outState);
         outState.putInt(STATE_LOADING_STATE, state.ordinal());
     }
 

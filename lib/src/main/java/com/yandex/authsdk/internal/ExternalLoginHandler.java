@@ -3,12 +3,10 @@ package com.yandex.authsdk.internal;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.yandex.authsdk.YandexAuthException;
-import com.yandex.authsdk.YandexAuthOptions;
 import com.yandex.authsdk.YandexAuthToken;
 
 import java.io.UnsupportedEncodingException;
@@ -20,10 +18,6 @@ import static com.yandex.authsdk.internal.Constants.EXTRA_ERROR;
 import static com.yandex.authsdk.internal.Constants.EXTRA_TOKEN;
 
 class ExternalLoginHandler {
-
-    private static final String STATE_KEY = "com.yandex.authsdk.internal.ExternalLoginHandler.STATE";
-
-    private static final String TAG = BrowserLoginActivity.class.getSimpleName();
 
     private static final String LOGIN_URL_FORMAT = "https://oauth.yandex.ru/authorize" +
             "?response_type=token" +
@@ -41,34 +35,32 @@ class ExternalLoginHandler {
 
     private static final String REDIRECT_URL = SUPPORT_APPLINKS ? REDIRECT_URI_APPLINKS : REDIRECT_URI_SCHEME;
 
-    @Nullable
-    String state;
-
     @NonNull
-    private final YandexAuthOptions options;
+    private final PreferencesHelper preferencesHelper;
 
     @NonNull
     private final StateGenerator stateGenerator;
 
-    public ExternalLoginHandler(@NonNull final YandexAuthOptions options, @NonNull final StateGenerator stateGenerator) {
-        this.options = options;
+    ExternalLoginHandler(@NonNull final PreferencesHelper preferencesHelper, @NonNull final StateGenerator stateGenerator) {
+        this.preferencesHelper = preferencesHelper;
         this.stateGenerator = stateGenerator;
     }
 
     @NonNull
     String getUrl(@NonNull final String clientId) {
-        state = stateGenerator.generate();
+        final String state = stateGenerator.generate();
+        saveState(state);
         try {
             final String redirectUri = URLEncoder.encode(String.format(REDIRECT_URL, clientId), "UTF-8");
             return String.format(LOGIN_URL_FORMAT, clientId, redirectUri, state);
         } catch (UnsupportedEncodingException e) {
-            Logger.e(options, TAG, "No UTF-8 found", e);
             throw new RuntimeException(e);
         }
     }
 
     @NonNull
     Intent parseResult(@NonNull final Uri data) {
+        final String state = restoreState();
         final String fragment = data.getFragment();
 
         final Uri dummyUri = Uri.parse("dummy://dummy?" + fragment);
@@ -92,16 +84,17 @@ class ExternalLoginHandler {
         return result;
     }
 
-    public boolean isFinalUrl(@NonNull final String url, @NonNull final String clientId) {
+    boolean isFinalUrl(@NonNull final String url, @NonNull final String clientId) {
         return url.startsWith(String.format(REDIRECT_URL, clientId));
     }
 
-    void saveState(@NonNull final Bundle outState) {
-        outState.putString(STATE_KEY, state);
+    private void saveState(@NonNull final String state) {
+        preferencesHelper.saveStateValue(state);
     }
 
-    void restoreState(@NonNull final Bundle outState) {
-        state = outState.getString(STATE_KEY);
+    @Nullable
+    private String restoreState() {
+        return preferencesHelper.restoreStateValue();
     }
 
     interface StateGenerator {
