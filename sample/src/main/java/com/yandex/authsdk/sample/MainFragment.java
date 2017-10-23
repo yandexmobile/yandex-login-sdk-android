@@ -12,13 +12,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.yandex.authsdk.YandexAuthAccount;
 import com.yandex.authsdk.YandexAuthException;
 import com.yandex.authsdk.YandexAuthOptions;
 import com.yandex.authsdk.YandexAuthSdk;
 import com.yandex.authsdk.YandexAuthToken;
+import com.yandex.authsdk.exceptions.YandexAuthInteractionException;
+import com.yandex.authsdk.exceptions.YandexAuthSecurityException;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
 public class MainFragment extends Fragment {
 
@@ -68,7 +74,7 @@ public class MainFragment extends Fragment {
         jwtLabel = (TextView) view.findViewById(R.id.jwt_label);
         jwtContainer = view.findViewById(R.id.jwt_container);
 
-        sdk = new YandexAuthSdk(new YandexAuthOptions(getContext(), true));
+        sdk = new YandexAuthSdk(getContext(), new YandexAuthOptions(getContext(), true));
 
         if (yandexAuthToken != null) {
             onTokenReceived(yandexAuthToken);
@@ -76,6 +82,7 @@ public class MainFragment extends Fragment {
         if (jwt != null) {
             onJwtReceived(jwt);
         }
+        getAccounts();
     }
 
     @Override
@@ -120,6 +127,32 @@ public class MainFragment extends Fragment {
                     dismissProgress();
                 });
             } catch (YandexAuthException e) {
+                getActivity().runOnUiThread(() -> {
+                    jwtLabel.setText(Arrays.toString(e.getErrors()));
+                    dismissProgress();
+                });
+            }
+
+        }).start();
+    }
+
+    private void getAccounts() {
+        final DialogFragment dialog = new ProgressDialogFragment();
+        dialog.setCancelable(false);
+        dialog.show(getFragmentManager(), ProgressDialogFragment.TAG);
+
+        new Thread(() -> {
+            try {
+                final List<YandexAuthAccount> accounts = sdk.getAccounts();
+                getActivity().runOnUiThread(() -> {
+                    Toast.makeText(
+                            getContext(),
+                            String.format(Locale.getDefault(), "Available %d accounts", accounts.size()),
+                            Toast.LENGTH_SHORT
+                    ).show();
+                    dismissProgress();
+                });
+            } catch (final YandexAuthSecurityException | YandexAuthInteractionException e) {
                 getActivity().runOnUiThread(() -> {
                     jwtLabel.setText(Arrays.toString(e.getErrors()));
                     dismissProgress();

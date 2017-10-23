@@ -3,14 +3,24 @@ package com.yandex.authsdk.internal.strategy;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.yandex.authsdk.YandexAuthOptions;
-import com.yandex.authsdk.internal.FingerprintExtractor;
+import com.yandex.authsdk.internal.PackageManagerHelper;
 
-public class LoginStrategyProvider {
+public class LoginStrategyResolver {
 
     @NonNull
-    public LoginStrategy getLoginStrategy(@NonNull final Context context, @NonNull final YandexAuthOptions options) {
-        LoginStrategy strategy = NativeLoginStrategy.getIfPossible(options, context.getPackageManager(), new FingerprintExtractor());
+    private final PackageManagerHelper packageManagerHelper;
+
+    @NonNull
+    private final Context context;
+
+    public LoginStrategyResolver(@NonNull final Context context, @NonNull final PackageManagerHelper packageManagerHelper) {
+        this.context = context;
+        this.packageManagerHelper = packageManagerHelper;
+    }
+
+    @NonNull
+    public LoginStrategy getLoginStrategy() {
+        LoginStrategy strategy = NativeLoginStrategy.getIfPossible(packageManagerHelper);
         if (strategy != null) {
             return strategy;
         }

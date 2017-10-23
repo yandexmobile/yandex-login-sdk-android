@@ -6,11 +6,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.yandex.authsdk.YandexAuthException;
 import com.yandex.authsdk.YandexAuthOptions;
 import com.yandex.authsdk.YandexAuthToken;
-import com.yandex.authsdk.YandexAuthException;
 import com.yandex.authsdk.internal.strategy.LoginStrategy;
-import com.yandex.authsdk.internal.strategy.LoginStrategyProvider;
+import com.yandex.authsdk.internal.strategy.LoginStrategyResolver;
 import com.yandex.authsdk.internal.strategy.LoginType;
 
 import java.util.ArrayList;
@@ -23,17 +23,29 @@ public class AuthSdkActivity extends Activity {
     private static final String STATE_LOGIN_TYPE = "com.yandex.authsdk.STATE_LOGIN_TYPE";
     private static final String TAG = AuthSdkActivity.class.getSimpleName();
 
-    @Nullable
+    @SuppressWarnings("NullableProblems") // onCreate
+    @NonNull
     private LoginType loginType;
+
+    @SuppressWarnings("NullableProblems") // onCreate
+    @NonNull
     private YandexAuthOptions options;
+
+    @SuppressWarnings("NullableProblems") // onCreate
+    @NonNull
+    private LoginStrategyResolver loginStrategyResolver;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         options = getIntent().getParcelableExtra(Constants.EXTRA_OPTIONS);
+        loginStrategyResolver = new LoginStrategyResolver(
+                getApplicationContext(),
+                new PackageManagerHelper(getPackageManager(), options)
+        );
         if (savedInstanceState == null) {
             final ArrayList<String> scopes = getIntent().getStringArrayListExtra(Constants.EXTRA_SCOPES);
-            final LoginStrategy strategy = new LoginStrategyProvider().getLoginStrategy(this, options);
+            final LoginStrategy strategy = loginStrategyResolver.getLoginStrategy();
             loginType = strategy.getType();
             strategy.login(this, options, scopes == null ? new ArrayList<>() : scopes);
         } else {
@@ -44,9 +56,7 @@ public class AuthSdkActivity extends Activity {
     @Override
     public void onSaveInstanceState(@NonNull final Bundle state) {
         super.onSaveInstanceState(state);
-        if (loginType != null) {
-            state.putInt(STATE_LOGIN_TYPE, loginType.ordinal());
-        }
+        state.putInt(STATE_LOGIN_TYPE, loginType.ordinal());
     }
 
     @Override
@@ -61,7 +71,7 @@ public class AuthSdkActivity extends Activity {
             return;
         }
 
-        final LoginStrategy.ResultExtractor extractor = new LoginStrategyProvider().getResultExtractor(loginType);
+        final LoginStrategy.ResultExtractor extractor = loginStrategyResolver.getResultExtractor(loginType);
 
         final YandexAuthToken yandexAuthToken = extractor.tryExtractToken(data);
         if (yandexAuthToken != null) {

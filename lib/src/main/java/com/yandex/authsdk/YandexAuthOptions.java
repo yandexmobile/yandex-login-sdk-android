@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.yandex.authsdk.internal.Constants;
 
@@ -30,6 +31,9 @@ public class YandexAuthOptions implements Parcelable {
 
     private final boolean loggingEnabled;
 
+    @Nullable
+    private final Context context;
+
     public YandexAuthOptions(@NonNull final Context context, final boolean loggingEnabled) {
         final ApplicationInfo app;
         try {
@@ -47,11 +51,13 @@ public class YandexAuthOptions implements Parcelable {
         }
         this.clientId = clientId;
         this.loggingEnabled = loggingEnabled;
+        this.context = context;
     }
 
     protected YandexAuthOptions(@NonNull final Parcel in) {
         clientId = in.readString();
         loggingEnabled = in.readByte() != 0;
+        context = null;
     }
 
     @NonNull
@@ -72,5 +78,11 @@ public class YandexAuthOptions implements Parcelable {
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    @Nullable
+    @Deprecated
+    Context getContext() {
+        return context;
     }
 }
