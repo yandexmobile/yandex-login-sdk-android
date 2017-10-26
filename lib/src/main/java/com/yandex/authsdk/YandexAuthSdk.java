@@ -51,7 +51,15 @@ public class YandexAuthSdk {
         if (scopes != null) {
             intent.putExtra(Constants.EXTRA_SCOPES, new ArrayList<>(scopes));
         }
+
         intent.putExtra(Constants.EXTRA_OPTIONS, options);
+        return intent;
+    }
+
+    @NonNull
+    public Intent createLoginIntent(@NonNull final Context context, @Nullable final Set<String> scopes, final long uid) {
+        final Intent intent = createLoginIntent(context, scopes);
+        intent.putExtra(Constants.EXTRA_UID_VALUE, uid);
         return intent;
     }
 

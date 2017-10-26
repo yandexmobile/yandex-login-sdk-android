@@ -28,10 +28,11 @@ class WebViewLoginStrategy extends LoginStrategy {
     public void login(
             @NonNull final Activity activity,
             @NonNull final YandexAuthOptions options,
-            @NonNull final ArrayList<String> scopes
+            @NonNull final ArrayList<String> scopes,
+            @Nullable final Long uid
     ) {
         final Intent loginIntent = new Intent(activity, WebViewLoginActivity.class);
-        putExtras(loginIntent, scopes, options);
+        putExtras(loginIntent, scopes, options, uid);
         activity.startActivityForResult(loginIntent, AuthSdkActivity.LOGIN_REQUEST_CODE);
     }
 

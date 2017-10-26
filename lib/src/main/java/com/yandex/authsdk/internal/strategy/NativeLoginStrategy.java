@@ -61,9 +61,10 @@ class NativeLoginStrategy extends LoginStrategy {
     public void login(
             @NonNull final Activity activity,
             @NonNull final YandexAuthOptions options,
-            @NonNull final ArrayList<String> scopes
+            @NonNull final ArrayList<String> scopes,
+            @Nullable final Long uid
     ) {
-        final Intent intent = putExtras(packagedIntent, scopes, options.getClientId());
+        final Intent intent = putExtras(packagedIntent, scopes, options.getClientId(), uid);
         activity.startActivityForResult(intent, AuthSdkActivity.LOGIN_REQUEST_CODE);
     }
 

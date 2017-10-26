@@ -45,9 +45,15 @@ public class AuthSdkActivity extends Activity {
         );
         if (savedInstanceState == null) {
             final ArrayList<String> scopes = getIntent().getStringArrayListExtra(Constants.EXTRA_SCOPES);
+            final Long uid;
+            if (getIntent().hasExtra(Constants.EXTRA_UID_VALUE)) {
+                uid = getIntent().getLongExtra(Constants.EXTRA_UID_VALUE, 0);
+            } else {
+                uid = null;
+            }
             final LoginStrategy strategy = loginStrategyResolver.getLoginStrategy();
             loginType = strategy.getType();
-            strategy.login(this, options, scopes == null ? new ArrayList<>() : scopes);
+            strategy.login(this, options, scopes == null ? new ArrayList<>() : scopes, uid);
         } else {
             loginType = LoginType.values()[savedInstanceState.getInt(STATE_LOGIN_TYPE)];
         }

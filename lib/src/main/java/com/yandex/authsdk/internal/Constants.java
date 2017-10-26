@@ -16,4 +16,7 @@ public class Constants {
     // Used in Yandex Account Manager
     public static final String EXTRA_SCOPES = "com.yandex.auth.SCOPES";
 
+    // Used in Yandex Account Manager
+    public static final String EXTRA_UID_VALUE = "com.yandex.auth.UID_VALUE";
+
 }
