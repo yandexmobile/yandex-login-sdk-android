@@ -42,6 +42,12 @@ public class BrowserLoginActivity extends Activity {
 
         final YandexAuthOptions options = getIntent().getParcelableExtra(EXTRA_OPTIONS);
 
+        if (options == null) {
+            // Ignore opening this activity from browser
+            finish();
+            return;
+        }
+
         loginHandler = new ExternalLoginHandler(new PreferencesHelper(this), () -> UUID.randomUUID().toString());
 
         if (savedInstanceState == null) {
