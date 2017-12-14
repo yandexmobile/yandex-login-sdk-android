@@ -19,4 +19,7 @@ public class Constants {
     // Used in Yandex Account Manager
     public static final String EXTRA_UID_VALUE = "com.yandex.auth.UID_VALUE";
 
+    // Used in Yandex Account Manager
+    public static final String EXTRA_LOGIN_HINT = "com.yandex.auth.LOGIN_HINT";
+
 }

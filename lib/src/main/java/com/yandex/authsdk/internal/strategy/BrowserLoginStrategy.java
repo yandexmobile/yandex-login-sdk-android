@@ -88,11 +88,12 @@ class BrowserLoginStrategy extends LoginStrategy {
             @NonNull final Activity activity,
             @NonNull final YandexAuthOptions options,
             @NonNull final ArrayList<String> scopes,
-            @Nullable final Long uid
+            @Nullable final Long uid,
+            @Nullable final String loginHint
     ) {
         final Intent loginIntent = new Intent(context, BrowserLoginActivity.class);
         loginIntent.putExtra(EXTRA_BROWSER_PACKAGE_NAME, browserPackageName);
-        putExtras(loginIntent, scopes, options, uid);
+        putExtras(loginIntent, scopes, options, uid, loginHint);
 
         activity.startActivityForResult(loginIntent, AuthSdkActivity.LOGIN_REQUEST_CODE);
     }

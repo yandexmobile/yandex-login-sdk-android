@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.yandex.authsdk.YandexAuthException;
+import com.yandex.authsdk.YandexAuthOptions;
 import com.yandex.authsdk.YandexAuthToken;
 
 import java.io.UnsupportedEncodingException;
@@ -15,7 +16,10 @@ import java.net.URLEncoder;
 import static android.text.TextUtils.isEmpty;
 import static com.yandex.authsdk.YandexAuthException.SECURITY_ERROR;
 import static com.yandex.authsdk.internal.Constants.EXTRA_ERROR;
+import static com.yandex.authsdk.internal.Constants.EXTRA_LOGIN_HINT;
+import static com.yandex.authsdk.internal.Constants.EXTRA_OPTIONS;
 import static com.yandex.authsdk.internal.Constants.EXTRA_TOKEN;
+import static com.yandex.authsdk.internal.Constants.EXTRA_UID_VALUE;
 
 class ExternalLoginHandler {
 
@@ -47,15 +51,37 @@ class ExternalLoginHandler {
     }
 
     @NonNull
-    String getUrl(@NonNull final String clientId) {
+    String getUrl(@NonNull final String clientId, @Nullable final Long uid, @Nullable final String loginHint) {
         final String state = stateGenerator.generate();
         saveState(state);
         try {
             final String redirectUri = URLEncoder.encode(String.format(REDIRECT_URL, clientId), "UTF-8");
-            return String.format(LOGIN_URL_FORMAT, clientId, redirectUri, state);
+            String url = String.format(LOGIN_URL_FORMAT, clientId, redirectUri, state);
+
+            if (loginHint != null) {
+                url += "&login_hint=" + loginHint;
+            }
+
+            // What we can do with uid?
+            return url;
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Nullable
+    String getUrl(@NonNull final Intent intent) {
+        final Long uid;
+        if (intent.hasExtra(EXTRA_UID_VALUE)) {
+            uid = intent.getLongExtra(EXTRA_LOGIN_HINT, 0);
+        } else {
+            uid = null;
+        }
+
+        final String loginHint = intent.getStringExtra(EXTRA_LOGIN_HINT);
+
+        final YandexAuthOptions options = intent.getParcelableExtra(EXTRA_OPTIONS);
+        return getUrl(options.getClientId(), uid, loginHint);
     }
 
     @NonNull

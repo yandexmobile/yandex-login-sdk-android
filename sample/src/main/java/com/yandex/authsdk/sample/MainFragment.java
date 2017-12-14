@@ -8,9 +8,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +48,14 @@ public class MainFragment extends Fragment {
     @NonNull
     private View jwtContainer;
 
+    @SuppressWarnings("NullableProblems") // onCreate
+    @NonNull
+    private EditText editLoginHint;
+
+    @SuppressWarnings("NullableProblems") // onCreate
+    @NonNull
+    private EditText editUid;
+
     @Nullable
     private YandexAuthToken yandexAuthToken;
 
@@ -65,14 +75,28 @@ public class MainFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         final View loginButton = view.findViewById(R.id.login);
-        loginButton.setOnClickListener(v ->
-                startActivityForResult(sdk.createLoginIntent(getActivity(), null), REQUEST_LOGIN_SDK));
+        loginButton.setOnClickListener(v -> {
+            final String uidStr = editUid.getText().toString();
+            final String loginHint = editLoginHint.getText().toString();
+
+            final Intent intent;
+            if (!TextUtils.isEmpty(uidStr)) {
+                final long uid = Long.parseLong(uidStr);
+                intent = sdk.createLoginIntent(getActivity(), null, uid, loginHint);
+            } else {
+                intent = sdk.createLoginIntent(getActivity(), null);
+            }
+            startActivityForResult(intent, REQUEST_LOGIN_SDK);
+
+        });
         final View jwtButton = view.findViewById(R.id.jwt);
         jwtButton.setOnClickListener(v -> getJwt());
 
         tokenLabel = (TextView) view.findViewById(R.id.status_label);
         jwtLabel = (TextView) view.findViewById(R.id.jwt_label);
         jwtContainer = view.findViewById(R.id.jwt_container);
+        editUid = (EditText) view.findViewById(R.id.edit_uid);
+        editLoginHint = (EditText) view.findViewById(R.id.edit_login_hint);
 
         sdk = new YandexAuthSdk(getContext(), new YandexAuthOptions(getContext(), true));
 

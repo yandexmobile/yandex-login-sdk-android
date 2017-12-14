@@ -12,7 +12,9 @@ import com.yandex.authsdk.YandexAuthOptions;
 
 import java.util.UUID;
 
+import static com.yandex.authsdk.internal.Constants.EXTRA_LOGIN_HINT;
 import static com.yandex.authsdk.internal.Constants.EXTRA_OPTIONS;
+import static com.yandex.authsdk.internal.Constants.EXTRA_UID_VALUE;
 
 public class BrowserLoginActivity extends Activity {
 
@@ -53,7 +55,7 @@ public class BrowserLoginActivity extends Activity {
         if (savedInstanceState == null) {
             final Intent browserIntent = new Intent(Intent.ACTION_VIEW);
             browserIntent.setPackage(getIntent().getStringExtra(EXTRA_BROWSER_PACKAGE_NAME));
-            browserIntent.setData(Uri.parse(loginHandler.getUrl(options.getClientId())));
+            browserIntent.setData(Uri.parse(loginHandler.getUrl(getIntent())));
             startActivity(browserIntent);
         }
     }

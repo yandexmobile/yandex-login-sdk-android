@@ -39,7 +39,7 @@ public class ExternalLoginHandlerTest {
     @Before
     public void before() {
         loginHandler = new ExternalLoginHandler(preferencesHelper, () -> STATE);
-        loginHandler.getUrl("clientId");
+        loginHandler.getUrl("clientId", null, null);
     }
 
     @Test

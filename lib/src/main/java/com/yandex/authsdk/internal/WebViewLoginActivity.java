@@ -37,6 +37,11 @@ public class WebViewLoginActivity extends Activity {
 
         options = getIntent().getParcelableExtra(EXTRA_OPTIONS);
 
+        if (options == null) {
+            finish();
+            return;
+        }
+
         // no need to save state, url will be loaded once again after rotation
         loginHandler = new ExternalLoginHandler(new PreferencesHelper(this), () -> UUID.randomUUID().toString());
 
@@ -46,7 +51,7 @@ public class WebViewLoginActivity extends Activity {
 
         final WebView webView = new WebView(this);
         webView.setWebViewClient(new WebViewClient());
-        webView.loadUrl(loginHandler.getUrl(options.getClientId()));
+        webView.loadUrl(loginHandler.getUrl(getIntent()));
         webView.getSettings().setJavaScriptEnabled(true);
 
         setContentView(webView);
