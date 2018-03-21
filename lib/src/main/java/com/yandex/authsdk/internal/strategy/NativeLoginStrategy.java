@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 import static com.yandex.authsdk.YandexAuthException.CONNECTION_ERROR;
 
-class NativeLoginStrategy extends LoginStrategy {
+public class NativeLoginStrategy extends LoginStrategy {
 
     static final String ACTION_YA_SDK_LOGIN = "com.yandex.auth.action.YA_SDK_LOGIN";
     static final String EXTRA_OAUTH_TOKEN = "com.yandex.auth.EXTRA_OAUTH_TOKEN";
@@ -23,7 +23,6 @@ class NativeLoginStrategy extends LoginStrategy {
     static final String EXTRA_OAUTH_TOKEN_EXPIRES = "com.yandex.auth.OAUTH_TOKEN_EXPIRES";
     static final String OAUTH_TOKEN_ERROR = "com.yandex.auth.OAUTH_TOKEN_ERROR";
     static final String OAUTH_TOKEN_ERROR_MESSAGES = "com.yandex.auth.OAUTH_TOKEN_ERROR_MESSAGES";
-    private static int VERSION = 1; // TODO move to gradle?
 
     /**
      * 1. Get all activities, that can handle "com.yandex.auth.action.YA_SDK_LOGIN" action<br>
@@ -42,12 +41,18 @@ class NativeLoginStrategy extends LoginStrategy {
         final PackageManagerHelper.YandexApplicationInfo applicationInfo = packageManagerHelper.findLatestApplication();
 
         if (applicationInfo != null) {
-            final Intent intent = new Intent(ACTION_YA_SDK_LOGIN);
-            intent.setPackage(applicationInfo.packageName);
+            final Intent intent = getActionIntent(applicationInfo.packageName);
             return new NativeLoginStrategy(intent);
         }
 
         return null;
+    }
+
+    @NonNull
+    public static Intent getActionIntent(@NonNull final String packageName) {
+        final Intent intent = new Intent(ACTION_YA_SDK_LOGIN);
+        intent.setPackage(packageName);
+        return intent;
     }
 
     @NonNull

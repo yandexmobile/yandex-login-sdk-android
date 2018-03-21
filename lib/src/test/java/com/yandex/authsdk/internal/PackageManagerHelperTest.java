@@ -3,6 +3,7 @@ package com.yandex.authsdk.internal;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.pm.Signature;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,13 +18,16 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import edu.emory.mathcs.backport.java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
 public class PackageManagerHelperTest {
@@ -46,6 +50,12 @@ public class PackageManagerHelperTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
+
+        when(packageManager.queryIntentActivities(any(), anyInt()))
+                .thenReturn(new ArrayList<ResolveInfo>() {{
+                    add(new ResolveInfo());
+                }});
+
         packageManagerHelper = new PackageManagerHelper(packageManager, options);
     }
 

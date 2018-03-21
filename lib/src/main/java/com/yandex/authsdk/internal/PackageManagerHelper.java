@@ -2,9 +2,11 @@ package com.yandex.authsdk.internal;
 
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.pm.Signature;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,6 +19,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.yandex.authsdk.internal.strategy.NativeLoginStrategy.getActionIntent;
 
 public class PackageManagerHelper {
 
@@ -85,6 +89,10 @@ public class PackageManagerHelper {
                 continue;
             }
 
+            if (!isActionActivityExist(packageManager, applicationInfo.packageName)) {
+                continue;
+            }
+
             result.add(new YandexApplicationInfo(
                     packageName,
                     metaData.getInt(META_SDK_VERSION),
@@ -94,6 +102,13 @@ public class PackageManagerHelper {
         }
 
         return result;
+    }
+
+    private boolean isActionActivityExist(@NonNull final PackageManager packageManager, @NonNull final String packageName) {
+        final Intent intent = getActionIntent(packageName);
+        final List<ResolveInfo> resolveInfoList = packageManager.queryIntentActivities(intent, 0);
+
+        return resolveInfoList.size() > 0;
     }
 
     @Nullable
