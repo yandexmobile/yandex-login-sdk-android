@@ -129,6 +129,7 @@ public class MainFragment extends Fragment {
         this.yandexAuthToken = yandexAuthToken;
         tokenLabel.setText(yandexAuthToken.toString());
         jwtContainer.setVisibility(View.VISIBLE);
+        jwtLabel.setText("");
     }
 
     private void onJwtReceived(@NonNull String jwt) {

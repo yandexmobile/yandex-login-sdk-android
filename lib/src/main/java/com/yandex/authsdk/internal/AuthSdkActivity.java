@@ -15,6 +15,8 @@ import com.yandex.authsdk.internal.strategy.LoginType;
 
 import java.util.ArrayList;
 
+import static com.yandex.authsdk.YandexAuthException.UNKNOWN_ERROR;
+
 
 public class AuthSdkActivity extends Activity {
 
@@ -52,9 +54,13 @@ public class AuthSdkActivity extends Activity {
                 uid = null;
             }
             final String loginHint = getIntent().getStringExtra(Constants.EXTRA_LOGIN_HINT);
-            final LoginStrategy strategy = loginStrategyResolver.getLoginStrategy();
-            loginType = strategy.getType();
-            strategy.login(this, options, scopes == null ? new ArrayList<>() : scopes, uid, loginHint);
+            try {
+                final LoginStrategy strategy = loginStrategyResolver.getLoginStrategy();
+                loginType = strategy.getType();
+                strategy.login(this, options, scopes == null ? new ArrayList<>() : scopes, uid, loginHint);
+            } catch (final Exception e) {
+                finishWithError(e);
+            }
         } else {
             loginType = LoginType.values()[savedInstanceState.getInt(STATE_LOGIN_TYPE)];
         }
@@ -83,7 +89,7 @@ public class AuthSdkActivity extends Activity {
         final YandexAuthToken yandexAuthToken = extractor.tryExtractToken(data);
         if (yandexAuthToken != null) {
             Logger.d(options, TAG, "Token received");
-            Intent intent = new Intent();
+            final Intent intent = new Intent();
             intent.putExtra(Constants.EXTRA_TOKEN, yandexAuthToken);
             setResult(Activity.RESULT_OK, intent);
             finish();
@@ -93,7 +99,7 @@ public class AuthSdkActivity extends Activity {
         final YandexAuthException error = extractor.tryExtractError(data);
         if (error != null) {
             Logger.d(options, TAG, "Error received");
-            Intent intent = new Intent();
+            final Intent intent = new Intent();
             intent.putExtra(Constants.EXTRA_ERROR, error);
             setResult(Activity.RESULT_OK, intent);
             finish();
@@ -101,5 +107,13 @@ public class AuthSdkActivity extends Activity {
         }
 
         Logger.d(options, TAG, "Nothing received");
+    }
+
+    private void finishWithError(@NonNull final Exception e) {
+        Logger.e(options, TAG, "Unknown error:", e);
+        final Intent intent = new Intent();
+        intent.putExtra(Constants.EXTRA_ERROR, new YandexAuthException(UNKNOWN_ERROR));
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 }

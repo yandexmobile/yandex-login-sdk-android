@@ -15,6 +15,8 @@ public class YandexAuthException extends Exception {
 
     public static final String OAUTH_TOKEN_ERROR = "oauth_token.invalid";
 
+    public static final String UNKNOWN_ERROR = "unknown.error";
+
     @NonNull
     private final String[] errors;
 

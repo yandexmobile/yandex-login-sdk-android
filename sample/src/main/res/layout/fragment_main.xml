@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.yandex.authsdk.sample.MainActivity"
-    tools:ignore="HardcodedText">
+    tools:ignore="HardcodedText,RtlHardcoded">
 
     <LinearLayout
         android:id="@+id/activity_main"
@@ -31,32 +31,27 @@
             android:hint="Login hint (uid required)"
             android:inputType="text" />
 
-        <LinearLayout
+        <Button
+            android:id="@+id/login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="login" />
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:text="Token: "
+            android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="token: "
-                android:textStyle="bold" />
+        <TextView
+            android:id="@+id/status_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:text="waiting" />
 
-            <TextView
-                android:id="@+id/status_label"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="waiting" />
-
-            <Button
-                android:id="@+id/login"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="login" />
-        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/jwt_container"
@@ -64,28 +59,31 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:gravity="center"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:visibility="gone">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="jwt: "
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/jwt_label"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="waiting" />
 
             <Button
                 android:id="@+id/jwt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="jwt" />
+                android:layout_gravity="right"
+                android:text="Request jvt token" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:text="jwt: "
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/jwt_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="3"
+                android:text="waiting" />
+
         </LinearLayout>
 
     </LinearLayout>
