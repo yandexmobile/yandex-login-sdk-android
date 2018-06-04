@@ -82,7 +82,7 @@ public class WebViewLoginActivity extends Activity {
 
         @Override
         public void onPageStarted(@NonNull WebView view, @NonNull String url, @NonNull Bitmap favicon) {
-            if (loginHandler.isFinalUrl(url, options.getClientId())) {
+            if (loginHandler.isFinalUrl(options, url)) {
                 parseTokenFromUrl(url);
             } else {
                 super.onPageStarted(view, url, favicon);

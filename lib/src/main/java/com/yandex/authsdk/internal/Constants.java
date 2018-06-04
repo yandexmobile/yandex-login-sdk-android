@@ -10,6 +10,8 @@ public class Constants {
 
     public static final String META_CLIENT_ID = "com.yandex.auth.CLIENT_ID";
 
+    public static final String META_OAUTH_HOST = "com.yandex.auth.OAUTH_HOST";
+
     // Used in Yandex Account Manager
     public static final String EXTRA_CLIENT_ID = "com.yandex.auth.CLIENT_ID";
 

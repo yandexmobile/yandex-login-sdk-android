@@ -23,7 +23,7 @@ import static com.yandex.authsdk.internal.Constants.EXTRA_UID_VALUE;
 
 class ExternalLoginHandler {
 
-    private static final String LOGIN_URL_FORMAT = "https://oauth.yandex.ru/authorize" +
+    private static final String LOGIN_URL_FORMAT = "https://%s/authorize" +
             "?response_type=token" +
             "&client_id=%s" +
             "&redirect_uri=%s" +
@@ -31,13 +31,11 @@ class ExternalLoginHandler {
             "&force_confirm=true" +
             "&origin=yandex_auth_sdk_android";
 
-    private static final String REDIRECT_URI_APPLINKS = "https://yx%s.oauth.yandex.ru/auth/finish?platform=android";
+    private static final String REDIRECT_URI_APPLINKS = "https://yx%s.%s/auth/finish?platform=android";
 
     private static final String REDIRECT_URI_SCHEME = "yx%s:///auth/finish?platform=android";
 
     private static final boolean SUPPORT_APPLINKS = Build.VERSION.SDK_INT >= 23;
-
-    private static final String REDIRECT_URL = SUPPORT_APPLINKS ? REDIRECT_URI_APPLINKS : REDIRECT_URI_SCHEME;
 
     @NonNull
     private final PreferencesHelper preferencesHelper;
@@ -51,12 +49,12 @@ class ExternalLoginHandler {
     }
 
     @NonNull
-    String getUrl(@NonNull final String clientId, @Nullable final Long uid, @Nullable final String loginHint) {
+    String getUrl(@NonNull final YandexAuthOptions options, @Nullable final Long uid, @Nullable final String loginHint) {
         final String state = stateGenerator.generate();
         saveState(state);
         try {
-            final String redirectUri = URLEncoder.encode(String.format(REDIRECT_URL, clientId), "UTF-8");
-            String url = String.format(LOGIN_URL_FORMAT, clientId, redirectUri, state);
+            final String redirectUri = createEncodedRedirectUrl(options);
+            String url = String.format(LOGIN_URL_FORMAT, options.getOauthHost(), options.getClientId(), redirectUri, state);
 
             if (loginHint != null) {
                 url += "&login_hint=" + loginHint;
@@ -81,7 +79,7 @@ class ExternalLoginHandler {
         final String loginHint = intent.getStringExtra(EXTRA_LOGIN_HINT);
 
         final YandexAuthOptions options = intent.getParcelableExtra(EXTRA_OPTIONS);
-        return getUrl(options.getClientId(), uid, loginHint);
+        return getUrl(options, uid, loginHint);
     }
 
     @NonNull
@@ -104,14 +102,20 @@ class ExternalLoginHandler {
             result.putExtra(EXTRA_ERROR, new YandexAuthException(error));
         } else {
             final String token = dummyUri.getQueryParameter("access_token");
-            final long expiresIn = Long.parseLong(dummyUri.getQueryParameter("expires_in"));
+            final String expiresInString = dummyUri.getQueryParameter("expires_in");
+            final long expiresIn;
+            if (expiresInString == null) {
+                expiresIn = Long.MAX_VALUE;
+            } else {
+                expiresIn = Long.parseLong(expiresInString);
+            }
             result.putExtra(EXTRA_TOKEN, new YandexAuthToken(token, expiresIn));
         }
         return result;
     }
 
-    boolean isFinalUrl(@NonNull final String url, @NonNull final String clientId) {
-        return url.startsWith(String.format(REDIRECT_URL, clientId));
+    boolean isFinalUrl(@NonNull final YandexAuthOptions options, @NonNull final String url) {
+        return url.startsWith(createRedirectUrl(options));
     }
 
     private void saveState(@NonNull final String state) {
@@ -121,6 +125,21 @@ class ExternalLoginHandler {
     @Nullable
     private String restoreState() {
         return preferencesHelper.restoreStateValue();
+    }
+
+    @NonNull
+    private String createEncodedRedirectUrl(@NonNull final YandexAuthOptions options)
+            throws UnsupportedEncodingException {
+        return URLEncoder.encode(createRedirectUrl(options), "UTF-8");
+    }
+
+    @NonNull
+    private String createRedirectUrl(@NonNull final YandexAuthOptions options) {
+        if (SUPPORT_APPLINKS) {
+            return String.format(REDIRECT_URI_APPLINKS, options.getClientId(), options.getOauthHost());
+        } else {
+            return String.format(REDIRECT_URI_SCHEME, options.getClientId());
+        }
     }
 
     interface StateGenerator {

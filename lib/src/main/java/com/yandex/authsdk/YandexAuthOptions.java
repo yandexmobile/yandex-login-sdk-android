@@ -12,20 +12,6 @@ import com.yandex.authsdk.internal.Constants;
 
 public class YandexAuthOptions implements Parcelable {
 
-    public static final Creator<YandexAuthOptions> CREATOR = new Creator<YandexAuthOptions>() {
-        @Override
-        @NonNull
-        public YandexAuthOptions createFromParcel(@NonNull final Parcel in) {
-            return new YandexAuthOptions(in);
-        }
-
-        @Override
-        @NonNull
-        public YandexAuthOptions[] newArray(final int size) {
-            return new YandexAuthOptions[size];
-        }
-    };
-
     @NonNull
     private final String clientId;
 
@@ -34,6 +20,13 @@ public class YandexAuthOptions implements Parcelable {
     @Nullable
     private final Context context;
 
+    @Nullable
+    private final String oauthHost;
+
+    /**
+     * @deprecated Use {@link Builder} instead of constructor
+     */
+    @Deprecated
     public YandexAuthOptions(@NonNull final Context context, final boolean loggingEnabled) {
         final ApplicationInfo app;
         try {
@@ -52,12 +45,8 @@ public class YandexAuthOptions implements Parcelable {
         this.clientId = clientId;
         this.loggingEnabled = loggingEnabled;
         this.context = context;
-    }
 
-    protected YandexAuthOptions(@NonNull final Parcel in) {
-        clientId = in.readString();
-        loggingEnabled = in.readByte() != 0;
-        context = null;
+        this.oauthHost = app.metaData.getString(Constants.META_OAUTH_HOST);
     }
 
     @NonNull
@@ -69,10 +58,51 @@ public class YandexAuthOptions implements Parcelable {
         return loggingEnabled;
     }
 
+    @Nullable
+    @Deprecated
+    Context getContext() {
+        return context;
+    }
+
+    @Nullable
+    public String getOauthHost() {
+        return oauthHost;
+    }
+
+    public static class Builder {
+
+        private final Context context;
+
+        private boolean loggingEnabled;
+
+        public Builder(@NonNull final Context context) {
+            this.context = context;
+        }
+
+        @NonNull
+        public Builder enableLogging() {
+            this.loggingEnabled = true;
+            return this;
+        }
+
+        @NonNull
+        public YandexAuthOptions build() {
+            return new YandexAuthOptions(context, loggingEnabled);
+        }
+    }
+
+    protected YandexAuthOptions(@NonNull final Parcel in) {
+        clientId = in.readString();
+        loggingEnabled = in.readByte() != 0;
+        oauthHost = in.readString();
+        context = null;
+    }
+
     @Override
     public void writeToParcel(@NonNull final Parcel dest, final int flags) {
         dest.writeString(clientId);
         dest.writeByte((byte) (loggingEnabled ? 1 : 0));
+        dest.writeString(oauthHost);
     }
 
     @Override
@@ -80,9 +110,17 @@ public class YandexAuthOptions implements Parcelable {
         return 0;
     }
 
-    @Nullable
-    @Deprecated
-    Context getContext() {
-        return context;
-    }
+    public static final Creator<YandexAuthOptions> CREATOR = new Creator<YandexAuthOptions>() {
+        @Override
+        @NonNull
+        public YandexAuthOptions createFromParcel(@NonNull final Parcel in) {
+            return new YandexAuthOptions(in);
+        }
+
+        @Override
+        @NonNull
+        public YandexAuthOptions[] newArray(final int size) {
+            return new YandexAuthOptions[size];
+        }
+    };
 }

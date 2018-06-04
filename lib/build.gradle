@@ -17,6 +17,7 @@ android {
         versionCode getBuildNumber()
         versionName rootProject.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders = [YANDEX_OAUTH_HOST:"oauth.yandex.ru"]
     }
     buildTypes {
         release {

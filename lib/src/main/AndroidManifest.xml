@@ -29,7 +29,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="yx${YANDEX_CLIENT_ID}.oauth.yandex.ru"
+                    android:host="yx${YANDEX_CLIENT_ID}.${YANDEX_OAUTH_HOST}"
                     android:path="/auth/finish"
                     android:scheme="https" />
             </intent-filter>
@@ -50,5 +50,9 @@
         <meta-data
             android:name="com.yandex.auth.CLIENT_ID"
             android:value="${YANDEX_CLIENT_ID}" />
+
+        <meta-data
+            android:name="com.yandex.auth.OAUTH_HOST"
+            android:value="${YANDEX_OAUTH_HOST}" />
     </application>
 </manifest>

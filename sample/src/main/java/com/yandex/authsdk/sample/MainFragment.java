@@ -98,7 +98,9 @@ public class MainFragment extends Fragment {
         editUid = (EditText) view.findViewById(R.id.edit_uid);
         editLoginHint = (EditText) view.findViewById(R.id.edit_login_hint);
 
-        sdk = new YandexAuthSdk(getContext(), new YandexAuthOptions(getContext(), true));
+        sdk = new YandexAuthSdk(requireContext(), new YandexAuthOptions.Builder(requireContext())
+                .enableLogging()
+                .build());
 
         if (yandexAuthToken != null) {
             onTokenReceived(yandexAuthToken);
