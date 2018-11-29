@@ -11,6 +11,7 @@ import android.content.pm.Signature;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.yandex.authsdk.YandexAuthOptions;
 
@@ -41,10 +42,15 @@ public class PackageManagerHelper {
     @NonNull
     private final YandexAuthOptions options;
 
+    @NonNull
+    private final String myPackageName;
+
     public PackageManagerHelper(
+            @NonNull final String myPackageName,
             @NonNull final PackageManager packageManager,
             @NonNull final YandexAuthOptions options
     ) {
+        this.myPackageName = myPackageName;
         this.packageManager = packageManager;
         this.options = options;
     }
@@ -68,6 +74,10 @@ public class PackageManagerHelper {
         final List<ApplicationInfo> applicationInfos = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
 
         for (final ApplicationInfo applicationInfo : applicationInfos) {
+            if (TextUtils.equals(applicationInfo.packageName, myPackageName)) {
+                continue;
+            }
+
             final Bundle metaData = applicationInfo.metaData;
             final String packageName = applicationInfo.packageName;
 

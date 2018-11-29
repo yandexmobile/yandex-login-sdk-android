@@ -43,7 +43,11 @@ public class AuthSdkActivity extends Activity {
         options = getIntent().getParcelableExtra(Constants.EXTRA_OPTIONS);
         loginStrategyResolver = new LoginStrategyResolver(
                 getApplicationContext(),
-                new PackageManagerHelper(getPackageManager(), options)
+                new PackageManagerHelper(
+                        getPackageName(),
+                        getPackageManager(),
+                        options
+                )
         );
         if (savedInstanceState == null) {
             final ArrayList<String> scopes = getIntent().getStringArrayListExtra(Constants.EXTRA_SCOPES);

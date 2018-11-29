@@ -17,6 +17,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,7 +57,11 @@ public class PackageManagerHelperTest {
                     add(new ResolveInfo());
                 }});
 
-        packageManagerHelper = new PackageManagerHelper(packageManager, options);
+        packageManagerHelper = new PackageManagerHelper(
+                RuntimeEnvironment.application.getPackageName(),
+                packageManager,
+                options
+        );
     }
 
     @Test

@@ -40,9 +40,11 @@ public class YandexAuthSdk {
 
     public YandexAuthSdk(@NonNull final Context context, @NonNull final YandexAuthOptions options) {
         this.options = options;
-        this.providerClient = new ProviderClientResolver(
-                new PackageManagerHelper(context.getPackageManager(), options)
-        ).createProviderClient(context);
+        this.providerClient = new ProviderClientResolver(new PackageManagerHelper(
+                context.getPackageName(),
+                context.getPackageManager(),
+                options
+        )).createProviderClient(context);
     }
 
     @NonNull
