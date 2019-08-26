@@ -19,6 +19,7 @@ import static com.yandex.authsdk.YandexAuthException.SECURITY_ERROR;
 import static com.yandex.authsdk.internal.Constants.EXTRA_ERROR;
 import static com.yandex.authsdk.internal.Constants.EXTRA_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 @RunWith(RobolectricTestRunner.class)
@@ -39,6 +40,7 @@ public class ExternalLoginHandlerTest {
     @Before
     public void before() {
         loginHandler = new ExternalLoginHandler(preferencesHelper, () -> STATE);
+        doReturn("oauth.yandex.com").when(options).getOauthHost();
         loginHandler.getUrl(options, null, null);
     }
 

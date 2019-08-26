@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.yandex.authsdk.internal.Constants;
+import com.yandex.authsdk.internal.Util;
 
 public class YandexAuthOptions implements Parcelable {
 
@@ -20,7 +21,7 @@ public class YandexAuthOptions implements Parcelable {
     @Nullable
     private final Context context;
 
-    @Nullable
+    @NonNull
     private final String oauthHost;
 
     /**
@@ -46,7 +47,7 @@ public class YandexAuthOptions implements Parcelable {
         this.loggingEnabled = loggingEnabled;
         this.context = context;
 
-        this.oauthHost = app.metaData.getString(Constants.META_OAUTH_HOST);
+        this.oauthHost = Util.checkNotNull(app.metaData.getString(Constants.META_OAUTH_HOST));
     }
 
     @NonNull
@@ -64,7 +65,7 @@ public class YandexAuthOptions implements Parcelable {
         return context;
     }
 
-    @Nullable
+    @NonNull
     public String getOauthHost() {
         return oauthHost;
     }

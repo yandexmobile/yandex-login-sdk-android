@@ -12,6 +12,7 @@ import com.yandex.authsdk.YandexAuthToken;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Locale;
 
 import static android.text.TextUtils.isEmpty;
 import static com.yandex.authsdk.YandexAuthException.SECURITY_ERROR;
@@ -54,7 +55,7 @@ class ExternalLoginHandler {
         saveState(state);
         try {
             final String redirectUri = createEncodedRedirectUrl(options);
-            String url = String.format(LOGIN_URL_FORMAT, options.getOauthHost(), options.getClientId(), redirectUri, state);
+            String url = String.format(LOGIN_URL_FORMAT, getOauthHost(options), options.getClientId(), redirectUri, state);
 
             if (loginHint != null) {
                 url += "&login_hint=" + loginHint;
@@ -140,6 +141,11 @@ class ExternalLoginHandler {
         } else {
             return String.format(REDIRECT_URI_SCHEME, options.getClientId());
         }
+    }
+
+    @NonNull
+    private String getOauthHost(@NonNull final YandexAuthOptions options) {
+        return HostUtil.getLocalizedHost(options.getOauthHost(), Locale.getDefault());
     }
 
     interface StateGenerator {
