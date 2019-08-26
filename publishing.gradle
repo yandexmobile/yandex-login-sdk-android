@@ -45,11 +45,12 @@ def createSignTask(def targetFile) {
 
 def createSignAarTask() {
     return task(type: Sign, "signAar") {
-        sign bundleRelease
-        dependsOn bundleRelease
+        sign bundleReleaseAar
+        dependsOn bundleReleaseAar
     }
 }
 
+afterEvaluate {
 publishing {
     publications {
 
@@ -58,7 +59,7 @@ publishing {
             version = project.android.defaultConfig.versionName + (isReleaseBuild ? "" : "-SNAPSHOT")
             artifactId = project.artifactId
             pom.packaging = 'aar'
-            artifact(bundleRelease) {
+            artifact(bundleReleaseAar) {
                 classifier null
             }
             artifact javadocJar
@@ -123,6 +124,7 @@ publishing {
             }
         }
     }
+}
 }
 
 
