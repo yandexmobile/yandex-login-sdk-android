@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.yandex.authsdk.YandexAuthException;
+import com.yandex.authsdk.YandexAuthLoginOptions;
 import com.yandex.authsdk.YandexAuthOptions;
 import com.yandex.authsdk.YandexAuthToken;
 
@@ -17,10 +18,8 @@ import java.util.Locale;
 import static android.text.TextUtils.isEmpty;
 import static com.yandex.authsdk.YandexAuthException.SECURITY_ERROR;
 import static com.yandex.authsdk.internal.Constants.EXTRA_ERROR;
-import static com.yandex.authsdk.internal.Constants.EXTRA_LOGIN_HINT;
 import static com.yandex.authsdk.internal.Constants.EXTRA_OPTIONS;
 import static com.yandex.authsdk.internal.Constants.EXTRA_TOKEN;
-import static com.yandex.authsdk.internal.Constants.EXTRA_UID_VALUE;
 
 class ExternalLoginHandler {
 
@@ -50,15 +49,22 @@ class ExternalLoginHandler {
     }
 
     @NonNull
-    String getUrl(@NonNull final YandexAuthOptions options, @Nullable final Long uid, @Nullable final String loginHint) {
+    String getUrl(@NonNull final YandexAuthOptions options, @NonNull final YandexAuthLoginOptions loginOptions) {
         final String state = stateGenerator.generate();
         saveState(state);
         try {
             final String redirectUri = createEncodedRedirectUrl(options);
-            String url = String.format(LOGIN_URL_FORMAT, getOauthHost(options), options.getClientId(), redirectUri, state);
+            // Don't use force confirm due to browser redirect problem
+            String url = String.format(
+                    LOGIN_URL_FORMAT,
+                    getOauthHost(options),
+                    options.getClientId(),
+                    redirectUri,
+                    state
+            );
 
-            if (loginHint != null) {
-                url += "&login_hint=" + loginHint;
+            if (loginOptions.getLoginHint() != null) {
+                url += "&login_hint=" + loginOptions.getLoginHint();
             }
 
             // What we can do with uid?
@@ -70,17 +76,9 @@ class ExternalLoginHandler {
 
     @Nullable
     String getUrl(@NonNull final Intent intent) {
-        final Long uid;
-        if (intent.hasExtra(EXTRA_UID_VALUE)) {
-            uid = intent.getLongExtra(EXTRA_LOGIN_HINT, 0);
-        } else {
-            uid = null;
-        }
-
-        final String loginHint = intent.getStringExtra(EXTRA_LOGIN_HINT);
-
+        final YandexAuthLoginOptions loginOptions = intent.getParcelableExtra(Constants.EXTRA_LOGIN_OPTIONS);
         final YandexAuthOptions options = intent.getParcelableExtra(EXTRA_OPTIONS);
-        return getUrl(options, uid, loginHint);
+        return getUrl(options, loginOptions);
     }
 
     @NonNull

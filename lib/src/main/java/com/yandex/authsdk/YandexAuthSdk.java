@@ -18,7 +18,6 @@ import com.yandex.authsdk.internal.provider.ProviderClient;
 import com.yandex.authsdk.internal.provider.ProviderClientResolver;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -31,6 +30,9 @@ public class YandexAuthSdk {
 
     @Nullable
     private final ProviderClient providerClient;
+
+    @NonNull
+    private final Context context;
 
     @Deprecated
     public YandexAuthSdk(@NonNull final YandexAuthOptions options) {
@@ -45,29 +47,35 @@ public class YandexAuthSdk {
                 context.getPackageManager(),
                 options
         )).createProviderClient(context);
+        this.context = context;
     }
 
     @NonNull
     public Intent createLoginIntent(@NonNull final Context context, @Nullable final Set<String> scopes) {
-        final Intent intent = new Intent(context, AuthSdkActivity.class);
-        if (scopes != null) {
-            intent.putExtra(Constants.EXTRA_SCOPES, new ArrayList<>(scopes));
-        }
-
-        intent.putExtra(Constants.EXTRA_OPTIONS, options);
-        return intent;
+        return createLoginIntent(context, scopes, null, null);
     }
 
     @NonNull
     public Intent createLoginIntent(
             @NonNull final Context context,
             @Nullable final Set<String> scopes,
-            final long uid,
+            @Nullable final Long uid,
             @Nullable final String loginHint
     ) {
-        final Intent intent = createLoginIntent(context, scopes);
-        intent.putExtra(Constants.EXTRA_UID_VALUE, uid);
-        intent.putExtra(Constants.EXTRA_LOGIN_HINT, loginHint);
+        return createLoginIntent(new YandexAuthLoginOptions.Builder()
+                .setScopes(scopes)
+                .setUid(uid)
+                .setLoginHint(loginHint)
+                .build());
+    }
+
+    @NonNull
+    public Intent createLoginIntent(
+            @NonNull final YandexAuthLoginOptions loginOptions
+    ) {
+        final Intent intent = new Intent(context, AuthSdkActivity.class);
+        intent.putExtra(Constants.EXTRA_OPTIONS, options);
+        intent.putExtra(Constants.EXTRA_LOGIN_OPTIONS, loginOptions);
         return intent;
     }
 

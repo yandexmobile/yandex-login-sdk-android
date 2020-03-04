@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.yandex.authsdk.YandexAuthException;
+import com.yandex.authsdk.YandexAuthLoginOptions;
 import com.yandex.authsdk.YandexAuthOptions;
 import com.yandex.authsdk.YandexAuthToken;
 import com.yandex.authsdk.internal.AuthSdkActivity;
@@ -28,12 +29,10 @@ class WebViewLoginStrategy extends LoginStrategy {
     public void login(
             @NonNull final Activity activity,
             @NonNull final YandexAuthOptions options,
-            @NonNull final ArrayList<String> scopes,
-            @Nullable final Long uid,
-            @Nullable final String loginHint
-    ) {
+            @NonNull final YandexAuthLoginOptions loginOptions
+            ) {
         final Intent loginIntent = new Intent(activity, WebViewLoginActivity.class);
-        putExtras(loginIntent, scopes, options, uid, loginHint);
+        putExtras(loginIntent, options, loginOptions);
         activity.startActivityForResult(loginIntent, AuthSdkActivity.LOGIN_REQUEST_CODE);
     }
 

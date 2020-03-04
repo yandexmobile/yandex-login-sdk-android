@@ -8,6 +8,8 @@ public class Constants {
 
     public static final String EXTRA_OPTIONS = "com.yandex.authsdk.EXTRA_OPTIONS";
 
+    public static final String EXTRA_LOGIN_OPTIONS = "com.yandex.authsdk.EXTRA_LOGIN_OPTIONS";
+
     public static final String META_CLIENT_ID = "com.yandex.auth.CLIENT_ID";
 
     public static final String META_OAUTH_HOST = "com.yandex.auth.OAUTH_HOST";
@@ -23,5 +25,4 @@ public class Constants {
 
     // Used in Yandex Account Manager
     public static final String EXTRA_LOGIN_HINT = "com.yandex.auth.LOGIN_HINT";
-
 }

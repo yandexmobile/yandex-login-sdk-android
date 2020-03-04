@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.yandex.authsdk.YandexAuthException;
+import com.yandex.authsdk.YandexAuthLoginOptions;
 import com.yandex.authsdk.YandexAuthOptions;
 import com.yandex.authsdk.YandexAuthToken;
 import com.yandex.authsdk.internal.strategy.LoginStrategy;
@@ -50,18 +51,11 @@ public class AuthSdkActivity extends Activity {
                 )
         );
         if (savedInstanceState == null) {
-            final ArrayList<String> scopes = getIntent().getStringArrayListExtra(Constants.EXTRA_SCOPES);
-            final Long uid;
-            if (getIntent().hasExtra(Constants.EXTRA_UID_VALUE)) {
-                uid = getIntent().getLongExtra(Constants.EXTRA_UID_VALUE, 0);
-            } else {
-                uid = null;
-            }
-            final String loginHint = getIntent().getStringExtra(Constants.EXTRA_LOGIN_HINT);
+            final YandexAuthLoginOptions loginOptions = getIntent().getParcelableExtra(Constants.EXTRA_LOGIN_OPTIONS);
             try {
                 final LoginStrategy strategy = loginStrategyResolver.getLoginStrategy();
                 loginType = strategy.getType();
-                strategy.login(this, options, scopes == null ? new ArrayList<>() : scopes, uid, loginHint);
+                strategy.login(this, options, loginOptions);
             } catch (final Exception e) {
                 finishWithError(e);
             }

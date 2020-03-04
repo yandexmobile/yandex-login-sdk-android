@@ -12,12 +12,14 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yandex.authsdk.YandexAuthAccount;
 import com.yandex.authsdk.YandexAuthException;
+import com.yandex.authsdk.YandexAuthLoginOptions;
 import com.yandex.authsdk.YandexAuthOptions;
 import com.yandex.authsdk.YandexAuthSdk;
 import com.yandex.authsdk.YandexAuthToken;
@@ -79,13 +81,15 @@ public class MainFragment extends Fragment {
             final String uidStr = editUid.getText().toString();
             final String loginHint = editLoginHint.getText().toString();
 
-            final Intent intent;
+            final YandexAuthLoginOptions.Builder loginOptionsBuilder =  new YandexAuthLoginOptions.Builder();
+
             if (!TextUtils.isEmpty(uidStr)) {
                 final long uid = Long.parseLong(uidStr);
-                intent = sdk.createLoginIntent(getActivity(), null, uid, loginHint);
-            } else {
-                intent = sdk.createLoginIntent(getActivity(), null);
+                loginOptionsBuilder.setUid(uid);
+                loginOptionsBuilder.setLoginHint(loginHint);
             }
+            final Intent intent = sdk.createLoginIntent(loginOptionsBuilder.build());
+
             startActivityForResult(intent, REQUEST_LOGIN_SDK);
 
         });

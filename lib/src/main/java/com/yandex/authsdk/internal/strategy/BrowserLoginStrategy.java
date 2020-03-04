@@ -9,13 +9,13 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.yandex.authsdk.YandexAuthLoginOptions;
 import com.yandex.authsdk.YandexAuthOptions;
 import com.yandex.authsdk.YandexAuthToken;
 import com.yandex.authsdk.YandexAuthException;
 import com.yandex.authsdk.internal.BrowserLoginActivity;
 import com.yandex.authsdk.internal.AuthSdkActivity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.yandex.authsdk.internal.BrowserLoginActivity.EXTRA_BROWSER_PACKAGE_NAME;
@@ -87,13 +87,11 @@ class BrowserLoginStrategy extends LoginStrategy {
     public void login(
             @NonNull final Activity activity,
             @NonNull final YandexAuthOptions options,
-            @NonNull final ArrayList<String> scopes,
-            @Nullable final Long uid,
-            @Nullable final String loginHint
+            @NonNull final YandexAuthLoginOptions loginOptions
     ) {
         final Intent loginIntent = new Intent(context, BrowserLoginActivity.class);
         loginIntent.putExtra(EXTRA_BROWSER_PACKAGE_NAME, browserPackageName);
-        putExtras(loginIntent, scopes, options, uid, loginHint);
+        putExtras(loginIntent, options, loginOptions);
 
         activity.startActivityForResult(loginIntent, AuthSdkActivity.LOGIN_REQUEST_CODE);
     }
