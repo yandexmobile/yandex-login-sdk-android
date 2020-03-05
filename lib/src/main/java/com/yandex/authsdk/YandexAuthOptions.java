@@ -7,9 +7,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.yandex.authsdk.internal.Constants;
 import com.yandex.authsdk.internal.Util;
+
+import static com.yandex.authsdk.internal.Constants.HOST_PRODUCTION;
 
 public class YandexAuthOptions implements Parcelable {
 
@@ -68,6 +71,10 @@ public class YandexAuthOptions implements Parcelable {
     @NonNull
     public String getOauthHost() {
         return oauthHost;
+    }
+
+    public boolean isTesting() {
+        return !TextUtils.equals(oauthHost, HOST_PRODUCTION);
     }
 
     public static class Builder {

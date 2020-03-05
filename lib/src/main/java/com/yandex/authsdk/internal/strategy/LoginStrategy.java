@@ -16,6 +16,7 @@ import static com.yandex.authsdk.internal.Constants.EXTRA_LOGIN_OPTIONS;
 import static com.yandex.authsdk.internal.Constants.EXTRA_OPTIONS;
 import static com.yandex.authsdk.internal.Constants.EXTRA_SCOPES;
 import static com.yandex.authsdk.internal.Constants.EXTRA_UID_VALUE;
+import static com.yandex.authsdk.internal.Constants.EXTRA_USE_TESTING_ENV;
 
 public abstract class LoginStrategy {
 
@@ -50,6 +51,7 @@ public abstract class LoginStrategy {
         if (loginOptions.getLoginHint() != null) {
             intent.putExtra(EXTRA_LOGIN_HINT, loginOptions.getLoginHint());
         }
+        intent.putExtra(EXTRA_USE_TESTING_ENV, options.isTesting());
         return intent;
     }
 

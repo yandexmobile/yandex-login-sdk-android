@@ -14,6 +14,8 @@ public class Constants {
 
     public static final String META_OAUTH_HOST = "com.yandex.auth.OAUTH_HOST";
 
+    public static final String HOST_PRODUCTION = "oauth.yandex.ru";
+
     // Used in Yandex Account Manager
     public static final String EXTRA_CLIENT_ID = "com.yandex.auth.CLIENT_ID";
 
@@ -25,4 +27,7 @@ public class Constants {
 
     // Used in Yandex Account Manager
     public static final String EXTRA_LOGIN_HINT = "com.yandex.auth.LOGIN_HINT";
+
+    // Used in Yandex Account Manager
+    public static final String EXTRA_USE_TESTING_ENV = "com.yandex.auth.USE_TESTING_ENV";
 }

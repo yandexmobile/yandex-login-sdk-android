@@ -12,14 +12,26 @@ android {
         versionName "1.0.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-        // Don't use this client id in you app. Registration of new application: https://tech.yandex.ru
-        manifestPlaceholders = [YANDEX_CLIENT_ID:"fcdddf83a97843ae80815c1c9247015b"]
     }
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt')
+        }
+    }
+
+    flavorDimensions 'environment'
+
+    productFlavors {
+        envProduction {
+            dimension 'environment'
+            // Don't use this client id in you app. Registration of new application: https://tech.yandex.ru
+            manifestPlaceholders = [YANDEX_CLIENT_ID:"fcdddf83a97843ae80815c1c9247015b"]
+        }
+        envTesting {
+            dimension 'environment'
+            // Don't use this client id in you app. Registration of new application: https://tech.yandex.ru
+            manifestPlaceholders = [YANDEX_CLIENT_ID:"ad7b556d8be149f7bf07c5eb8f9fdb5b"]
         }
     }
 
