@@ -2,10 +2,10 @@ package com.yandex.authsdk.internal;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.yandex.authsdk.YandexAuthException;
+import com.yandex.authsdk.YandexAuthLoginOptions;
 import com.yandex.authsdk.YandexAuthOptions;
 import com.yandex.authsdk.YandexAuthToken;
 
@@ -41,7 +41,8 @@ public class ExternalLoginHandlerTest {
     public void before() {
         loginHandler = new ExternalLoginHandler(preferencesHelper, () -> STATE);
         doReturn("oauth.yandex.com").when(options).getOauthHost();
-        loginHandler.getUrl(options, null, null);
+        loginHandler.getUrl(options, new YandexAuthLoginOptions.Builder()
+                .build());
     }
 
     @Test
