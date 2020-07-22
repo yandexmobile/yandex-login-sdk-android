@@ -2,7 +2,7 @@ package com.yandex.authsdk.internal;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.yandex.authsdk.YandexAuthException;
 import com.yandex.authsdk.YandexAuthLoginOptions;

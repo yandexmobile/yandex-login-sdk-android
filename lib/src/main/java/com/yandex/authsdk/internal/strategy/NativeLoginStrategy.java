@@ -2,8 +2,9 @@ package com.yandex.authsdk.internal.strategy;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.yandex.authsdk.YandexAuthException;
 import com.yandex.authsdk.YandexAuthLoginOptions;
@@ -11,8 +12,6 @@ import com.yandex.authsdk.YandexAuthOptions;
 import com.yandex.authsdk.YandexAuthToken;
 import com.yandex.authsdk.internal.AuthSdkActivity;
 import com.yandex.authsdk.internal.PackageManagerHelper;
-
-import java.util.ArrayList;
 
 import static com.yandex.authsdk.YandexAuthException.CONNECTION_ERROR;
 
@@ -68,7 +67,7 @@ public class NativeLoginStrategy extends LoginStrategy {
             @NonNull final Activity activity,
             @NonNull final YandexAuthOptions options,
             @NonNull final YandexAuthLoginOptions loginOptions
-            ) {
+    ) {
         final Intent intent = putExtrasNative(packagedIntent, options, loginOptions);
         activity.startActivityForResult(intent, AuthSdkActivity.LOGIN_REQUEST_CODE);
     }

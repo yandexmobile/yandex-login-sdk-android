@@ -3,8 +3,8 @@ package com.yandex.authsdk.internal.provider;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.yandex.authsdk.YandexAuthAccount;
 import com.yandex.authsdk.exceptions.YandexAuthInteractionException;

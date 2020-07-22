@@ -1,6 +1,6 @@
 package com.yandex.authsdk.internal;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.yandex.authsdk.YandexAuthOptions;
