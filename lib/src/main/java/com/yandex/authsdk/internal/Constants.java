@@ -30,4 +30,7 @@ public class Constants {
 
     // Used in Yandex Account Manager
     public static final String EXTRA_USE_TESTING_ENV = "com.yandex.auth.USE_TESTING_ENV";
+
+    // Used in Yandex Account Manager
+    public static final String EXTRA_FORCE_CONFIRM = "com.yandex.auth.FORCE_CONFIRM";
 }

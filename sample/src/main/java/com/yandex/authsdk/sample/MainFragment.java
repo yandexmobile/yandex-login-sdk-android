@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,6 +59,9 @@ public class MainFragment extends Fragment {
     @NonNull
     private EditText editUid;
 
+    @NonNull
+    private CheckBox checkboxForceConfirm;
+
     @Nullable
     private YandexAuthToken yandexAuthToken;
 
@@ -80,6 +84,7 @@ public class MainFragment extends Fragment {
         loginButton.setOnClickListener(v -> {
             final String uidStr = editUid.getText().toString();
             final String loginHint = editLoginHint.getText().toString();
+            final boolean forceConfirm = checkboxForceConfirm.isChecked();
 
             final YandexAuthLoginOptions.Builder loginOptionsBuilder =  new YandexAuthLoginOptions.Builder();
 
@@ -88,6 +93,9 @@ public class MainFragment extends Fragment {
                 loginOptionsBuilder.setUid(uid);
                 loginOptionsBuilder.setLoginHint(loginHint);
             }
+
+            loginOptionsBuilder.setForceConfirm(forceConfirm);
+
             final Intent intent = sdk.createLoginIntent(loginOptionsBuilder.build());
 
             startActivityForResult(intent, REQUEST_LOGIN_SDK);
@@ -101,6 +109,7 @@ public class MainFragment extends Fragment {
         jwtContainer = view.findViewById(R.id.jwt_container);
         editUid = (EditText) view.findViewById(R.id.edit_uid);
         editLoginHint = (EditText) view.findViewById(R.id.edit_login_hint);
+        checkboxForceConfirm = view.findViewById(R.id.checkbox_force_confirm);
 
         sdk = new YandexAuthSdk(requireContext(), new YandexAuthOptions.Builder(requireContext())
                 .enableLogging()

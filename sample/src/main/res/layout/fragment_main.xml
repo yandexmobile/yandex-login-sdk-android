@@ -31,6 +31,12 @@
             android:hint="Login hint (uid required)"
             android:inputType="text" />
 
+        <CheckBox
+            android:id="@+id/checkbox_force_confirm"
+            android:text="Always show confirmation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <Button
             android:id="@+id/login"
             android:layout_width="wrap_content"

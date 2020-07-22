@@ -11,6 +11,7 @@ import com.yandex.authsdk.YandexAuthOptions;
 import com.yandex.authsdk.YandexAuthToken;
 
 import static com.yandex.authsdk.internal.Constants.EXTRA_CLIENT_ID;
+import static com.yandex.authsdk.internal.Constants.EXTRA_FORCE_CONFIRM;
 import static com.yandex.authsdk.internal.Constants.EXTRA_LOGIN_HINT;
 import static com.yandex.authsdk.internal.Constants.EXTRA_LOGIN_OPTIONS;
 import static com.yandex.authsdk.internal.Constants.EXTRA_OPTIONS;
@@ -52,6 +53,7 @@ public abstract class LoginStrategy {
             intent.putExtra(EXTRA_LOGIN_HINT, loginOptions.getLoginHint());
         }
         intent.putExtra(EXTRA_USE_TESTING_ENV, options.isTesting());
+        intent.putExtra(EXTRA_FORCE_CONFIRM, loginOptions.isForceConfirm());
         return intent;
     }
 
