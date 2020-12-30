@@ -2,6 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.yandex.authsdk">
 
+    <queries>
+        <intent>
+            <action android:name="com.yandex.auth.action.YA_SDK_LOGIN" />
+        </intent>
+    </queries>
+
     <application>
 
         <activity
