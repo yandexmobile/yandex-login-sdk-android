@@ -78,6 +78,10 @@ public class PackageManagerHelper {
                 continue;
             }
 
+            if (!applicationInfo.enabled) {
+                continue;
+            }
+
             final Bundle metaData = applicationInfo.metaData;
             final String packageName = applicationInfo.packageName;
 
