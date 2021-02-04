@@ -1,0 +1,22 @@
+config:
+  name:
+    Passport::Android::AuthSdk::Feature
+  build_counter:
+    MobileAuthLibrary_MobileLoginSdkAndroid_Deploy
+  runner_version:
+    2020.08.26-7257842
+stages:
+  lib:
+    work_dir:
+      .
+    cmd:
+      - ./gradlew check build --info --stacktrace
+    lxc:
+      1680338527
+    android-sdk:
+      sdk_28-30+tools_29.0.2
+    artifacts:
+      +lib/build/outputs/*: lib/outputs
+      +sample/build/reports/*: sample/reports
+    multislot:
+      LARGE

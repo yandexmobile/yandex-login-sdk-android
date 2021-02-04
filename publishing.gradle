@@ -1,16 +1,23 @@
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
-def isTeamcityBuild = project.hasProperty("teamcity")
-def isReleaseBuild = rootProject.properties.containsKey('teamcity') && rootProject.teamcity['release.branch'] == 'true'
+def isCiBuild = System.getenv('ci_build') == 'true'
+def artifactoryUsername = System.getenv('artifactory_username')
+def artifactoryPassword = System.getenv('artifactory_password')
+def artifactoryReleaseUrl = System.getenv('artifactory_release_url')
+def artifactorySnapshotUrl = System.getenv('artifactory_snapshot_url')
+def isSigningEnabled = System.getenv('signing_enabled') == 'true'
+def isReleaseBuild = System.getenv('release_build') == 'true'
+def sonatypeUsername = System.getenv('sonatype_username')
+def sonatypePassword = System.getenv('sonatype_password')
 
-println ">>>>>>>>> isTeamcityBuild=${isTeamcityBuild} isReleaseBuild=${isReleaseBuild} <<<<<<<<<"
+println ">>>>>>>>> isCiBuild=${isCiBuild} isSigningEnabled=${isSigningEnabled} isReleaseBuild=${isReleaseBuild} <<<<<<<<<"
 
-if (isTeamcityBuild) {
+if (isSigningEnabled) {
     signing {
-        project.ext["signing.keyId"] = teamcity['signing.keyId']
-        project.ext["signing.password"] = teamcity['signing.password']
-        project.ext["signing.secretKeyRingFile"] = teamcity['signing.secretKeyRingFile']
+        project.ext["signing.keyId"] = System.getenv('signing_keyId')
+        project.ext["signing.password"] = System.getenv('signing_password')
+        project.ext["signing.secretKeyRingFile"] = System.getenv('signing_secretKeyRingFile')
     }
 }
 
@@ -66,7 +73,7 @@ publishing {
             artifact sourcesJar
             generatePom(pom)
 
-            if (isTeamcityBuild) {
+            if (isSigningEnabled) {
                 artifact(signSourcesJar.signatureFiles.collect { it }[0]) {
                     extension 'jar.asc'
                     classifier 'sources'
@@ -97,25 +104,24 @@ publishing {
     }
     repositories {
         //https://docs.gradle.org/current/dsl/org.gradle.api.artifacts.repositories.MavenArtifactRepository.html
-        if (isTeamcityBuild) {
+        if (isCiBuild) {
             maven {
                 name 'artifactory'
 
                 credentials {
-                    username teamcity['artifactory.username']
-                    password teamcity['artifactory.password']
+                    username artifactoryUsername
+                    password artifactoryPassword
                 }
 
-                url isReleaseBuild ? teamcity['artifactory.release_url'] :
-                        teamcity['artifactory.snapshot_url']
+                url isReleaseBuild ? artifactoryReleaseUrl : artifactorySnapshotUrl
             }
 
             maven {
                 name = 'sonatype'
 
                 credentials {
-                    username teamcity['sonatype.username']
-                    password teamcity['sonatype.password']
+                    username sonatypeUsername
+                    password sonatypePassword
                 }
 
                 url isReleaseBuild ? 'https://oss.sonatype.org/service/local/staging/deploy/maven2/' :
