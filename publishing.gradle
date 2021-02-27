@@ -6,7 +6,7 @@ def artifactoryUsername = System.getenv('artifactory_username')
 def artifactoryPassword = System.getenv('artifactory_password')
 def artifactoryReleaseUrl = System.getenv('artifactory_release_url')
 def artifactorySnapshotUrl = System.getenv('artifactory_snapshot_url')
-def isSigningEnabled = System.getenv('signing_enabled') == 'true'
+def isSigningEnabled = isCiBuild
 def isReleaseBuild = System.getenv('release_build') == 'true'
 def sonatypeUsername = System.getenv('sonatype_username')
 def sonatypePassword = System.getenv('sonatype_password')
@@ -17,7 +17,7 @@ if (isSigningEnabled) {
     signing {
         project.ext["signing.keyId"] = System.getenv('signing_keyId')
         project.ext["signing.password"] = System.getenv('signing_password')
-        project.ext["signing.secretKeyRingFile"] = System.getenv('signing_secretKeyRingFile')
+        project.ext["signing.secretKeyRingFile"] = "/tmp/secring.gpg"
     }
 }
 

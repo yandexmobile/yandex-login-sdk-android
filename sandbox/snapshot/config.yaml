@@ -10,8 +10,10 @@ stages:
     work_dir:
       .
     cmd:
+      - echo $SECRING_GPG_CONTENT | base64 -d  > "/tmp/secring.gpg"
       - ./gradlew check build --info --stacktrace
       - ./gradlew publishReleasePublicationToArtifactoryRepository --info --stacktrace
+      - rm "/tmp/secring.gpg"
     lxc:
       1680338527
     android-sdk:
@@ -21,3 +23,5 @@ stages:
       +sample/build/reports/*: sample/reports
     multislot:
       LARGE
+    secrets:
+      METRIKA:ANDROID_SIGNING_SECRING_GPG: SECRING_GPG_CONTENT
