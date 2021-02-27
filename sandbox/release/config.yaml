@@ -1,0 +1,27 @@
+config:
+  name:
+    Passport::Android::AuthSdk::Depoy
+  build_counter:
+    MobileAuthLibrary_MobileLoginSdkAndroid_Deploy
+  runner_version:
+    2020.08.26-7257842
+stages:
+  lib:
+    work_dir:
+      .
+    cmd:
+      - echo $SECRING_GPG_CONTENT | base64 -d  > "/tmp/secring.gpg"
+      - ./gradlew check build --info --stacktrace
+      - ./gradlew publishReleasePublicationToSonatypeRepository --info --stacktrace
+      - rm "/tmp/secring.gpg"
+    lxc:
+      1680338527
+    android-sdk:
+      sdk_28-30+tools_29.0.2
+    artifacts:
+      +lib/build/outputs/*: lib/outputs
+      +sample/build/reports/*: sample/reports
+    multislot:
+      LARGE
+    secrets:
+      METRIKA:ANDROID_SIGNING_SECRING_GPG: SECRING_GPG_CONTENT
