@@ -15,9 +15,9 @@ stages:
       - ./gradlew publishReleasePublicationToArtifactoryRepository --info --stacktrace
       - rm "/tmp/secring.gpg"
     lxc:
-      1680338527
+      2525562503
     android-sdk:
-      sdk_28-30+tools_29.0.2
+      platforms(28,29,30,31)+tools(31.0.0)
     artifacts:
       +lib/build/outputs/*: lib/outputs
       +sample/build/reports/*: sample/reports

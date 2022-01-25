@@ -21,8 +21,7 @@ import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import edu.emory.mathcs.backport.java.util.Collections;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -66,7 +65,7 @@ public class PackageManagerHelperTest {
 
     @Test
     public void testApplicationsNotFound() {
-        doReturn(Collections.emptyList()).when(packageManager).getInstalledApplications(anyInt());
+        doReturn(Collections.EMPTY_LIST).when(packageManager).getInstalledApplications(anyInt());
 
         assertThat(packageManagerHelper.findLatestApplication()).isNull();
     }
@@ -105,7 +104,7 @@ public class PackageManagerHelperTest {
 
         assertThat(packageManagerHelper.findLatestApplication()).isNotNull()
                 .extracting("packageName")
-                .isEqualTo(new String[]{YANDEX_APPLICATION_1.packageName});
+                .isEqualTo(YANDEX_APPLICATION_1.packageName);
     }
 
     @Test
@@ -121,7 +120,7 @@ public class PackageManagerHelperTest {
 
         assertThat(packageManagerHelper.findLatestApplication()).isNotNull()
                 .extracting("packageName")
-                .isEqualTo(new String[]{YANDEX_APPLICATION_1.packageName});
+                .isEqualTo(YANDEX_APPLICATION_1.packageName);
     }
 
     @Test
@@ -137,7 +136,7 @@ public class PackageManagerHelperTest {
 
         assertThat(packageManagerHelper.findLatestApplication()).isNotNull()
                 .extracting("packageName")
-                .isEqualTo(new String[]{YANDEX_APPLICATION_2.packageName});
+                .isEqualTo(YANDEX_APPLICATION_2.packageName);
     }
 
     @Test
@@ -153,7 +152,7 @@ public class PackageManagerHelperTest {
 
         assertThat(packageManagerHelper.findLatestApplication()).isNotNull()
                 .extracting("packageName")
-                .isEqualTo(new String[]{YANDEX_APPLICATION_3.packageName});
+                .isEqualTo(YANDEX_APPLICATION_3.packageName);
     }
 
     private void addFingerprint(@NonNull final String packageName, @NonNull final String fingerprint) throws Exception {

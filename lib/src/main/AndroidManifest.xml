@@ -26,7 +26,8 @@
 
         <activity
             android:name="com.yandex.authsdk.internal.BrowserDataActivity"
-            android:theme="@style/Theme.AuthSdk.Transparent">
+            android:theme="@style/Theme.AuthSdk.Transparent"
+            android:exported="true">
 
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
