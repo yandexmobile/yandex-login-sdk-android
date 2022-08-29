@@ -5,7 +5,7 @@
 
     <fragment
         android:id="@+id/main_fragment"
-        android:name="com.yandex.authsdk.sample.MainFragment"
+        android:name="com.yandex.authsdk.basesample.MainFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

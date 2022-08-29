@@ -1,16 +1,16 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 31
     buildToolsVersion "31.0.0"
 
     defaultConfig {
-        applicationId "com.yandex.authsdk.sample"
+        applicationId "com.yandex.authsdk.samplewithmetrica"
         minSdkVersion 15
         targetSdkVersion 31
         versionCode 1
         versionName "1.0.0"
-
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -39,11 +39,14 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
 }
 
 dependencies {
     implementation project(':base-sample')
+    implementation 'com.yandex.android:mobmetricalib:5.0.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.4.1'
-    testImplementation 'junit:junit:4.13.1'
 }
