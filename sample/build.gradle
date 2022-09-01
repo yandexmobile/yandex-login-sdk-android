@@ -28,7 +28,7 @@ android {
         envProduction {
             dimension 'environment'
             // Don't use this client id in you app. Registration of new application: https://tech.yandex.ru
-            manifestPlaceholders = [YANDEX_CLIENT_ID:"fcdddf83a97843ae80815c1c9247015b"]
+            manifestPlaceholders = [YANDEX_CLIENT_ID:"57a8133c69d947388a67164dfdbc46d3"]
         }
         envTesting {
             dimension 'environment'
