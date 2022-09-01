@@ -5,22 +5,32 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class YandexAuthLoginOptions internal constructor(
-        val scopes: ArrayList<String>?,
         val uid: Long?,
         val loginHint: String?,
-        val isForceConfirm: Boolean
+        val isForceConfirm: Boolean,
+        val requiredScopes: ArrayList<String>?,
+        val optionalScopes: ArrayList<String>?,
 ) : Parcelable {
 
     class Builder {
-        private var scopes: ArrayList<String>? = null
         private var uid: Long? = null
         private var loginHint: String? = null
         private var isForceConfirm: Boolean = true
+        private var requiredScopes: ArrayList<String>? = null
+        private var optionalScopes: ArrayList<String>? = null
 
-        fun setScopes(scopes: Set<String>?): Builder {
-            this.scopes = if (scopes == null) null else ArrayList(scopes)
+        fun setOptionalScopes(scopes: Set<String>?): Builder {
+            this.optionalScopes = scopes?.toValidArrayList()
             return this
         }
+
+        fun setRequiredScopes(scopes: Set<String>?): Builder {
+            this.requiredScopes = scopes?.toValidArrayList()
+            return this
+        }
+
+        private fun Set<String>.toValidArrayList(): ArrayList<String> =
+            ArrayList(this.filter { it.isNotEmpty() })
 
         fun setUid(uid: Long?): Builder {
             this.uid = uid
@@ -38,7 +48,13 @@ data class YandexAuthLoginOptions internal constructor(
         }
 
         fun build(): YandexAuthLoginOptions {
-            return YandexAuthLoginOptions(scopes, uid, loginHint, isForceConfirm)
+            return YandexAuthLoginOptions(
+                uid = uid,
+                loginHint = loginHint,
+                isForceConfirm = isForceConfirm,
+                requiredScopes = requiredScopes,
+                optionalScopes = optionalScopes,
+            )
         }
     }
 }

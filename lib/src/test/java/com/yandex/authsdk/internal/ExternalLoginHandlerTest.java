@@ -17,6 +17,8 @@ import org.robolectric.RuntimeEnvironment;
 
 import static com.yandex.authsdk.YandexAuthException.SECURITY_ERROR;
 import static com.yandex.authsdk.internal.Constants.EXTRA_ERROR;
+import static com.yandex.authsdk.internal.Constants.EXTRA_LOGIN_OPTIONS;
+import static com.yandex.authsdk.internal.Constants.EXTRA_OPTIONS;
 import static com.yandex.authsdk.internal.Constants.EXTRA_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
@@ -37,12 +39,16 @@ public class ExternalLoginHandlerTest {
     @NonNull
     private final PreferencesHelper preferencesHelper = new PreferencesHelper(RuntimeEnvironment.application);
 
+    private final UrlCreator urlCreator = new UrlCreator();
+
     @Before
     public void before() {
-        loginHandler = new ExternalLoginHandler(preferencesHelper, () -> STATE);
+        loginHandler = new ExternalLoginHandler(preferencesHelper, () -> STATE, urlCreator);
         doReturn("oauth.yandex.com").when(options).getOauthHost();
-        loginHandler.getUrl(options, new YandexAuthLoginOptions.Builder()
-                .build());
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_LOGIN_OPTIONS,  new YandexAuthLoginOptions.Builder().build());
+        intent.putExtra(EXTRA_OPTIONS, options);
+        loginHandler.getUrl(intent);
     }
 
     @Test

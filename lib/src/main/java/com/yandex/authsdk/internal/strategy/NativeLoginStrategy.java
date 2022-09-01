@@ -6,6 +6,7 @@ import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.yandex.authsdk.BuildConfig;
 import com.yandex.authsdk.YandexAuthException;
 import com.yandex.authsdk.YandexAuthLoginOptions;
 import com.yandex.authsdk.YandexAuthOptions;
@@ -17,7 +18,6 @@ import static com.yandex.authsdk.YandexAuthException.CONNECTION_ERROR;
 
 public class NativeLoginStrategy extends LoginStrategy {
 
-    static final String ACTION_YA_SDK_LOGIN = "com.yandex.auth.action.YA_SDK_LOGIN";
     static final String EXTRA_OAUTH_TOKEN = "com.yandex.auth.EXTRA_OAUTH_TOKEN";
     static final String EXTRA_OAUTH_TOKEN_TYPE = "com.yandex.auth.EXTRA_OAUTH_TOKEN_TYPE";
     static final String EXTRA_OAUTH_TOKEN_EXPIRES = "com.yandex.auth.OAUTH_TOKEN_EXPIRES";
@@ -50,7 +50,7 @@ public class NativeLoginStrategy extends LoginStrategy {
 
     @NonNull
     public static Intent getActionIntent(@NonNull final String packageName) {
-        final Intent intent = new Intent(ACTION_YA_SDK_LOGIN);
+        final Intent intent = new Intent(BuildConfig.ACTION_YA_SDK_LOGIN);
         intent.setPackage(packageName);
         return intent;
     }

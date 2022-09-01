@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 31
@@ -31,7 +33,10 @@ android {
         envTesting {
             dimension 'environment'
             // Don't use this client id in you app. Registration of new application: https://tech.yandex.ru
-            manifestPlaceholders = [YANDEX_CLIENT_ID:"ad7b556d8be149f7bf07c5eb8f9fdb5b"]
+            manifestPlaceholders = [
+                    YANDEX_CLIENT_ID : "e59824a58e2f440aa358f2b3eb13e364",
+                    YANDEX_OAUTH_HOST: "oauth-test.yandex.ru"
+            ]
         }
     }
 

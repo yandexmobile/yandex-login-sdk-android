@@ -23,6 +23,12 @@ android {
         versionName rootProject.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [YANDEX_OAUTH_HOST:"oauth.yandex.ru"]
+
+        def addConstant = { constantName, constantValue ->
+            manifestPlaceholders += [(constantName): constantValue]
+            buildConfigField "String", "${constantName}", "\"${constantValue}\""
+        }
+        addConstant("ACTION_YA_SDK_LOGIN", "com.yandex.auth.action.YA_SDK_LOGIN_WITH_OPTIONAL_SCOPES")
     }
     buildTypes {
         release {
