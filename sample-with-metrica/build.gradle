@@ -1,18 +1,16 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 31
     buildToolsVersion "31.0.0"
 
     defaultConfig {
-        applicationId "com.yandex.authsdk.sample"
+        applicationId "com.yandex.authsdk.samplewithmetrica"
         minSdkVersion 21
         targetSdkVersion 31
         versionCode 1
         versionName "1.0.0"
-
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -28,20 +26,12 @@ android {
         envProduction {
             dimension 'environment'
             // Don't use this client id in you app. Registration of new application: https://tech.yandex.ru
-            manifestPlaceholders = [YANDEX_CLIENT_ID: "57a8133c69d947388a67164dfdbc46d3"]
-        }
-        envNewProduction {
-            dimension 'environment'
-            // Don't use this client id in you app. Registration of new application: https://tech.yandex.ru
-            manifestPlaceholders = [YANDEX_CLIENT_ID: "8719af4a012f4786a7a910582e741c8e"]
+            manifestPlaceholders = [YANDEX_CLIENT_ID:"fcdddf83a97843ae80815c1c9247015b"]
         }
         envTesting {
             dimension 'environment'
             // Don't use this client id in you app. Registration of new application: https://tech.yandex.ru
-            manifestPlaceholders = [
-                    YANDEX_CLIENT_ID : "e59824a58e2f440aa358f2b3eb13e364",
-                    YANDEX_OAUTH_HOST: "oauth-test.yandex.ru"
-            ]
+            manifestPlaceholders = [YANDEX_CLIENT_ID:"ad7b556d8be149f7bf07c5eb8f9fdb5b"]
         }
     }
 
@@ -49,11 +39,14 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
 }
 
 dependencies {
     implementation project(':base-sample')
+    implementation 'com.yandex.android:mobmetricalib:5.0.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.4.1'
-    testImplementation 'junit:junit:4.13.1'
 }

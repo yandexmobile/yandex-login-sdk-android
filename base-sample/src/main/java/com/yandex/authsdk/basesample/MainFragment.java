@@ -1,4 +1,4 @@
-package com.yandex.authsdk.sample;
+package com.yandex.authsdk.basesample;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
