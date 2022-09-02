@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.yandex.authsdk.basesample.MainActivity"
     tools:ignore="HardcodedText,RtlHardcoded">
 
@@ -31,9 +32,36 @@
             android:hint="Login hint (uid required)"
             android:inputType="text" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Required scopes:"/>
+
+        <EditText
+            android:id="@+id/required_scopes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Scopes separated by spaces"
+            android:inputType="text" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Optional scopes:"/>
+
+        <EditText
+            android:id="@+id/optional_scopes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Scopes separated by spaces"
+            android:inputType="text" />
+
         <CheckBox
             android:id="@+id/checkbox_force_confirm"
             android:text="Always show confirmation"
+            android:layout_marginTop="32dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

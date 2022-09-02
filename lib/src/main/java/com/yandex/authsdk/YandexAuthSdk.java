@@ -51,19 +51,23 @@ public class YandexAuthSdk {
     }
 
     @NonNull
-    public Intent createLoginIntent(@NonNull final Context context, @Nullable final Set<String> scopes) {
-        return createLoginIntent(context, scopes, null, null);
+    public Intent createLoginIntent(
+            @Nullable final Set<String> requiredScopes,
+            @Nullable final Set<String> optionalScopes
+    ) {
+        return createLoginIntent(requiredScopes, optionalScopes, null, null);
     }
 
     @NonNull
     public Intent createLoginIntent(
-            @NonNull final Context context,
-            @Nullable final Set<String> scopes,
+            @Nullable final Set<String> requiredScopes,
+            @Nullable final Set<String> optionalScopes,
             @Nullable final Long uid,
             @Nullable final String loginHint
     ) {
         return createLoginIntent(new YandexAuthLoginOptions.Builder()
-                .setScopes(scopes)
+                .setRequiredScopes(requiredScopes)
+                .setOptionalScopes(optionalScopes)
                 .setUid(uid)
                 .setLoginHint(loginHint)
                 .build());

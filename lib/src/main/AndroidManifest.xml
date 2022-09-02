@@ -4,7 +4,7 @@
 
     <queries>
         <intent>
-            <action android:name="com.yandex.auth.action.YA_SDK_LOGIN" />
+            <action android:name="${ACTION_YA_SDK_LOGIN}" />
         </intent>
     </queries>
 

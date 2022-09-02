@@ -3,9 +3,41 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application>
+
+        <activity
+            android:name="com.yandex.authsdk.internal.BrowserDataActivity"
+            android:theme="@style/Theme.AuthSdk.Transparent"
+            android:exported="true"
+            tools:node="replace">
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="yx${YANDEX_CLIENT_ID}.${YANDEX_OAUTH_HOST}"
+                    android:path="/auth/finish"
+                    android:scheme="https" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:path="/auth/finish"
+                    android:scheme="yx${YANDEX_CLIENT_ID}"
+                    tools:ignore="GoogleAppIndexingUrlError" />
+            </intent-filter>
+        </activity>
+
         <meta-data
             android:name="com.yandex.auth.OAUTH_HOST"
-            android:value="oauth-test.yandex.ru"
+            android:value="${YANDEX_OAUTH_HOST}"
             tools:node="replace" />
     </application>
 

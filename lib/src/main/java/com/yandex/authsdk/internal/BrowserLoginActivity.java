@@ -50,7 +50,11 @@ public class BrowserLoginActivity extends Activity {
             return;
         }
 
-        loginHandler = new ExternalLoginHandler(new PreferencesHelper(this), () -> UUID.randomUUID().toString());
+        loginHandler = new ExternalLoginHandler(
+                new PreferencesHelper(this),
+                () -> UUID.randomUUID().toString(),
+                new UrlCreator()
+        );
 
         if (savedInstanceState == null) {
             final Intent browserIntent = new Intent(Intent.ACTION_VIEW);

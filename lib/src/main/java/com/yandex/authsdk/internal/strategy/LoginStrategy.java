@@ -1,7 +1,18 @@
 package com.yandex.authsdk.internal.strategy;
 
+import static com.yandex.authsdk.internal.Constants.EXTRA_CLIENT_ID;
+import static com.yandex.authsdk.internal.Constants.EXTRA_FORCE_CONFIRM;
+import static com.yandex.authsdk.internal.Constants.EXTRA_LOGIN_HINT;
+import static com.yandex.authsdk.internal.Constants.EXTRA_LOGIN_OPTIONS;
+import static com.yandex.authsdk.internal.Constants.EXTRA_OPTIONAL_SCOPES;
+import static com.yandex.authsdk.internal.Constants.EXTRA_OPTIONS;
+import static com.yandex.authsdk.internal.Constants.EXTRA_REQUIRED_SCOPES;
+import static com.yandex.authsdk.internal.Constants.EXTRA_UID_VALUE;
+import static com.yandex.authsdk.internal.Constants.EXTRA_USE_TESTING_ENV;
+
 import android.app.Activity;
 import android.content.Intent;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -9,15 +20,6 @@ import com.yandex.authsdk.YandexAuthException;
 import com.yandex.authsdk.YandexAuthLoginOptions;
 import com.yandex.authsdk.YandexAuthOptions;
 import com.yandex.authsdk.YandexAuthToken;
-
-import static com.yandex.authsdk.internal.Constants.EXTRA_CLIENT_ID;
-import static com.yandex.authsdk.internal.Constants.EXTRA_FORCE_CONFIRM;
-import static com.yandex.authsdk.internal.Constants.EXTRA_LOGIN_HINT;
-import static com.yandex.authsdk.internal.Constants.EXTRA_LOGIN_OPTIONS;
-import static com.yandex.authsdk.internal.Constants.EXTRA_OPTIONS;
-import static com.yandex.authsdk.internal.Constants.EXTRA_SCOPES;
-import static com.yandex.authsdk.internal.Constants.EXTRA_UID_VALUE;
-import static com.yandex.authsdk.internal.Constants.EXTRA_USE_TESTING_ENV;
 
 public abstract class LoginStrategy {
 
@@ -44,7 +46,8 @@ public abstract class LoginStrategy {
             @NonNull final YandexAuthOptions options,
             @NonNull final YandexAuthLoginOptions loginOptions
     ) {
-        intent.putExtra(EXTRA_SCOPES, loginOptions.getScopes());
+        intent.putExtra(EXTRA_REQUIRED_SCOPES, loginOptions.getRequiredScopes());
+        intent.putExtra(EXTRA_OPTIONAL_SCOPES, loginOptions.getOptionalScopes());
         intent.putExtra(EXTRA_CLIENT_ID, options.getClientId());
         if (loginOptions.getUid() != null) {
             intent.putExtra(EXTRA_UID_VALUE, loginOptions.getUid());

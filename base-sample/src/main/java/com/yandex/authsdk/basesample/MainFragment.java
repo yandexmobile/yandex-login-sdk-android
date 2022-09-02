@@ -4,11 +4,6 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +12,11 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 
 import com.yandex.authsdk.YandexAuthAccount;
 import com.yandex.authsdk.YandexAuthException;
@@ -28,8 +28,10 @@ import com.yandex.authsdk.exceptions.YandexAuthInteractionException;
 import com.yandex.authsdk.exceptions.YandexAuthSecurityException;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 public class MainFragment extends Fragment {
 
@@ -61,6 +63,9 @@ public class MainFragment extends Fragment {
 
     @NonNull
     private CheckBox checkboxForceConfirm;
+
+    private EditText editRequiredScopes;
+    private EditText editOptionalScopes;
 
     @Nullable
     private YandexAuthToken yandexAuthToken;
@@ -94,6 +99,16 @@ public class MainFragment extends Fragment {
                 loginOptionsBuilder.setLoginHint(loginHint);
             }
 
+            Set<String> optionalScopes = getScopesFrom(editOptionalScopes);
+            if (!optionalScopes.isEmpty()) {
+                loginOptionsBuilder.setOptionalScopes(optionalScopes);
+            }
+
+            Set<String> requiredScopes = getScopesFrom(editRequiredScopes);
+            if (!requiredScopes.isEmpty()) {
+                loginOptionsBuilder.setRequiredScopes(requiredScopes);
+            }
+
             loginOptionsBuilder.setForceConfirm(forceConfirm);
 
             final Intent intent = sdk.createLoginIntent(loginOptionsBuilder.build());
@@ -110,7 +125,8 @@ public class MainFragment extends Fragment {
         editUid = (EditText) view.findViewById(R.id.edit_uid);
         editLoginHint = (EditText) view.findViewById(R.id.edit_login_hint);
         checkboxForceConfirm = view.findViewById(R.id.checkbox_force_confirm);
-
+        editRequiredScopes = view.findViewById(R.id.required_scopes);
+        editOptionalScopes = view.findViewById(R.id.optional_scopes);
         sdk = new YandexAuthSdk(requireContext(), new YandexAuthOptions.Builder(requireContext())
                 .enableLogging()
                 .build());
@@ -122,6 +138,11 @@ public class MainFragment extends Fragment {
             onJwtReceived(jwt);
         }
         getAccounts();
+    }
+
+    private Set<String> getScopesFrom(EditText editText) {
+        String[] scopes = editText.getText().toString().split(" ");
+        return new HashSet<>(Arrays.asList(scopes));
     }
 
     @Override
