@@ -1,5 +1,8 @@
 package com.yandex.authsdk.internal.strategy;
 
+import static com.yandex.authsdk.YandexAuthException.CONNECTION_ERROR;
+import static com.yandex.authsdk.internal.Constants.EXTRA_RESULT_UID;
+
 import android.app.Activity;
 import android.content.Intent;
 
@@ -13,8 +16,6 @@ import com.yandex.authsdk.YandexAuthToken;
 import com.yandex.authsdk.internal.AuthSdkActivity;
 import com.yandex.authsdk.internal.PackageManagerHelper;
 
-import static com.yandex.authsdk.YandexAuthException.CONNECTION_ERROR;
-
 public class NativeLoginStrategy extends LoginStrategy {
 
     static final String ACTION_YA_SDK_LOGIN = "com.yandex.auth.action.YA_SDK_LOGIN";
@@ -23,6 +24,7 @@ public class NativeLoginStrategy extends LoginStrategy {
     static final String EXTRA_OAUTH_TOKEN_EXPIRES = "com.yandex.auth.OAUTH_TOKEN_EXPIRES";
     static final String OAUTH_TOKEN_ERROR = "com.yandex.auth.OAUTH_TOKEN_ERROR";
     static final String OAUTH_TOKEN_ERROR_MESSAGES = "com.yandex.auth.OAUTH_TOKEN_ERROR_MESSAGES";
+    private static final long INVALID_RESULT_UID = -1;
 
     /**
      * 1. Get all activities, that can handle "com.yandex.auth.action.YA_SDK_LOGIN" action<br>
@@ -100,6 +102,12 @@ public class NativeLoginStrategy extends LoginStrategy {
 
             final String[] errorMessages = data.getStringArrayExtra(OAUTH_TOKEN_ERROR_MESSAGES);
             return errorMessages == null ? new YandexAuthException(CONNECTION_ERROR) : new YandexAuthException(errorMessages);
+        }
+
+        @Override
+        public Long tryExtractUid(@NonNull Intent data) {
+            long uid = data.getLongExtra(EXTRA_RESULT_UID, INVALID_RESULT_UID);
+            return uid == INVALID_RESULT_UID ? null : uid;
         }
     }
 }

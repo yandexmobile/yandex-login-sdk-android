@@ -14,8 +14,6 @@ import com.yandex.authsdk.internal.strategy.LoginStrategy;
 import com.yandex.authsdk.internal.strategy.LoginStrategyResolver;
 import com.yandex.authsdk.internal.strategy.LoginType;
 
-import java.util.ArrayList;
-
 import static com.yandex.authsdk.YandexAuthException.UNKNOWN_ERROR;
 
 
@@ -38,6 +36,10 @@ public class AuthSdkActivity extends Activity {
     @NonNull
     private LoginStrategyResolver loginStrategyResolver;
 
+    @SuppressWarnings("NullableProblems") // onCreate
+    @NonNull
+    private MetricaInteractor metricaInteractor;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +52,7 @@ public class AuthSdkActivity extends Activity {
                         options
                 )
         );
+        metricaInteractor = new MetricaInteractor(getApplicationContext(), options);
         if (savedInstanceState == null) {
             final YandexAuthLoginOptions loginOptions = getIntent().getParcelableExtra(Constants.EXTRA_LOGIN_OPTIONS);
             try {
@@ -83,7 +86,7 @@ public class AuthSdkActivity extends Activity {
         }
 
         final LoginStrategy.ResultExtractor extractor = loginStrategyResolver.getResultExtractor(loginType);
-
+        trySendUid(data, extractor);
         final YandexAuthToken yandexAuthToken = extractor.tryExtractToken(data);
         if (yandexAuthToken != null) {
             Logger.d(options, TAG, "Token received");
@@ -105,6 +108,13 @@ public class AuthSdkActivity extends Activity {
         }
 
         Logger.d(options, TAG, "Nothing received");
+    }
+
+    private void trySendUid(Intent data, LoginStrategy.ResultExtractor extractor) {
+        final Long uid = extractor.tryExtractUid(data);
+        if (uid != null) {
+            metricaInteractor.sendUid(uid);
+        }
     }
 
     private void finishWithError(@NonNull final Exception e) {

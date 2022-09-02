@@ -16,6 +16,8 @@ public class Constants {
 
     public static final String HOST_PRODUCTION = "oauth.yandex.ru";
 
+    public static final String METRICA_UID_KEY = "login_sdk_context";
+
     // Used in Yandex Account Manager
     public static final String EXTRA_CLIENT_ID = "com.yandex.auth.CLIENT_ID";
 
@@ -33,4 +35,7 @@ public class Constants {
 
     // Used in Yandex Account Manager
     public static final String EXTRA_FORCE_CONFIRM = "com.yandex.auth.FORCE_CONFIRM";
+
+    // Used in Yandex Account Manager
+    public static final String EXTRA_RESULT_UID = "passport-login-result-uid";
 }

@@ -1,7 +1,12 @@
 package com.yandex.authsdk.internal.strategy;
 
+import static com.yandex.authsdk.internal.Constants.EXTRA_ERROR;
+import static com.yandex.authsdk.internal.Constants.EXTRA_TOKEN;
+import static com.yandex.authsdk.internal.strategy.LoginType.WEBVIEW;
+
 import android.app.Activity;
 import android.content.Intent;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -11,12 +16,6 @@ import com.yandex.authsdk.YandexAuthOptions;
 import com.yandex.authsdk.YandexAuthToken;
 import com.yandex.authsdk.internal.AuthSdkActivity;
 import com.yandex.authsdk.internal.WebViewLoginActivity;
-
-import java.util.ArrayList;
-
-import static com.yandex.authsdk.internal.Constants.EXTRA_ERROR;
-import static com.yandex.authsdk.internal.Constants.EXTRA_TOKEN;
-import static com.yandex.authsdk.internal.strategy.LoginType.WEBVIEW;
 
 class WebViewLoginStrategy extends LoginStrategy {
 
@@ -54,6 +53,12 @@ class WebViewLoginStrategy extends LoginStrategy {
         @Nullable
         public YandexAuthException tryExtractError(@NonNull Intent data) {
             return (YandexAuthException) data.getSerializableExtra(EXTRA_ERROR);
+        }
+
+        @Nullable
+        @Override
+        public Long tryExtractUid(@NonNull Intent data) {
+            return null;
         }
     }
 }
