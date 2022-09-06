@@ -4,7 +4,7 @@ config:
   build_counter:
     MobileAuthLibrary_MobileLoginSdkAndroid_Deploy
   runner_version:
-    2020.08.26-7257842
+    2022.08.11-9845116
 stages:
   lib:
     work_dir:
