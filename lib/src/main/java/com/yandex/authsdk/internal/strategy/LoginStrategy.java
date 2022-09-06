@@ -70,8 +70,5 @@ public abstract class LoginStrategy {
 
         @Nullable
         YandexAuthException tryExtractError(@NonNull final Intent data);
-
-        @Nullable
-        Long tryExtractUid(@NonNull Intent data);
     }
 }

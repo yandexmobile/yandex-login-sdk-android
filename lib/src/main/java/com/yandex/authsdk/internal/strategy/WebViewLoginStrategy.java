@@ -54,11 +54,5 @@ class WebViewLoginStrategy extends LoginStrategy {
         public YandexAuthException tryExtractError(@NonNull Intent data) {
             return (YandexAuthException) data.getSerializableExtra(EXTRA_ERROR);
         }
-
-        @Nullable
-        @Override
-        public Long tryExtractUid(@NonNull Intent data) {
-            return null;
-        }
     }
 }
