@@ -1,4 +1,4 @@
-package com.yandex.authsdk.basesample;
+package com.yandex.authsdk.sample;
 
 import android.os.Bundle;
 import androidx.annotation.Nullable;

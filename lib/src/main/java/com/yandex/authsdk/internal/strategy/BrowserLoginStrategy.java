@@ -1,28 +1,27 @@
 package com.yandex.authsdk.internal.strategy;
 
-import static com.yandex.authsdk.internal.BrowserLoginActivity.EXTRA_BROWSER_PACKAGE_NAME;
-import static com.yandex.authsdk.internal.Constants.EXTRA_ERROR;
-import static com.yandex.authsdk.internal.Constants.EXTRA_TOKEN;
-import static com.yandex.authsdk.internal.strategy.LoginType.BROWSER;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.yandex.authsdk.YandexAuthException;
 import com.yandex.authsdk.YandexAuthLoginOptions;
 import com.yandex.authsdk.YandexAuthOptions;
 import com.yandex.authsdk.YandexAuthToken;
-import com.yandex.authsdk.internal.AuthSdkActivity;
+import com.yandex.authsdk.YandexAuthException;
 import com.yandex.authsdk.internal.BrowserLoginActivity;
+import com.yandex.authsdk.internal.AuthSdkActivity;
 
 import java.util.List;
+
+import static com.yandex.authsdk.internal.BrowserLoginActivity.EXTRA_BROWSER_PACKAGE_NAME;
+import static com.yandex.authsdk.internal.Constants.EXTRA_ERROR;
+import static com.yandex.authsdk.internal.Constants.EXTRA_TOKEN;
+import static com.yandex.authsdk.internal.strategy.LoginType.BROWSER;
 
 class BrowserLoginStrategy extends LoginStrategy {
 
@@ -30,7 +29,7 @@ class BrowserLoginStrategy extends LoginStrategy {
 
     enum SupportedBrowser {
 
-        YA_BRO(1, "com.yandex.browser"), CHROME(0, "com.android.chrome");
+        CHROME(0, "com.android.chrome");
 
         private final int priority;
 
@@ -115,12 +114,6 @@ class BrowserLoginStrategy extends LoginStrategy {
         @Nullable
         public YandexAuthException tryExtractError(@NonNull final Intent data) {
             return (YandexAuthException) data.getSerializableExtra(EXTRA_ERROR);
-        }
-
-        @Nullable
-        @Override
-        public Long tryExtractUid(@NonNull Intent data) {
-            return null;
         }
     }
 }
