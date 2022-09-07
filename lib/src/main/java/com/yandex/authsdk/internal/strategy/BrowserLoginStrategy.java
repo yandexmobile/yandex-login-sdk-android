@@ -29,7 +29,7 @@ class BrowserLoginStrategy extends LoginStrategy {
 
     enum SupportedBrowser {
 
-        YA_BRO(1, "com.yandex.browser"), CHROME(0, "com.android.chrome");
+        CHROME(0, "com.android.chrome");
 
         private final int priority;
 
