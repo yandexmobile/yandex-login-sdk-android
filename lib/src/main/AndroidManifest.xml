@@ -29,34 +29,27 @@
             android:theme="@style/Theme.AuthSdk.Transparent"
             android:exported="true">
 
-            <intent-filter android:autoVerify="true">
+            <intent-filter android:autoVerify="true"
+                tools:ignore="AppLinkUrlError,ExtraText">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
-                    android:host="yx${YANDEX_CLIENT_ID}.${YANDEX_OAUTH_HOST}"
-                    android:path="/auth/finish"
-                    android:scheme="https" />
+                deepLinks_manifestPlaceholder
             </intent-filter>
 
-            <intent-filter>
+            <intent-filter tools:ignore="AppLinkUrlError">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
-                    android:path="/auth/finish"
-                    android:scheme="yx${YANDEX_CLIENT_ID}"
-                    tools:ignore="GoogleAppIndexingUrlError" />
+                deepLinks_custom_manifestPlaceholder
             </intent-filter>
         </activity>
 
-        <meta-data
-            android:name="com.yandex.auth.CLIENT_ID"
-            android:value="${YANDEX_CLIENT_ID}" />
+        metaData_manifestPlaceholder
 
         <meta-data
             android:name="com.yandex.auth.OAUTH_HOST"
