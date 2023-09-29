@@ -27,12 +27,19 @@ android {
     productFlavors {
         envProduction {
             dimension 'environment'
-        }
-        envNewProduction {
-            dimension 'environment'
+            // Don't use this client id in you app. Registration of new application: https://tech.yandex.ru
+            manifestPlaceholders = [YANDEX_CLIENT_ID: "57a8133c69d947388a67164dfdbc46d3"]
+            manifestPlaceholders += [YANDEX_CLIENT_ID_1: "8719af4a012f4786a7a910582e741c8e"]
+            manifestPlaceholders += [YANDEX_OAUTH_HOST: "oauth.yandex.ru"]
         }
         envTesting {
             dimension 'environment'
+            // Don't use this client id in you app. Registration of new application: https://tech.yandex.ru
+            manifestPlaceholders = [
+                YANDEX_CLIENT_ID : "e59824a58e2f440aa358f2b3eb13e364",
+                YANDEX_CLIENT_ID_1: "8719af4a012f4786a7a910582e741c8e",
+                YANDEX_OAUTH_HOST: "oauth-test.yandex.ru"
+            ]
         }
     }
 

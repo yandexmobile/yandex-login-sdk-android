@@ -53,7 +53,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                deepLinks_manifestPlaceholder
+                <data
+                    android:host="yx${YANDEX_CLIENT_ID}.${YANDEX_OAUTH_HOST}"
+                    android:path="/auth/finish"
+                    android:scheme="https" />
             </intent-filter>
 
             <intent-filter tools:ignore="AppLinkUrlError">
@@ -62,11 +65,16 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                deepLinks_custom_manifestPlaceholder
+                <data
+                    android:path="/auth/finish"
+                    android:scheme="yx${YANDEX_CLIENT_ID}"
+                    tools:ignore="GoogleAppIndexingUrlError" />
             </intent-filter>
         </activity>
 
-        metaData_manifestPlaceholder
+        <meta-data
+            android:name="com.yandex.auth.CLIENT_ID"
+            android:value="${YANDEX_CLIENT_ID}" />
 
         <meta-data
             android:name="com.yandex.auth.OAUTH_HOST"

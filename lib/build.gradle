@@ -7,7 +7,6 @@ group = "com.yandex.android"
 ext.artifactId = "authsdk"
 
 apply from: '../publishing.gradle'
-apply from: 'deeplink_config.gradle'
 
 def getBuildNumber() {
     (System.getenv('BUILD_NUMBER') ?: Integer.MAX_VALUE) as int
@@ -24,40 +23,6 @@ android {
         versionName rootProject.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [YANDEX_OAUTH_HOST: "oauth.yandex.ru"]
-
-        def propertiesFile = rootProject.file('gradle.properties')
-        def properties = new Properties()
-        properties.load(new FileInputStream(propertiesFile))
-
-        def addClientId = {
-            List clientIds = new ArrayList<String>()
-            Integer clientIndex = 0
-
-            HashMap indexedClientIds = new HashMap<String, Integer>()
-
-            while (clientIndex != -1) {
-                String currentClientId
-
-                if (clientIndex == 0) {
-                    currentClientId = properties['YANDEX_CLIENT_ID']
-                } else {
-                    currentClientId = properties['YANDEX_CLIENT_ID_' + clientIndex]
-                }
-                println "currentClindId $currentClientId"
-                if (currentClientId != null) {
-                    clientIds.add(currentClientId)
-                    indexedClientIds.put(currentClientId, clientIndex)
-                    clientIndex++
-                } else {
-                    clientIndex = -1
-                }
-            }
-            manifestPlaceholders += [deepLinks_manifestPlaceholder: generateData(clientIds, manifestPlaceholders.get("YANDEX_OAUTH_HOST"))]
-            manifestPlaceholders += [deepLinks_custom_manifestPlaceholder: generateCustomData(clientIds)]
-            manifestPlaceholders += [metaData_manifestPlaceholder: generateMeta(indexedClientIds)]
-        }
-
-        addClientId()
 
         def addConstant = { constantName, constantValue ->
             manifestPlaceholders += [(constantName): constantValue]
