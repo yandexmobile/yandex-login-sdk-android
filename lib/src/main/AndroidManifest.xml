@@ -4,15 +4,31 @@
 
     <queries>
         <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+
+        <intent>
             <action android:name="${ACTION_YA_SDK_LOGIN}" />
         </intent>
+
+        <package android:name="com.yandex.browser" /> <!--Яндекс бразуер с алисой-->
+        <package android:name="ru.yandex.searchplugin" /> <!--Яндекс Старт-->
+        <package android:name="com.yandex.searchapp" /> <!--Яндекс (в маркете называется Яндекс с алисой)-->
+        <package android:name="ru.yandex.taxi" /> <!-- Яндекс GO-->
+        <package android:name="ru.yandex.music" /> <!-- Яндекс музыка-->
+        <package android:name="ru.yandex.yandexmaps" /> <!--Яндекс Карты-->
+        <package android:name="ru.foodfox.client" /> <!--Яндекс Еда-->
+        <package android:name="ru.yandex.mail" /> <!--Яндекс Почта-->
+        <package android:name="ru.yandex.disk" /> <!--Яндекс Диск-->
+        <package android:name="ru.yandex.auth.client" /> <!--Семпл АМа-->
     </queries>
 
     <application>
 
         <activity
-            android:label=""
             android:name="com.yandex.authsdk.internal.AuthSdkActivity"
+            android:label=""
             android:theme="@style/Theme.AuthSdk.Transparent" />
 
         <activity
@@ -26,10 +42,11 @@
 
         <activity
             android:name="com.yandex.authsdk.internal.BrowserDataActivity"
-            android:theme="@style/Theme.AuthSdk.Transparent"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.AuthSdk.Transparent">
 
-            <intent-filter android:autoVerify="true"
+            <intent-filter
+                android:autoVerify="true"
                 tools:ignore="AppLinkUrlError,ExtraText">
                 <action android:name="android.intent.action.VIEW" />
 

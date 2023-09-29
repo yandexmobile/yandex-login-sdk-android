@@ -1,15 +1,17 @@
 package com.yandex.authsdk
 
 import android.os.Parcelable
+import com.yandex.authsdk.internal.strategy.LoginType
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class YandexAuthLoginOptions internal constructor(
-        val uid: Long?,
-        val loginHint: String?,
-        val isForceConfirm: Boolean,
-        val requiredScopes: ArrayList<String>?,
-        val optionalScopes: ArrayList<String>?,
+    val uid: Long?,
+    val loginHint: String?,
+    val isForceConfirm: Boolean,
+    val requiredScopes: ArrayList<String>?,
+    val optionalScopes: ArrayList<String>?,
+    val loginType: LoginType?
 ) : Parcelable {
 
     class Builder {
@@ -18,6 +20,7 @@ data class YandexAuthLoginOptions internal constructor(
         private var isForceConfirm: Boolean = true
         private var requiredScopes: ArrayList<String>? = null
         private var optionalScopes: ArrayList<String>? = null
+        private var loginType: LoginType? = null
 
         fun setOptionalScopes(scopes: Set<String>?): Builder {
             this.optionalScopes = scopes?.toValidArrayList()
@@ -47,6 +50,11 @@ data class YandexAuthLoginOptions internal constructor(
             return this
         }
 
+        fun setLoginType(loginType: LoginType?): Builder {
+            this.loginType = loginType
+            return this
+        }
+
         fun build(): YandexAuthLoginOptions {
             return YandexAuthLoginOptions(
                 uid = uid,
@@ -54,6 +62,7 @@ data class YandexAuthLoginOptions internal constructor(
                 isForceConfirm = isForceConfirm,
                 requiredScopes = requiredScopes,
                 optionalScopes = optionalScopes,
+                loginType = loginType
             )
         }
     }

@@ -13,10 +13,10 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin">
+        android:paddingBottom="@dimen/activity_vertical_margin">
 
         <EditText
             android:id="@+id/edit_uid"
@@ -36,7 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Required scopes:"/>
+            android:text="Required scopes:" />
 
         <EditText
             android:id="@+id/required_scopes"
@@ -49,7 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Optional scopes:"/>
+            android:text="Optional scopes:" />
 
         <EditText
             android:id="@+id/optional_scopes"
@@ -60,10 +60,35 @@
 
         <CheckBox
             android:id="@+id/checkbox_force_confirm"
-            android:text="Always show confirmation"
-            android:layout_marginTop="32dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Always show confirmation" />
+
+        <RadioGroup
+            android:id="@+id/strategy_group"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp">
+
+            <RadioButton
+                android:id="@+id/native_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="native" />
+
+            <RadioButton
+                android:id="@+id/browser_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="browser" />
+
+            <RadioButton
+                android:id="@+id/webview_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="webview" />
+        </RadioGroup>
 
         <Button
             android:id="@+id/login"
@@ -85,7 +110,6 @@
             android:ellipsize="end"
             android:maxLines="3"
             android:text="waiting" />
-
 
         <LinearLayout
             android:id="@+id/jwt_container"

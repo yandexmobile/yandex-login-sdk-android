@@ -3,6 +3,7 @@ package com.yandex.authsdk.internal;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -46,12 +47,12 @@ public class AuthSdkActivity extends Activity {
                         getPackageName(),
                         getPackageManager(),
                         options
-                )
-        );
+                ));
         if (savedInstanceState == null) {
             final YandexAuthLoginOptions loginOptions = getIntent().getParcelableExtra(Constants.EXTRA_LOGIN_OPTIONS);
             try {
-                final LoginStrategy strategy = loginStrategyResolver.getLoginStrategy();
+
+                final LoginStrategy strategy = loginStrategyResolver.getLoginStrategy(loginOptions.getLoginType());
                 loginType = strategy.getType();
                 strategy.login(this, options, loginOptions);
             } catch (final Exception e) {

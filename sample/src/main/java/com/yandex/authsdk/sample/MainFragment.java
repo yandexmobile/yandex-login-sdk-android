@@ -1,5 +1,6 @@
 package com.yandex.authsdk.sample;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +28,7 @@ import com.yandex.authsdk.YandexAuthSdk;
 import com.yandex.authsdk.YandexAuthToken;
 import com.yandex.authsdk.exceptions.YandexAuthInteractionException;
 import com.yandex.authsdk.exceptions.YandexAuthSecurityException;
+import com.yandex.authsdk.internal.strategy.LoginType;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -67,11 +70,17 @@ public class MainFragment extends Fragment {
     private EditText editRequiredScopes;
     private EditText editOptionalScopes;
 
+    @NonNull
+    private RadioGroup strategyGroup;
+
     @Nullable
     private YandexAuthToken yandexAuthToken;
 
     @Nullable
     private String jwt;
+
+    @Nullable
+    private LoginType loginType;
 
     public MainFragment() {
         setRetainInstance(true);
@@ -91,7 +100,8 @@ public class MainFragment extends Fragment {
             final String loginHint = editLoginHint.getText().toString();
             final boolean forceConfirm = checkboxForceConfirm.isChecked();
 
-            final YandexAuthLoginOptions.Builder loginOptionsBuilder =  new YandexAuthLoginOptions.Builder();
+
+            final YandexAuthLoginOptions.Builder loginOptionsBuilder = new YandexAuthLoginOptions.Builder();
 
             if (!TextUtils.isEmpty(uidStr)) {
                 final long uid = Long.parseLong(uidStr);
@@ -109,6 +119,8 @@ public class MainFragment extends Fragment {
                 loginOptionsBuilder.setRequiredScopes(requiredScopes);
             }
 
+            loginOptionsBuilder.setLoginType(loginType);
+
             loginOptionsBuilder.setForceConfirm(forceConfirm);
 
             final Intent intent = sdk.createLoginIntent(loginOptionsBuilder.build());
@@ -119,14 +131,34 @@ public class MainFragment extends Fragment {
         final View jwtButton = view.findViewById(R.id.jwt);
         jwtButton.setOnClickListener(v -> getJwt());
 
-        tokenLabel = (TextView) view.findViewById(R.id.status_label);
-        jwtLabel = (TextView) view.findViewById(R.id.jwt_label);
+        tokenLabel = view.findViewById(R.id.status_label);
+        jwtLabel = view.findViewById(R.id.jwt_label);
         jwtContainer = view.findViewById(R.id.jwt_container);
-        editUid = (EditText) view.findViewById(R.id.edit_uid);
-        editLoginHint = (EditText) view.findViewById(R.id.edit_login_hint);
+        editUid = view.findViewById(R.id.edit_uid);
+        editLoginHint = view.findViewById(R.id.edit_login_hint);
         checkboxForceConfirm = view.findViewById(R.id.checkbox_force_confirm);
         editRequiredScopes = view.findViewById(R.id.required_scopes);
         editOptionalScopes = view.findViewById(R.id.optional_scopes);
+        strategyGroup = view.findViewById(R.id.strategy_group);
+
+
+        strategyGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            switch (checkedId) {
+                case R.id.native_btn: {
+                    loginType = LoginType.NATIVE;
+                    break;
+                }
+                case R.id.browser_btn: {
+                    loginType = LoginType.BROWSER;
+                    break;
+                }
+                case R.id.webview_btn: {
+                    loginType = LoginType.WEBVIEW;
+                    break;
+                }
+            }
+        });
+
         sdk = new YandexAuthSdk(requireContext(), new YandexAuthOptions.Builder(requireContext())
                 .enableLogging()
                 .build());

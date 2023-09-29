@@ -46,8 +46,14 @@ public abstract class LoginStrategy {
             @NonNull final YandexAuthOptions options,
             @NonNull final YandexAuthLoginOptions loginOptions
     ) {
-        intent.putExtra(EXTRA_REQUIRED_SCOPES, loginOptions.getRequiredScopes());
-        intent.putExtra(EXTRA_OPTIONAL_SCOPES, loginOptions.getOptionalScopes());
+        if (loginOptions.getRequiredScopes() != null && !loginOptions.getRequiredScopes().isEmpty()) {
+            intent.putExtra(EXTRA_REQUIRED_SCOPES, loginOptions.getRequiredScopes());
+        }
+
+        if (loginOptions.getOptionalScopes() != null && !loginOptions.getOptionalScopes().isEmpty()) {
+            intent.putExtra(EXTRA_OPTIONAL_SCOPES, loginOptions.getOptionalScopes());
+        }
+
         intent.putExtra(EXTRA_CLIENT_ID, options.getClientId());
         if (loginOptions.getUid() != null) {
             intent.putExtra(EXTRA_UID_VALUE, loginOptions.getUid());

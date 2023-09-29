@@ -1,6 +1,8 @@
 package com.yandex.authsdk.internal;
 
 
+import static com.yandex.authsdk.internal.strategy.NativeLoginStrategy.getActionIntent;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -9,9 +11,10 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.pm.Signature;
 import android.os.Bundle;
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.text.TextUtils;
 
 import com.yandex.authsdk.YandexAuthOptions;
 
@@ -20,8 +23,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.yandex.authsdk.internal.strategy.NativeLoginStrategy.getActionIntent;
 
 public class PackageManagerHelper {
 
@@ -64,6 +65,7 @@ public class PackageManagerHelper {
                     || info.amInternalVersion > latestApplicationInfo.amInternalVersion) {
                 latestApplicationInfo = info;
             }
+
         }
         return latestApplicationInfo;
     }
@@ -71,7 +73,7 @@ public class PackageManagerHelper {
     @NonNull
     private List<YandexApplicationInfo> findLoginSdkApplications() {
         final List<YandexApplicationInfo> result = new ArrayList<>();
-        final List<ApplicationInfo> applicationInfos = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
+        @SuppressLint("QueryPermissionsNeeded") final List<ApplicationInfo> applicationInfos = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
 
         for (final ApplicationInfo applicationInfo : applicationInfos) {
             if (TextUtils.equals(applicationInfo.packageName, myPackageName)) {

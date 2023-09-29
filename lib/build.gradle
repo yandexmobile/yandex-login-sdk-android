@@ -63,7 +63,7 @@ android {
             manifestPlaceholders += [(constantName): constantValue]
             buildConfigField "String", "${constantName}", "\"${constantValue}\""
         }
-        addConstant("ACTION_YA_SDK_LOGIN", "com.yandex.auth.action.YA_SDK_LOGIN_WITH_OPTIONAL_SCOPES")
+        addConstant("ACTION_YA_SDK_LOGIN", "com.yandex.auth.action.YA_SDK_LOGIN")
     }
     buildTypes {
         release {

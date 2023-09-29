@@ -1,7 +1,10 @@
 package com.yandex.authsdk.internal.strategy;
 
 import android.content.Context;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.yandex.authsdk.internal.PackageManagerHelper;
 
@@ -19,19 +22,42 @@ public class LoginStrategyResolver {
     }
 
     @NonNull
-    public LoginStrategy getLoginStrategy() {
-        LoginStrategy strategy = NativeLoginStrategy.getIfPossible(packageManagerHelper);
-        if (strategy != null) {
-            return strategy;
-        }
+    public LoginStrategy getLoginStrategy(@Nullable LoginType preferredLoginType) {
+        if (preferredLoginType != null) {
+            switch (preferredLoginType) {
+                case NATIVE: {
+                    LoginStrategy strategy = NativeLoginStrategy.getIfPossible(packageManagerHelper);
+                    if (strategy != null) {
+                        Log.d("LoginStrategyResolver", "Native strategy");
+                        return strategy;
+                    }
+                }
+                case BROWSER: {
+                    LoginStrategy strategy = BrowserLoginStrategy.getIfPossible(context, context.getPackageManager());
+                    if (strategy != null) {
+                        Log.d("LoginStrategyResolver", "Browser strategy");
+                        return strategy;
+                    }
+                }
+                default: {
+                    return WebViewLoginStrategy.get();
+                }
+            }
+        } else {
+            LoginStrategy strategy = NativeLoginStrategy.getIfPossible(packageManagerHelper);
+            if (strategy != null) {
+                return strategy;
+            }
 
-        strategy = BrowserLoginStrategy.getIfPossible(context, context.getPackageManager());
-        if (strategy != null) {
-            return strategy;
-        }
+            strategy = BrowserLoginStrategy.getIfPossible(context, context.getPackageManager());
+            if (strategy != null) {
+                return strategy;
+            }
 
-        return WebViewLoginStrategy.get();
+            return WebViewLoginStrategy.get();
+        }
     }
+
 
     @NonNull
     public LoginStrategy.ResultExtractor getResultExtractor(@NonNull final LoginType type) {
