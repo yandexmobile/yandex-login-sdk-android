@@ -1,6 +1,5 @@
 package com.yandex.authsdk.sample;
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -9,9 +8,12 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +32,7 @@ import com.yandex.authsdk.exceptions.YandexAuthInteractionException;
 import com.yandex.authsdk.exceptions.YandexAuthSecurityException;
 import com.yandex.authsdk.internal.strategy.LoginType;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -73,6 +76,9 @@ public class MainFragment extends Fragment {
     @NonNull
     private RadioGroup strategyGroup;
 
+    @NonNull
+    private Spinner clientIdSpinner;
+
     @Nullable
     private YandexAuthToken yandexAuthToken;
 
@@ -99,7 +105,6 @@ public class MainFragment extends Fragment {
             final String uidStr = editUid.getText().toString();
             final String loginHint = editLoginHint.getText().toString();
             final boolean forceConfirm = checkboxForceConfirm.isChecked();
-
 
             final YandexAuthLoginOptions.Builder loginOptionsBuilder = new YandexAuthLoginOptions.Builder();
 
@@ -131,6 +136,7 @@ public class MainFragment extends Fragment {
         final View jwtButton = view.findViewById(R.id.jwt);
         jwtButton.setOnClickListener(v -> getJwt());
 
+
         tokenLabel = view.findViewById(R.id.status_label);
         jwtLabel = view.findViewById(R.id.jwt_label);
         jwtContainer = view.findViewById(R.id.jwt_container);
@@ -140,7 +146,7 @@ public class MainFragment extends Fragment {
         editRequiredScopes = view.findViewById(R.id.required_scopes);
         editOptionalScopes = view.findViewById(R.id.optional_scopes);
         strategyGroup = view.findViewById(R.id.strategy_group);
-
+        clientIdSpinner = view.findViewById(R.id.clientId);
 
         strategyGroup.setOnCheckedChangeListener((group, checkedId) -> {
             switch (checkedId) {
@@ -159,9 +165,30 @@ public class MainFragment extends Fragment {
             }
         });
 
-        sdk = new YandexAuthSdk(requireContext(), new YandexAuthOptions.Builder(requireContext())
-                .enableLogging()
-                .build());
+        ArrayList<String> clintIdsName = new ArrayList<>();
+        clintIdsName.add("YANDEX_CLIENT_ID");
+        clintIdsName.add("YANDEX_CLIENT_ID_1");
+
+        ArrayAdapter<String> adapter =
+                new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, clintIdsName);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        clientIdSpinner.setAdapter(adapter);
+
+        sdk = new YandexAuthSdk(requireContext(),
+                new YandexAuthOptions(requireContext(), true));
+
+        clientIdSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent,
+                                       View itemSelected, int selectedItemPosition, long selectedId) {
+
+                sdk = new YandexAuthSdk(requireContext(),
+                        new YandexAuthOptions(requireContext(), true, selectedItemPosition));
+            }
+
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
 
         if (yandexAuthToken != null) {
             onTokenReceived(yandexAuthToken);
