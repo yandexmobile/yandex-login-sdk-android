@@ -12,8 +12,7 @@ import com.yandex.authsdk.YandexAuthToken
 import com.yandex.authsdk.internal.BrowserLoginActivity
 import com.yandex.authsdk.internal.Constants
 
-internal class BrowserLoginStrategy private constructor (
-    private val context: Context,
+internal class BrowserLoginStrategy private constructor(
     private val browserPackageName: String
 ) : LoginStrategy() {
 
@@ -64,7 +63,7 @@ internal class BrowserLoginStrategy private constructor (
 
             val defaultBrowserPackageName = defaultBrowserPackageName(context)
             val bestPackageName = findBest(defaultBrowserPackageName, infos)
-            return bestPackageName?.let { BrowserLoginStrategy(context, it) }
+            return bestPackageName?.let { BrowserLoginStrategy(it) }
         }
 
         private fun findBest(defaultPackageName: String?, infos: List<ResolveInfo>): String? {

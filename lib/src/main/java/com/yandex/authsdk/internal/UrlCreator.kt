@@ -8,7 +8,7 @@ import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
 import java.util.*
 
-class UrlCreator {
+internal class UrlCreator {
 
     fun getUrl(
         options: YandexAuthOptions,
@@ -53,7 +53,7 @@ class UrlCreator {
     }
 
     private fun getOauthHost(options: YandexAuthOptions): String {
-        return HostUtil.getLocalizedHost(options.oauthHost, Locale.getDefault())
+        return getLocalizedHost(options.oauthHost, Locale.getDefault())
     }
 
     companion object {

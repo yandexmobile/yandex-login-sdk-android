@@ -1,0 +1,131 @@
+package com.yandex.authsdk.internal
+
+import android.annotation.SuppressLint
+import android.content.pm.PackageManager
+import android.text.TextUtils
+import com.yandex.authsdk.YandexAuthOptions
+import com.yandex.authsdk.internal.strategy.NativeLoginStrategy.Companion.getActionIntent
+import java.math.BigInteger
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
+
+class PackageManagerHelper(
+    private val myPackageName: String,
+    private val packageManager: PackageManager,
+    private val options: YandexAuthOptions,
+) {
+
+    fun findLatestApplication(): YandexApplicationInfo? {
+        var latestApplicationInfo: YandexApplicationInfo? = null
+        for (info in findLoginSdkApplications()) {
+            if (latestApplicationInfo == null
+                || info.amVersion > latestApplicationInfo.amVersion
+                || info.amInternalVersion > latestApplicationInfo.amInternalVersion) {
+                latestApplicationInfo = info
+            }
+        }
+        return latestApplicationInfo
+    }
+
+    private fun findLoginSdkApplications(): List<YandexApplicationInfo> {
+        val result: MutableList<YandexApplicationInfo> = mutableListOf()
+        @SuppressLint("QueryPermissionsNeeded")
+        val applicationInfos = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
+        for (applicationInfo in applicationInfos) {
+            if (TextUtils.equals(applicationInfo.packageName, myPackageName)) {
+                continue
+            }
+            if (!applicationInfo.enabled) {
+                continue
+            }
+            val metaData = applicationInfo.metaData
+            val packageName = applicationInfo.packageName
+            if (metaData == null) {
+                continue
+            }
+            if (!metaData.containsKey(META_SDK_VERSION)) {
+                continue
+            }
+            if (!metaData.containsKey(META_AM_VERSION)) {
+                continue
+            }
+            val fingerprints = extractFingerprints(packageName) ?: continue
+            if (!fingerprints.contains(YANDEX_FINGERPRINT)) {
+                continue
+            }
+            if (!isActionActivityExist(packageManager, applicationInfo.packageName)) {
+                continue
+            }
+            result.add(
+                YandexApplicationInfo(
+                    packageName,
+                    metaData.getInt(META_SDK_VERSION),
+                    metaData.getFloat(META_AM_VERSION),
+                    metaData.getInt(META_AM_INTERNAL_VERSION, -1)
+                )
+            )
+        }
+        return result
+    }
+
+    private fun isActionActivityExist(
+        packageManager: PackageManager,
+        packageName: String
+    ): Boolean {
+        val intent = getActionIntent(packageName)
+        val resolveInfoList = packageManager.queryIntentActivities(intent, 0)
+        return resolveInfoList.size > 0
+    }
+
+    private fun extractFingerprints(packageName: String): List<String>? {
+        return try {
+            @SuppressLint("PackageManagerGetSignatures") val info =
+                packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES)
+            val result: MutableList<String> = ArrayList(info.signatures.size)
+            for (signature in info.signatures) {
+                val md = MessageDigest.getInstance("SHA")
+                md.update(signature.toByteArray())
+                result.add(toHex(md.digest()))
+            }
+            result
+        } catch (e: PackageManager.NameNotFoundException) {
+            Logger.e(options, TAG, "Error getting fingerprint", e)
+            null
+        } catch (e: NoSuchAlgorithmException) {
+            Logger.e(options, TAG, "Error getting fingerprint", e)
+            null
+        }
+    }
+
+    class YandexApplicationInfo(
+        val packageName: String,
+        val loginSdkVersion: Int,
+        val amVersion: Float,
+        amInternalVersion: Int
+    ) {
+        val amInternalVersion: Float
+
+        init {
+            this.amInternalVersion = amInternalVersion.toFloat()
+        }
+    }
+
+    companion object {
+
+        private val TAG = PackageManagerHelper::class.java.simpleName
+
+        // fingerprint of released app with AM
+        const val YANDEX_FINGERPRINT = "5D224274D9377C35DA777AD934C65C8CCA6E7A20"
+
+        const val META_SDK_VERSION = "com.yandex.auth.LOGIN_SDK_VERSION"
+
+        const val META_AM_VERSION = "com.yandex.auth.VERSION"
+
+        const val META_AM_INTERNAL_VERSION = "com.yandex.auth.INTERNAL_VERSION"
+
+        private fun toHex(bytes: ByteArray): String {
+            val bi = BigInteger(1, bytes)
+            return String.format("%0" + (bytes.size shl 1) + "X", bi)
+        }
+    }
+}

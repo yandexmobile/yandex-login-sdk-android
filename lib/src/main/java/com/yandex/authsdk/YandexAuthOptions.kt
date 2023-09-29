@@ -7,7 +7,6 @@ import android.os.Parcel
 import android.os.Parcelable
 import android.text.TextUtils
 import com.yandex.authsdk.internal.Constants
-import com.yandex.authsdk.internal.Util
 
 open class YandexAuthOptions : Parcelable {
     val clientId: String
@@ -38,7 +37,7 @@ open class YandexAuthOptions : Parcelable {
         this.clientId = clientId
         isLoggingEnabled = loggingEnabled
         this.context = context
-        oauthHost = Util.checkNotNull(app.metaData.getString(Constants.META_OAUTH_HOST))
+        oauthHost = app.metaData.getString(Constants.META_OAUTH_HOST)!!
     }
 
     val isTesting: Boolean

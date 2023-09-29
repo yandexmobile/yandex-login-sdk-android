@@ -174,14 +174,14 @@ public class MainFragment extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         clientIdSpinner.setAdapter(adapter);
 
-        sdk = new YandexAuthSdk(requireContext(),
+        sdk = YandexAuthSdk.create(requireContext(),
                 new YandexAuthOptions(requireContext(), true));
 
         clientIdSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent,
                                        View itemSelected, int selectedItemPosition, long selectedId) {
 
-                sdk = new YandexAuthSdk(requireContext(),
+                sdk = YandexAuthSdk.create(requireContext(),
                         new YandexAuthOptions(requireContext(), true, selectedItemPosition));
             }
 
