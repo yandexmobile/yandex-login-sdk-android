@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="Theme.AuthSdk" parent="@android:style/Theme.DeviceDefault.Light.NoActionBar" />
+    <style name="Theme.AuthSdk" parent="@style/Theme.AppCompat.Light.NoActionBar" />
 
     <style name="Theme.AuthSdk.Transparent">
         <item name="android:windowIsTranslucent">true</item>

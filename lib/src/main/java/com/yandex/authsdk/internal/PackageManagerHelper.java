@@ -1,8 +1,5 @@
 package com.yandex.authsdk.internal;
 
-
-import static com.yandex.authsdk.internal.strategy.NativeLoginStrategy.getActionIntent;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -17,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.yandex.authsdk.YandexAuthOptions;
+import com.yandex.authsdk.internal.strategy.NativeLoginStrategy;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -121,7 +119,7 @@ public class PackageManagerHelper {
     }
 
     private boolean isActionActivityExist(@NonNull final PackageManager packageManager, @NonNull final String packageName) {
-        final Intent intent = getActionIntent(packageName);
+        final Intent intent = NativeLoginStrategy.Companion.getActionIntent(packageName);
         final List<ResolveInfo> resolveInfoList = packageManager.queryIntentActivities(intent, 0);
 
         return resolveInfoList.size() > 0;

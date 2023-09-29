@@ -1,5 +1,6 @@
 package com.yandex.authsdk.internal;
 
+// TODO: make params for public contract internal
 public class Constants {
 
     public static final String EXTRA_TOKEN = "com.yandex.authsdk.EXTRA_TOKEN";

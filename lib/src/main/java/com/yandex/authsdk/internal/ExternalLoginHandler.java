@@ -38,7 +38,7 @@ class ExternalLoginHandler {
         this.urlCreator = urlCreator;
     }
 
-    @Nullable
+    @NonNull
     String getUrl(@NonNull final Intent intent) {
         final YandexAuthLoginOptions loginOptions = intent.getParcelableExtra(Constants.EXTRA_LOGIN_OPTIONS);
         final YandexAuthOptions options = intent.getParcelableExtra(EXTRA_OPTIONS);

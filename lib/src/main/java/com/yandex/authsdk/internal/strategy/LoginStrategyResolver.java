@@ -26,35 +26,35 @@ public class LoginStrategyResolver {
         if (preferredLoginType != null) {
             switch (preferredLoginType) {
                 case NATIVE: {
-                    LoginStrategy strategy = NativeLoginStrategy.getIfPossible(packageManagerHelper);
+                    LoginStrategy strategy = NativeLoginStrategy.Companion.getIfPossible(packageManagerHelper);
                     if (strategy != null) {
                         Log.d("LoginStrategyResolver", "Native strategy");
                         return strategy;
                     }
                 }
                 case BROWSER: {
-                    LoginStrategy strategy = BrowserLoginStrategy.getIfPossible(context, context.getPackageManager());
+                    LoginStrategy strategy = BrowserLoginStrategy.Companion.getIfPossible(context, context.getPackageManager());
                     if (strategy != null) {
                         Log.d("LoginStrategyResolver", "Browser strategy");
                         return strategy;
                     }
                 }
                 default: {
-                    return WebViewLoginStrategy.get();
+                    return WebViewLoginStrategy.Companion.get();
                 }
             }
         } else {
-            LoginStrategy strategy = NativeLoginStrategy.getIfPossible(packageManagerHelper);
+            LoginStrategy strategy = NativeLoginStrategy.Companion.getIfPossible(packageManagerHelper);
             if (strategy != null) {
                 return strategy;
             }
 
-            strategy = BrowserLoginStrategy.getIfPossible(context, context.getPackageManager());
+            strategy = BrowserLoginStrategy.Companion.getIfPossible(context, context.getPackageManager());
             if (strategy != null) {
                 return strategy;
             }
 
-            return WebViewLoginStrategy.get();
+            return WebViewLoginStrategy.Companion.get();
         }
     }
 

@@ -50,6 +50,7 @@ public class YandexAuthSdk {
         this.context = context;
     }
 
+    @Deprecated
     @NonNull
     public Intent createLoginIntent(
             @Nullable final Set<String> requiredScopes,
@@ -58,6 +59,7 @@ public class YandexAuthSdk {
         return createLoginIntent(requiredScopes, optionalScopes, null, null);
     }
 
+    @Deprecated
     @NonNull
     public Intent createLoginIntent(
             @Nullable final Set<String> requiredScopes,
@@ -73,6 +75,7 @@ public class YandexAuthSdk {
                 .build());
     }
 
+    @Deprecated
     @NonNull
     public Intent createLoginIntent(
             @NonNull final YandexAuthLoginOptions loginOptions
@@ -83,6 +86,7 @@ public class YandexAuthSdk {
         return intent;
     }
 
+    @Deprecated
     @Nullable
     public YandexAuthToken extractToken(final int resultCode, @Nullable final Intent data) throws YandexAuthException {
         if (data == null || resultCode != Activity.RESULT_OK) {
@@ -95,6 +99,11 @@ public class YandexAuthSdk {
         }
 
         return data.getParcelableExtra(Constants.EXTRA_TOKEN);
+    }
+
+    @NonNull
+    public YandexAuthSdkContract getContract() {
+        return new YandexAuthSdkContract();
     }
 
     @NonNull

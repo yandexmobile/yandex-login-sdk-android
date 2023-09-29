@@ -5,15 +5,17 @@ ext {
 }
 
 buildscript {
-    ext.kotlin_version = '1.6.10'
+    ext.kotlin_version = '1.8.22'
 
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://artifactory.yandex.net/mobile' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.4'
+        classpath 'com.android.tools.build:gradle:7.4.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.yandex.mobile.tools:upload-beta:3.4.7'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
