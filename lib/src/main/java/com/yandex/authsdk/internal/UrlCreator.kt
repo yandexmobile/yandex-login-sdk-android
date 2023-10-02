@@ -48,7 +48,7 @@ internal class UrlCreator {
                 "&redirect_uri=%s" +
                 "&state=%s" +
                 "&force_confirm=true" +
-                "&origin=yandex_auth_sdk_android"
+                "&origin=yandex_auth_sdk_android_v3"
 
         @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.M)
         private val SUPPORT_APPLINKS = Build.VERSION.SDK_INT >= 23
