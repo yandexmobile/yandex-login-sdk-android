@@ -8,7 +8,7 @@ import com.yandex.authsdk.internal.strategy.NativeLoginStrategy.Companion.getAct
 import java.math.BigInteger
 import java.security.NoSuchAlgorithmException
 
-class PackageManagerHelper(
+internal class PackageManagerHelper(
     private val myPackageName: String,
     private val packageManager: PackageManager,
     private val options: YandexAuthOptions,
@@ -32,6 +32,9 @@ class PackageManagerHelper(
         val applicationInfos = packageManager.getInstalledApplications(PackageManager.GET_META_DATA.toLong())
         for (applicationInfo in applicationInfos) {
             if (TextUtils.equals(applicationInfo.packageName, myPackageName)) {
+                continue
+            }
+            if (!ALLOWED_PACKAGES.contains(applicationInfo.packageName)) {
                 continue
             }
             if (!applicationInfo.enabled) {
@@ -119,5 +122,16 @@ class PackageManagerHelper(
             val bi = BigInteger(1, bytes)
             return String.format("%0" + (bytes.size shl 1) + "X", bi)
         }
+
+        val ALLOWED_PACKAGES = listOf(
+            "com.yandex.browser",
+            "ru.yandex.searchplugin",
+            "com.yandex.searchapp",
+            "ru.yandex.taxi",
+            "ru.yandex.yandexmaps",
+            "com.yandex.bank",
+            "ru.yandex.key",
+            "ru.yandex.auth.client",
+        )
     }
 }
