@@ -4,9 +4,9 @@ import android.content.Context
 import android.content.Intent
 import com.yandex.authsdk.BuildConfig
 import com.yandex.authsdk.YandexAuthException
-import com.yandex.authsdk.YandexAuthSdkParams
 import com.yandex.authsdk.YandexAuthToken
 import com.yandex.authsdk.internal.PackageManagerHelper
+import com.yandex.authsdk.internal.YandexAuthSdkParams
 
 internal class NativeLoginStrategy private constructor(
     private val packagedIntent: Intent

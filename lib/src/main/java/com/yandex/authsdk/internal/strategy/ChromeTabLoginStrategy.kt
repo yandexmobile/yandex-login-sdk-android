@@ -8,10 +8,10 @@ import android.net.Uri
 import android.os.Build
 import androidx.browser.customtabs.CustomTabsService
 import com.yandex.authsdk.YandexAuthException
-import com.yandex.authsdk.YandexAuthSdkParams
 import com.yandex.authsdk.YandexAuthToken
 import com.yandex.authsdk.internal.ChromeTabLoginActivity
 import com.yandex.authsdk.internal.Constants
+import com.yandex.authsdk.internal.YandexAuthSdkParams
 import com.yandex.authsdk.internal.getParcelableExtraCompat
 import com.yandex.authsdk.internal.getSerializableExtraCompat
 import com.yandex.authsdk.internal.queryIntentActivities

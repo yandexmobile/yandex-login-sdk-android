@@ -3,10 +3,10 @@ package com.yandex.authsdk.internal.strategy
 import android.content.Context
 import android.content.Intent
 import com.yandex.authsdk.YandexAuthException
-import com.yandex.authsdk.YandexAuthSdkParams
 import com.yandex.authsdk.YandexAuthToken
 import com.yandex.authsdk.internal.Constants
 import com.yandex.authsdk.internal.WebViewLoginActivity
+import com.yandex.authsdk.internal.YandexAuthSdkParams
 import com.yandex.authsdk.internal.getParcelableExtraCompat
 import com.yandex.authsdk.internal.getSerializableExtraCompat
 

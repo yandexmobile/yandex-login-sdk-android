@@ -6,9 +6,9 @@ import androidx.activity.result.contract.ActivityResultContract
 import com.yandex.authsdk.YandexAuthException
 import com.yandex.authsdk.YandexAuthLoginOptions
 import com.yandex.authsdk.YandexAuthOptions
-import com.yandex.authsdk.YandexAuthSdkParams
 import com.yandex.authsdk.YandexAuthToken
 import com.yandex.authsdk.internal.Constants
+import com.yandex.authsdk.internal.YandexAuthSdkParams
 
 internal abstract class LoginStrategy {
 

@@ -6,16 +6,17 @@ import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContract
 import com.yandex.authsdk.internal.AuthSdkActivity
 import com.yandex.authsdk.internal.Constants
+import com.yandex.authsdk.internal.YandexAuthSdkParams
 import com.yandex.authsdk.internal.getParcelableExtraCompat
 import com.yandex.authsdk.internal.getSerializableExtraCompat
 
-class YandexAuthSdkContract
-    : ActivityResultContract<YandexAuthSdkParams, Result<YandexAuthToken?>>() {
+class YandexAuthSdkContract(private val options: YandexAuthOptions)
+    : ActivityResultContract<YandexAuthLoginOptions, Result<YandexAuthToken?>>() {
 
-    override fun createIntent(context: Context, input: YandexAuthSdkParams): Intent {
+    override fun createIntent(context: Context, input: YandexAuthLoginOptions): Intent {
         val intent = Intent(context, AuthSdkActivity::class.java)
-        intent.putExtra(Constants.EXTRA_OPTIONS, input.options)
-        intent.putExtra(Constants.EXTRA_LOGIN_OPTIONS, input.loginOptions)
+        intent.putExtra(Constants.EXTRA_OPTIONS, options)
+        intent.putExtra(Constants.EXTRA_LOGIN_OPTIONS, input)
         return intent
     }
 
