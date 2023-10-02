@@ -12,15 +12,13 @@
             <action android:name="${ACTION_YA_SDK_LOGIN}" />
         </intent>
 
-        <package android:name="com.yandex.browser" /> <!--Яндекс бразуер с алисой-->
+        <package android:name="com.yandex.browser" /> <!--Яндекс браузер-->
         <package android:name="ru.yandex.searchplugin" /> <!--Яндекс Старт-->
-        <package android:name="com.yandex.searchapp" /> <!--Яндекс (в маркете называется Яндекс с алисой)-->
+        <package android:name="com.yandex.searchapp" /> <!--Яндекс с Алисой-->
         <package android:name="ru.yandex.taxi" /> <!-- Яндекс GO-->
-        <package android:name="ru.yandex.music" /> <!-- Яндекс музыка-->
         <package android:name="ru.yandex.yandexmaps" /> <!--Яндекс Карты-->
-        <package android:name="ru.foodfox.client" /> <!--Яндекс Еда-->
-        <package android:name="ru.yandex.mail" /> <!--Яндекс Почта-->
-        <package android:name="ru.yandex.disk" /> <!--Яндекс Диск-->
+        <package android:name="com.yandex.bank" /> <!--Яндекс Банк-->
+        <package android:name="ru.yandex.key" /> <!--Яндекс Ключ-->
         <package android:name="ru.yandex.auth.client" /> <!--Семпл АМа-->
     </queries>
 
