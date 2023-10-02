@@ -4,7 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
 import com.yandex.authsdk.YandexAuthException
-import com.yandex.authsdk.YandexAuthLoginOptions
 import com.yandex.authsdk.YandexAuthOptions
 import com.yandex.authsdk.YandexAuthToken
 
@@ -15,8 +14,6 @@ internal class ExternalLoginHandler(
 ) {
 
     fun getUrl(intent: Intent): String {
-        val loginOptions = intent
-            .getParcelableExtraCompat(Constants.EXTRA_LOGIN_OPTIONS, YandexAuthLoginOptions::class.java)!!
         val options = intent
             .getParcelableExtraCompat(Constants.EXTRA_OPTIONS, YandexAuthOptions::class.java)!!
         val state = stateGenerator()
@@ -42,10 +39,10 @@ internal class ExternalLoginHandler(
         if (error != null) {
             result.putExtra(Constants.EXTRA_ERROR, YandexAuthException(error))
         } else {
-            val token = dummyUri.getQueryParameter("access_token")!!
+            val token = dummyUri.getQueryParameter("access_token")
             val expiresInString = dummyUri.getQueryParameter("expires_in")
             val expiresIn = expiresInString?.toLong() ?: Long.MAX_VALUE
-            result.putExtra(Constants.EXTRA_TOKEN, YandexAuthToken(token, expiresIn))
+            token?.let { result.putExtra(Constants.EXTRA_TOKEN, YandexAuthToken(it, expiresIn)) }
         }
         return result
     }
