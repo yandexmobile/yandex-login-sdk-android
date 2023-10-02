@@ -66,6 +66,7 @@ internal abstract class LoginStrategy {
             return intent.apply {
                 putExtra(Constants.EXTRA_CLIENT_ID, options.clientId)
                 putExtra(Constants.EXTRA_USE_TESTING_ENV, options.isTesting)
+                putExtra(Constants.EXTRA_FORCE_CONFIRM, true)
             }
         }
     }

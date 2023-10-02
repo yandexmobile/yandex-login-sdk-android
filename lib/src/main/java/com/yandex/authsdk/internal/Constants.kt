@@ -21,4 +21,7 @@ internal object Constants {
 
     // Used in Yandex Account Manager
     internal const val EXTRA_USE_TESTING_ENV = "com.yandex.auth.USE_TESTING_ENV"
+
+    // Used in Yandex Account Manager
+    internal const val EXTRA_FORCE_CONFIRM = "com.yandex.auth.FORCE_CONFIRM"
 }
