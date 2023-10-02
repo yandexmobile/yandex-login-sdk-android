@@ -53,32 +53,20 @@ internal abstract class LoginStrategy {
             options: YandexAuthOptions,
             loginOptions: YandexAuthLoginOptions
         ): Intent {
-            intent.putExtra(Constants.EXTRA_OPTIONS, options)
-            intent.putExtra(Constants.EXTRA_LOGIN_OPTIONS, loginOptions)
-            return intent
+            return intent.apply {
+                putExtra(Constants.EXTRA_OPTIONS, options)
+                putExtra(Constants.EXTRA_LOGIN_OPTIONS, loginOptions)
+            }
         }
 
         fun putExtrasNative(
             intent: Intent,
-            options: YandexAuthOptions,
-            loginOptions: YandexAuthLoginOptions
+            options: YandexAuthOptions
         ): Intent {
-            if (!loginOptions.requiredScopes.isNullOrEmpty()) {
-                intent.putExtra(Constants.EXTRA_REQUIRED_SCOPES, loginOptions.requiredScopes)
+            return intent.apply {
+                putExtra(Constants.EXTRA_CLIENT_ID, options.clientId)
+                putExtra(Constants.EXTRA_USE_TESTING_ENV, options.isTesting)
             }
-            if (!loginOptions.optionalScopes.isNullOrEmpty()) {
-                intent.putExtra(Constants.EXTRA_OPTIONAL_SCOPES, loginOptions.optionalScopes)
-            }
-            intent.putExtra(Constants.EXTRA_CLIENT_ID, options.clientId)
-            if (loginOptions.uid != null) {
-                intent.putExtra(Constants.EXTRA_UID_VALUE, loginOptions.uid)
-            }
-            if (loginOptions.loginHint != null) {
-                intent.putExtra(Constants.EXTRA_LOGIN_HINT, loginOptions.loginHint)
-            }
-            intent.putExtra(Constants.EXTRA_USE_TESTING_ENV, options.isTesting)
-            intent.putExtra(Constants.EXTRA_FORCE_CONFIRM, loginOptions.isForceConfirm)
-            return intent
         }
     }
 }

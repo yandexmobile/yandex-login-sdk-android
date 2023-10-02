@@ -32,7 +32,7 @@ class ExternalLoginHandlerTest {
     @Before
     fun before() {
         val intent = Intent()
-        intent.putExtra(Constants.EXTRA_LOGIN_OPTIONS, YandexAuthLoginOptions.Builder().build())
+        intent.putExtra(Constants.EXTRA_LOGIN_OPTIONS, YandexAuthLoginOptions())
         intent.putExtra(Constants.EXTRA_OPTIONS, options)
         loginHandler.getUrl(intent)
     }

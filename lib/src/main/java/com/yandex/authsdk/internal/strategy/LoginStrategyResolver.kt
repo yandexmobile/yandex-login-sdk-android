@@ -12,10 +12,8 @@ internal class LoginStrategyResolver(
         LoginType.NATIVE, LoginType.CHROME_TAB, LoginType.WEBVIEW,
     )
 
-    fun getLoginStrategy(preferredLoginType: LoginType?): LoginStrategy {
-        val startIndex = preferredLoginType?.let { loginType ->
-            fullLoginTypesOrder.indexOf(loginType).takeIf { it != -1 }
-        } ?: 0
+    fun getLoginStrategy(preferredLoginType: LoginType): LoginStrategy {
+        val startIndex = fullLoginTypesOrder.indexOf(preferredLoginType).takeIf { it != -1 } ?: 0
         val loginTypeOrder = fullLoginTypesOrder.subList(startIndex, fullLoginTypesOrder.size)
         return loginTypeOrder.firstNotNullOf {
             return@firstNotNullOf when (it) {

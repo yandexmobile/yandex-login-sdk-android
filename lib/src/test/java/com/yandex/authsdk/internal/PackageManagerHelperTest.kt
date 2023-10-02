@@ -19,15 +19,16 @@ import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
+import org.robolectric.annotation.Config
 import java.util.Collections
 
+@Config(manifest = "./src/main/AndroidManifest.xml")
 @RunWith(RobolectricTestRunner::class)
 class PackageManagerHelperTest {
 
     @Mock
     private lateinit var packageManager: PackageManager
 
-    @Mock
     private lateinit var options: YandexAuthOptions
 
     private lateinit var packageManagerHelper: PackageManagerHelper
@@ -36,10 +37,11 @@ class PackageManagerHelperTest {
     @Throws(Exception::class)
     fun setUp() {
         MockitoAnnotations.initMocks(this)
+        options = YandexAuthOptions(RuntimeEnvironment.getApplication())
         `when`(packageManager.queryIntentActivities(any(), anyInt()))
             .thenReturn(listOf(ResolveInfo()))
         packageManagerHelper = PackageManagerHelper(
-            RuntimeEnvironment.application.packageName,
+            RuntimeEnvironment.getApplication().packageName,
             packageManager,
             options
         )

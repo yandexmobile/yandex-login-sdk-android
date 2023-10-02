@@ -21,7 +21,7 @@ internal class ExternalLoginHandler(
             .getParcelableExtraCompat(Constants.EXTRA_OPTIONS, YandexAuthOptions::class.java)!!
         val state = stateGenerator()
         saveState(state)
-        return urlCreator.getUrl(options, loginOptions, state)
+        return urlCreator.getUrl(options, state)
     }
 
     fun parseResult(data: Uri): Intent {

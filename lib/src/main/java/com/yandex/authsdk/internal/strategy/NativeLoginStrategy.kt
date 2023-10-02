@@ -17,7 +17,7 @@ internal class NativeLoginStrategy private constructor(
     override val contract = object : LoginContract(ResultExtractor()) {
 
         override fun createIntent(context: Context, input: YandexAuthSdkParams): Intent {
-            return putExtrasNative(packagedIntent, input.options, input.loginOptions)
+            return putExtrasNative(packagedIntent, input.options)
         }
     }
 

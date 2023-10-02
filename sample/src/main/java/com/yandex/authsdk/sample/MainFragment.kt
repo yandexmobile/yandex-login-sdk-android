@@ -3,9 +3,7 @@ package com.yandex.authsdk.sample
 import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.View
-import android.widget.EditText
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -28,7 +26,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private var yandexAuthToken: YandexAuthToken? = null
 
-    private var loginType: LoginType? = null
+    private var loginType: LoginType = LoginType.NATIVE
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         _binding = FragmentMainBinding.bind(view)
@@ -36,30 +34,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         val launcher = viewModel.getTokenLauncher(this)
         val loginButton = view.findViewById<View>(R.id.login)
         loginButton.setOnClickListener {
-            val uidStr = binding.editUid.text.toString()
-            val loginHint = binding.editLoginHint.text.toString()
-            val forceConfirm = binding.checkboxForceConfirm.isChecked
-
-            val loginOptionsBuilder = YandexAuthLoginOptions.Builder()
-            if (!TextUtils.isEmpty(uidStr)) {
-                val uid = uidStr.toLong()
-                loginOptionsBuilder.setUid(uid)
-                loginOptionsBuilder.setLoginHint(loginHint)
-            }
-
-            val optionalScopes = getScopesFrom(binding.optionalScopes)
-            if (optionalScopes.isNotEmpty()) {
-                loginOptionsBuilder.setOptionalScopes(optionalScopes)
-            }
-
-            val requiredScopes = getScopesFrom(binding.requiredScopes)
-            if (requiredScopes.isNotEmpty()) {
-                loginOptionsBuilder.setRequiredScopes(requiredScopes)
-            }
-
-            loginOptionsBuilder.setLoginType(loginType)
-            loginOptionsBuilder.setForceConfirm(forceConfirm)
-            launcher.launch(loginOptionsBuilder.build())
+            val loginOptions = YandexAuthLoginOptions(
+                loginType = loginType
+            )
+            launcher.launch(loginOptions)
         }
 
         val jwtButton = view.findViewById<View>(R.id.jwt)
@@ -124,11 +102,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
-    }
-
-    private fun getScopesFrom(editText: EditText): Set<String> {
-        val scopes = editText.text.toString().split(" ".toRegex()).dropLastWhile { it.isEmpty() }
-        return scopes.toHashSet()
     }
 
     private fun onTokenReceived(yandexAuthToken: YandexAuthToken) {

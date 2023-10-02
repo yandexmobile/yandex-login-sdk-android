@@ -9,18 +9,13 @@ import android.text.TextUtils
 import com.yandex.authsdk.internal.Constants
 import com.yandex.authsdk.internal.getApplicationInfo
 
-open class YandexAuthOptions : Parcelable {
+class YandexAuthOptions : Parcelable {
     val clientId: String
     val isLoggingEnabled: Boolean
-
-    val context: Context?
     val oauthHost: String
 
     @JvmOverloads
-    constructor(context: Context,
-                loggingEnabled: Boolean = false,
-                clientIdIndex: Int = 0) {
-
+    constructor(context: Context, loggingEnabled: Boolean = false) {
         val app: ApplicationInfo = try {
             context.packageManager.getApplicationInfo(context.packageName,
                 PackageManager.GET_META_DATA.toLong())
@@ -28,16 +23,13 @@ open class YandexAuthOptions : Parcelable {
             throw RuntimeException(e)
         }
 
-        val clientId = if (clientIdIndex == 0) app.metaData.getString(Constants.META_CLIENT_ID) else
-            app.metaData.getString("${Constants.META_CLIENT_ID}_$clientIdIndex")
-
+        val clientId = app.metaData.getString(Constants.META_CLIENT_ID)
         checkNotNull(clientId) {
-            String.format("Application should provide client id with index%s in gradle.properties",
-                clientIdIndex)
+            "Application should provide client id in gradle.properties"
         }
+
         this.clientId = clientId
         isLoggingEnabled = loggingEnabled
-        this.context = context
         oauthHost = app.metaData.getString(Constants.META_OAUTH_HOST)!!
     }
 
@@ -48,7 +40,6 @@ open class YandexAuthOptions : Parcelable {
         clientId = `in`.readString()!!
         isLoggingEnabled = `in`.readByte().toInt() != 0
         oauthHost = `in`.readString()!!
-        context = null
     }
 
     override fun writeToParcel(dest: Parcel, flags: Int) {

@@ -2,7 +2,6 @@ package com.yandex.authsdk.internal
 
 import android.os.Build
 import androidx.annotation.ChecksSdkIntAtLeast
-import com.yandex.authsdk.YandexAuthLoginOptions
 import com.yandex.authsdk.YandexAuthOptions
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
@@ -10,11 +9,7 @@ import java.util.*
 
 internal class UrlCreator {
 
-    fun getUrl(
-        options: YandexAuthOptions,
-        loginOptions: YandexAuthLoginOptions,
-        state: String
-    ): String {
+    fun getUrl(options: YandexAuthOptions, state: String): String {
         val redirectUri = createEncodedRedirectUrl(options)
         // Don't use force confirm due to browser redirect problem
         return String.format(
@@ -25,17 +20,6 @@ internal class UrlCreator {
             state
         )
             .let { StringBuilder(it) }
-            .apply {
-                if (loginOptions.loginHint != null) {
-                    append("&login_hint=${loginOptions.loginHint}")
-                }
-                if (!loginOptions.requiredScopes.isNullOrEmpty()) {
-                    append("&scope=${loginOptions.requiredScopes.joinToString(separator = " ")}")
-                }
-                if (!loginOptions.optionalScopes.isNullOrEmpty()) {
-                    append("&optional_scope=${loginOptions.optionalScopes.joinToString(separator = " ")}")
-                }
-            }
             .toString()
     }
 

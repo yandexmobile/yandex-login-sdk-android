@@ -17,56 +17,8 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            tools:node="replace"
-            android:name="com.yandex.authsdk.internal.ChromeTabDataActivity"
-            android:exported="true"
-            android:theme="@style/Theme.AuthSdk.Transparent">
-
-            <intent-filter
-                android:autoVerify="true"
-                tools:ignore="AppLinkUrlError,ExtraText">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="yx${YANDEX_CLIENT_ID}.${YANDEX_OAUTH_HOST}"
-                    android:path="/auth/finish"
-                    android:scheme="https" />
-
-                <data
-                    android:host="yx${YANDEX_CLIENT_ID_1}.${YANDEX_OAUTH_HOST}"
-                    android:path="/auth/finish"
-                    android:scheme="https" />
-            </intent-filter>
-
-            <intent-filter tools:ignore="AppLinkUrlError">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:path="/auth/finish"
-                    android:scheme="yx${YANDEX_CLIENT_ID}"
-                    tools:ignore="GoogleAppIndexingUrlError" />
-
-                <data
-                    android:path="/auth/finish"
-                    android:scheme="yx${YANDEX_CLIENT_ID_1}"
-                    tools:ignore="GoogleAppIndexingUrlError" />
-            </intent-filter>
-        </activity>
-
-        <meta-data
-            android:name="com.yandex.auth.CLIENT_ID_1"
-            android:value="${YANDEX_CLIENT_ID_1}" />
     </application>
 </manifest>
