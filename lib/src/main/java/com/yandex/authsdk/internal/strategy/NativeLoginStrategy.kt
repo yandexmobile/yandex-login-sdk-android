@@ -23,13 +23,13 @@ internal class NativeLoginStrategy private constructor(
 
     internal class ResultExtractor : LoginStrategy.ResultExtractor {
 
-        override fun tryExtractToken( data: Intent): YandexAuthToken? {
+        override fun tryExtractToken(data: Intent): YandexAuthToken? {
             val token = data.getStringExtra(EXTRA_OAUTH_TOKEN)
             val expiresIn = data.getLongExtra(EXTRA_OAUTH_TOKEN_EXPIRES, 0)
             return token?.let { YandexAuthToken(it, expiresIn) }
         }
 
-        override fun tryExtractError( data: Intent): YandexAuthException? {
+        override fun tryExtractError(data: Intent): YandexAuthException? {
             val isError = data.getBooleanExtra(OAUTH_TOKEN_ERROR, false)
             if (!isError) {
                 return null

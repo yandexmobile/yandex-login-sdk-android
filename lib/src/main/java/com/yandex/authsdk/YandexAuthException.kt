@@ -2,7 +2,7 @@ package com.yandex.authsdk
 
 import java.io.IOException
 
-open class YandexAuthException : Exception {
+class YandexAuthException : Exception {
 
     val errors: Array<String>
 
@@ -36,8 +36,6 @@ open class YandexAuthException : Exception {
         const val SECURITY_ERROR = "security.error"
 
         const val JWT_AUTHORIZATION_ERROR = "jwt.authorization.error"
-
-        const val OAUTH_TOKEN_ERROR = "oauth_token.invalid"
 
         const val UNKNOWN_ERROR = "unknown.error"
     }
