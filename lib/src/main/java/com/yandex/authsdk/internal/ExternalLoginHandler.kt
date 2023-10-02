@@ -15,8 +15,10 @@ internal class ExternalLoginHandler(
 ) {
 
     fun getUrl(intent: Intent): String {
-        val loginOptions: YandexAuthLoginOptions = intent.getParcelableExtra(Constants.EXTRA_LOGIN_OPTIONS)!!
-        val options: YandexAuthOptions = intent.getParcelableExtra(Constants.EXTRA_OPTIONS)!!
+        val loginOptions = intent
+            .getParcelableExtraCompat(Constants.EXTRA_LOGIN_OPTIONS, YandexAuthLoginOptions::class.java)!!
+        val options = intent
+            .getParcelableExtraCompat(Constants.EXTRA_OPTIONS, YandexAuthOptions::class.java)!!
         val state = stateGenerator()
         saveState(state)
         return urlCreator.getUrl(options, loginOptions, state)

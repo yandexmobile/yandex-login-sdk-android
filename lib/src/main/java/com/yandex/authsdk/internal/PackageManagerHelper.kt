@@ -6,7 +6,6 @@ import android.text.TextUtils
 import com.yandex.authsdk.YandexAuthOptions
 import com.yandex.authsdk.internal.strategy.NativeLoginStrategy.Companion.getActionIntent
 import java.math.BigInteger
-import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
 class PackageManagerHelper(
@@ -30,7 +29,7 @@ class PackageManagerHelper(
     private fun findLoginSdkApplications(): List<YandexApplicationInfo> {
         val result: MutableList<YandexApplicationInfo> = mutableListOf()
         @SuppressLint("QueryPermissionsNeeded")
-        val applicationInfos = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
+        val applicationInfos = packageManager.getInstalledApplications(PackageManager.GET_META_DATA.toLong())
         for (applicationInfo in applicationInfos) {
             if (TextUtils.equals(applicationInfo.packageName, myPackageName)) {
                 continue
@@ -73,21 +72,14 @@ class PackageManagerHelper(
         packageName: String
     ): Boolean {
         val intent = getActionIntent(packageName)
-        val resolveInfoList = packageManager.queryIntentActivities(intent, 0)
-        return resolveInfoList.size > 0
+        val resolveInfoList = packageManager.queryIntentActivities(intent)
+        return resolveInfoList.isNotEmpty()
     }
 
     private fun extractFingerprints(packageName: String): List<String>? {
         return try {
-            @SuppressLint("PackageManagerGetSignatures") val info =
-                packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES)
-            val result: MutableList<String> = ArrayList(info.signatures.size)
-            for (signature in info.signatures) {
-                val md = MessageDigest.getInstance("SHA")
-                md.update(signature.toByteArray())
-                result.add(toHex(md.digest()))
-            }
-            result
+            val signatures = getApplicationSignatureDigest(packageManager, packageName)
+            signatures.map { toHex(it) }
         } catch (e: PackageManager.NameNotFoundException) {
             Logger.e(options, TAG, "Error getting fingerprint", e)
             null

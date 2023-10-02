@@ -22,7 +22,7 @@ internal class WebViewLoginActivity : Activity() {
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val options = intent.getParcelableExtra<YandexAuthOptions>(Constants.EXTRA_OPTIONS)
+        val options = intent.getParcelableExtraCompat(Constants.EXTRA_OPTIONS, YandexAuthOptions::class.java)
         if (options == null){
             finish()
             return

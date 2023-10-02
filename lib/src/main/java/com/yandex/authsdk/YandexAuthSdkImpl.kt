@@ -10,6 +10,8 @@ import com.yandex.authsdk.internal.Constants
 import com.yandex.authsdk.internal.JwtRequest
 import com.yandex.authsdk.internal.Logger
 import com.yandex.authsdk.internal.PackageManagerHelper
+import com.yandex.authsdk.internal.getParcelableExtraCompat
+import com.yandex.authsdk.internal.getSerializableExtraCompat
 import com.yandex.authsdk.internal.provider.ProviderClient
 import com.yandex.authsdk.internal.provider.ProviderClientResolver
 import java.io.IOException
@@ -71,12 +73,12 @@ internal class YandexAuthSdkImpl(
         if (data == null || resultCode != Activity.RESULT_OK) {
             return null
         }
-        val exception = data.getSerializableExtra(Constants.EXTRA_ERROR) as? YandexAuthException
+        val exception = data.getSerializableExtraCompat(Constants.EXTRA_ERROR, YandexAuthException::class.java)
         if (exception != null) {
             Logger.d(options, TAG, "Exception received")
             throw exception
         }
-        return data.getParcelableExtra(Constants.EXTRA_TOKEN)
+        return data.getParcelableExtraCompat(Constants.EXTRA_TOKEN, YandexAuthToken::class.java)
     }
 
     override val contract: YandexAuthSdkContract

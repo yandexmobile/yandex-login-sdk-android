@@ -7,6 +7,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import android.text.TextUtils
 import com.yandex.authsdk.internal.Constants
+import com.yandex.authsdk.internal.getApplicationInfo
 
 open class YandexAuthOptions : Parcelable {
     val clientId: String
@@ -22,7 +23,7 @@ open class YandexAuthOptions : Parcelable {
 
         val app: ApplicationInfo = try {
             context.packageManager.getApplicationInfo(context.packageName,
-                PackageManager.GET_META_DATA)
+                PackageManager.GET_META_DATA.toLong())
         } catch (e: PackageManager.NameNotFoundException) {
             throw RuntimeException(e)
         }

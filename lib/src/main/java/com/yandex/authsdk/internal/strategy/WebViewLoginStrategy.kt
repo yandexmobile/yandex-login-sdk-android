@@ -7,6 +7,8 @@ import com.yandex.authsdk.YandexAuthSdkParams
 import com.yandex.authsdk.YandexAuthToken
 import com.yandex.authsdk.internal.Constants
 import com.yandex.authsdk.internal.WebViewLoginActivity
+import com.yandex.authsdk.internal.getParcelableExtraCompat
+import com.yandex.authsdk.internal.getSerializableExtraCompat
 
 internal class WebViewLoginStrategy : LoginStrategy() {
 
@@ -24,11 +26,11 @@ internal class WebViewLoginStrategy : LoginStrategy() {
     internal class ResultExtractor : LoginStrategy.ResultExtractor {
 
         override fun tryExtractToken( data: Intent): YandexAuthToken? {
-            return data.getParcelableExtra(Constants.EXTRA_TOKEN)
+            return data.getParcelableExtraCompat(Constants.EXTRA_TOKEN, YandexAuthToken::class.java)
         }
 
         override fun tryExtractError( data: Intent): YandexAuthException? {
-            return data.getSerializableExtra(Constants.EXTRA_ERROR) as YandexAuthException?
+            return data.getSerializableExtraCompat(Constants.EXTRA_ERROR, YandexAuthException::class.java)
         }
     }
 

@@ -6,6 +6,8 @@ import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContract
 import com.yandex.authsdk.internal.AuthSdkActivity
 import com.yandex.authsdk.internal.Constants
+import com.yandex.authsdk.internal.getParcelableExtraCompat
+import com.yandex.authsdk.internal.getSerializableExtraCompat
 
 class YandexAuthSdkContract
     : ActivityResultContract<YandexAuthSdkParams, Result<YandexAuthToken?>>() {
@@ -21,20 +23,22 @@ class YandexAuthSdkContract
         if (intent == null || resultCode != Activity.RESULT_OK) {
             return Result.success(null)
         }
-        val exception = intent.getSerializableExtra(Constants.EXTRA_ERROR) as? YandexAuthException
+        val exception =
+            intent.getSerializableExtraCompat(Constants.EXTRA_ERROR, YandexAuthException::class.java)
         if (exception != null) {
             return Result.failure(exception)
         }
 
-        val yandexAuthToken = intent.getParcelableExtra<YandexAuthToken>(Constants.EXTRA_TOKEN)
+        val yandexAuthToken =
+            intent.getParcelableExtraCompat(Constants.EXTRA_TOKEN, YandexAuthToken::class.java)
         return Result.success(yandexAuthToken)
     }
 
     internal companion object {
 
         fun Intent.toYandexAuthSdkParams(): YandexAuthSdkParams = YandexAuthSdkParams(
-            getParcelableExtra(Constants.EXTRA_OPTIONS)!!,
-            getParcelableExtra(Constants.EXTRA_LOGIN_OPTIONS)!!,
+            getParcelableExtraCompat(Constants.EXTRA_OPTIONS, YandexAuthOptions::class.java)!!,
+            getParcelableExtraCompat(Constants.EXTRA_LOGIN_OPTIONS, YandexAuthLoginOptions::class.java)!!,
         )
     }
 }
