@@ -39,7 +39,7 @@ android {
             // Don't use this client id in you app. Registration of new application: https://tech.yandex.ru
             manifestPlaceholders += [
                 YANDEX_CLIENT_ID: "57a8133c69d947388a67164dfdbc46d3",
-                YANDEX_OAUTH_HOST: "oauth-rc.yandex.ru",
+                YANDEX_OAUTH_HOST: "oauth.yandex.ru",
             ]
         }
         stage {
