@@ -154,8 +154,8 @@ public class MainFragment extends Fragment {
                     loginType = LoginType.NATIVE;
                     break;
                 }
-                case R.id.browser_btn: {
-                    loginType = LoginType.BROWSER;
+                case R.id.chrome_tab_btn: {
+                    loginType = LoginType.CHROME_TAB;
                     break;
                 }
                 case R.id.webview_btn: {

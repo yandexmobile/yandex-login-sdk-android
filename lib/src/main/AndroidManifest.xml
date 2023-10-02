@@ -32,7 +32,7 @@
             android:theme="@style/Theme.AuthSdk.Transparent" />
 
         <activity
-            android:name="com.yandex.authsdk.internal.BrowserLoginActivity"
+            android:name="com.yandex.authsdk.internal.ChromeTabLoginActivity"
             android:launchMode="singleTop" />
 
         <activity
@@ -41,7 +41,7 @@
             android:theme="@style/Theme.AuthSdk" />
 
         <activity
-            android:name="com.yandex.authsdk.internal.BrowserDataActivity"
+            android:name="com.yandex.authsdk.internal.ChromeTabDataActivity"
             android:exported="true"
             android:theme="@style/Theme.AuthSdk.Transparent">
 

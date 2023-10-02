@@ -24,7 +24,7 @@
 
         <activity
             tools:node="replace"
-            android:name="com.yandex.authsdk.internal.BrowserDataActivity"
+            android:name="com.yandex.authsdk.internal.ChromeTabDataActivity"
             android:exported="true"
             android:theme="@style/Theme.AuthSdk.Transparent">
 

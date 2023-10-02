@@ -60,6 +60,7 @@ dependencies {
     implementation 'androidx.activity:activity-ktx:1.7.2'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.browser:browser:1.5.0'
     testImplementation 'com.android.support:support-annotations:28.0.0'
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.robolectric:robolectric:4.8.1'

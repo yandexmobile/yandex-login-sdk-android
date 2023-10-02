@@ -82,10 +82,10 @@
                 android:text="native" />
 
             <RadioButton
-                android:id="@+id/browser_btn"
+                android:id="@+id/chrome_tab_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="browser" />
+                android:text="chrome_tab" />
 
             <RadioButton
                 android:id="@+id/webview_btn"

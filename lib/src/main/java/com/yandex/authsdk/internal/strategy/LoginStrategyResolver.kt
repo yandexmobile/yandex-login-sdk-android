@@ -8,20 +8,21 @@ internal class LoginStrategyResolver(
     private val packageManagerHelper: PackageManagerHelper
 ) {
 
+    private val fullLoginTypesOrder: List<LoginType> = listOf(
+        LoginType.NATIVE, LoginType.CHROME_TAB, LoginType.WEBVIEW,
+    )
+
     fun getLoginStrategy(preferredLoginType: LoginType?): LoginStrategy {
-        return when (preferredLoginType) {
-            null, LoginType.NATIVE -> {
-                NativeLoginStrategy.getIfPossible(packageManagerHelper)
-                    ?: BrowserLoginStrategy.getIfPossible(context, context.packageManager)
-                    ?: WebViewLoginStrategy.get()
+        val startIndex = preferredLoginType?.let { loginType ->
+            fullLoginTypesOrder.indexOf(loginType).takeIf { it != -1 }
+        } ?: 0
+        val loginTypeOrder = fullLoginTypesOrder.subList(startIndex, fullLoginTypesOrder.size)
+        return loginTypeOrder.firstNotNullOf {
+            return@firstNotNullOf when (it) {
+                LoginType.NATIVE -> NativeLoginStrategy.getIfPossible(packageManagerHelper)
+                LoginType.CHROME_TAB -> ChromeTabLoginStrategy.getIfPossible(context.packageManager)
+                LoginType.WEBVIEW -> WebViewLoginStrategy.get()
             }
-
-            LoginType.BROWSER -> {
-                BrowserLoginStrategy.getIfPossible(context, context.packageManager)
-                    ?: WebViewLoginStrategy.get()
-            }
-
-            LoginType.WEBVIEW -> WebViewLoginStrategy.get()
         }
     }
 }
