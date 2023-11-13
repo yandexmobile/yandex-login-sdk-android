@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/main_fragment"
         android:name="com.yandex.authsdk.sample.MainFragment"
         android:layout_width="match_parent"

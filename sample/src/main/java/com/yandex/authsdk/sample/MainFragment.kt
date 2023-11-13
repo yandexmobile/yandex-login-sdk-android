@@ -33,16 +33,15 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         _binding = FragmentMainBinding.bind(view)
 
         val launcher = viewModel.getTokenLauncher(this)
-        val loginButton = view.findViewById<View>(R.id.login)
-        loginButton.setOnClickListener {
+
+        binding.login.setOnClickListener {
             val loginOptions = YandexAuthLoginOptions(
                 loginType = loginType
             )
             launcher.launch(loginOptions)
         }
 
-        val jwtButton = view.findViewById<View>(R.id.jwt)
-        jwtButton.setOnClickListener {
+        binding.jwt.setOnClickListener {
             yandexAuthToken?.let { viewModel.requestJwt(it) }
         }
 
