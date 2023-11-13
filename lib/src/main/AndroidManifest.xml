@@ -32,7 +32,8 @@
 
         <activity
             android:name="com.yandex.authsdk.internal.ChromeTabLoginActivity"
-            android:launchMode="singleTop" />
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.AuthSdk.Transparent" />
 
         <activity
             android:name="com.yandex.authsdk.internal.WebViewLoginActivity"
