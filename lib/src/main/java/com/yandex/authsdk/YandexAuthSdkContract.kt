@@ -11,7 +11,7 @@ import com.yandex.authsdk.internal.getParcelableExtraCompat
 import com.yandex.authsdk.internal.getSerializableExtraCompat
 
 class YandexAuthSdkContract(private val options: YandexAuthOptions)
-    : ActivityResultContract<YandexAuthLoginOptions, Result<YandexAuthToken?>>() {
+    : ActivityResultContract<YandexAuthLoginOptions, YandexAuthResult>() {
 
     override fun createIntent(context: Context, input: YandexAuthLoginOptions): Intent {
         val intent = Intent(context, AuthSdkActivity::class.java)
@@ -20,19 +20,22 @@ class YandexAuthSdkContract(private val options: YandexAuthOptions)
         return intent
     }
 
-    override fun parseResult(resultCode: Int, intent: Intent?): Result<YandexAuthToken?> {
+    override fun parseResult(resultCode: Int, intent: Intent?): YandexAuthResult {
         if (intent == null || resultCode != Activity.RESULT_OK) {
-            return Result.success(null)
+            return YandexAuthResult.Cancelled
         }
+
         val exception =
             intent.getSerializableExtraCompat(Constants.EXTRA_ERROR, YandexAuthException::class.java)
         if (exception != null) {
-            return Result.failure(exception)
+            return YandexAuthResult.Failure(exception)
         }
 
         val yandexAuthToken =
             intent.getParcelableExtraCompat(Constants.EXTRA_TOKEN, YandexAuthToken::class.java)
-        return Result.success(yandexAuthToken)
+        return yandexAuthToken?.let {
+            YandexAuthResult.Success(it)
+        } ?: YandexAuthResult.Cancelled
     }
 
     internal companion object {

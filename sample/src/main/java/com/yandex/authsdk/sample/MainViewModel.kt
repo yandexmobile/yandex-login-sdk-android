@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.yandex.authsdk.YandexAuthException
 import com.yandex.authsdk.YandexAuthLoginOptions
 import com.yandex.authsdk.YandexAuthOptions
+import com.yandex.authsdk.YandexAuthResult
 import com.yandex.authsdk.YandexAuthSdk
 import com.yandex.authsdk.YandexAuthToken
 import kotlinx.coroutines.Dispatchers
@@ -30,8 +31,8 @@ class MainViewModel(
     private val _jwtState = MutableStateFlow<Result<String>?>(null)
     val jwtState: Flow<Result<String>> = _jwtState.filterNotNull()
 
-    private val _tokenState = MutableStateFlow<Result<YandexAuthToken?>?>(null)
-    val tokenState: Flow<Result<YandexAuthToken?>> = _tokenState.filterNotNull()
+    private val _tokenState = MutableStateFlow<YandexAuthResult?>(null)
+    val tokenState: Flow<YandexAuthResult> = _tokenState.filterNotNull()
 
     fun getTokenLauncher(caller: ActivityResultCaller): ActivityResultLauncher<YandexAuthLoginOptions> {
         return caller.registerForActivityResult(sdk.contract) {

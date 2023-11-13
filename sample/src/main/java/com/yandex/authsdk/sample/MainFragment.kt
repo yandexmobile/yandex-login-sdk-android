@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.yandex.authsdk.YandexAuthException
 import com.yandex.authsdk.YandexAuthLoginOptions
+import com.yandex.authsdk.YandexAuthResult
 import com.yandex.authsdk.YandexAuthToken
 import com.yandex.authsdk.internal.strategy.LoginType
 import com.yandex.authsdk.sample.databinding.FragmentMainBinding
@@ -65,11 +66,11 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     viewModel.tokenState.collect { result ->
-                        val token = result.getOrElse { error ->
-                            binding.statusLabel.text = error.localizedMessage
-                            null
+                        when (result) {
+                            is YandexAuthResult.Success -> onTokenReceived(result.token)
+                            is YandexAuthResult.Failure -> onErrorReceived(result.exception)
+                            is YandexAuthResult.Cancelled -> onCancelled()
                         }
-                        token?.let { onTokenReceived(it) }
                     }
                 }
 
@@ -109,6 +110,14 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         binding.statusLabel.text = yandexAuthToken.toString()
         binding.jwtContainer.visibility = View.VISIBLE
         binding.jwtLabel.text = ""
+    }
+
+    private fun onErrorReceived(exception: YandexAuthException) {
+        binding.statusLabel.text = exception.localizedMessage
+    }
+
+    private fun onCancelled() {
+        binding.statusLabel.text = "Cancelled"
     }
 
     private fun onJwtReceived(jwt: String) {
